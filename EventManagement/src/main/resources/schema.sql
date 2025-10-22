@@ -1,6 +1,6 @@
 CREATE TABLE passports
 (
-    passport_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     series      VARCHAR(4) NOT NULL,
     number      VARCHAR(6) NOT NULL,
     created_at  TIMESTAMP DEFAULT NOW(),
@@ -9,18 +9,18 @@ CREATE TABLE passports
 
 CREATE TABLE clients
 (
-    client_id    SERIAL PRIMARY KEY,
+    id    SERIAL PRIMARY KEY,
     full_name    TEXT           NOT NULL,
     phone_number VARCHAR(12)    NOT NULL CHECK (phone_number LIKE '+7%'),
     email        TEXT           ,
-    passport_id  INTEGER UNIQUE NOT NULL REFERENCES passports (passport_id),
+    passport_id  INTEGER UNIQUE NOT NULL REFERENCES passports (id),
     created_at   TIMESTAMP DEFAULT NOW(),
     updated_at   TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE events
 (
-    event_id     SERIAL PRIMARY KEY,
+    id     SERIAL PRIMARY KEY,
     name         TEXT NOT NULL,
     date         DATE NOT NULL                                                                 DEFAULT CURRENT_DATE,
     ticket_price NUMERIC NOT NULL                                                                       DEFAULT 0 CHECK (ticket_price >= 0),
@@ -32,9 +32,9 @@ CREATE TABLE events
 
 CREATE TABLE ticket_reservations
 (
-    reservation_id    SERIAL PRIMARY KEY,
-    client_id         INTEGER REFERENCES clients (client_id),
-    event_id          INTEGER REFERENCES events (event_id),
+    id    SERIAL PRIMARY KEY,
+    client_id         INTEGER REFERENCES clients (id),
+    event_id          INTEGER REFERENCES events (id),
     number_of_tickets INTEGER   DEFAULT 1 CHECK (number_of_tickets > 0),
     booking_status    TEXT CHECK (booking_status IN ('подтверждено', 'отменено', 'ожидает подтверждения'))  DEFAULT 'ожидает подтверждения',
     created_at        TIMESTAMP DEFAULT NOW(),
