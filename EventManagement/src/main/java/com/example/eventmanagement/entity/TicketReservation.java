@@ -1,5 +1,6 @@
 package com.example.eventmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.cglib.core.Local;
 
@@ -12,8 +13,16 @@ public class TicketReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //    client_id         INTEGER REFERENCES clients (client_id),
-    //    event_id          INTEGER REFERENCES events (event_id),
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    @JsonIgnore
+    private Event event;
     @Column(name = "number_of_tickets", nullable = false)
     private Integer numberOfTickets;
     @Column(name = "booking_status", nullable = false)

@@ -1,8 +1,11 @@
 package com.example.eventmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,11 +20,20 @@ public class Client {
     private String phone_number;
     @Column
     private String email;
-    //passport_id
+
+    @OneToOne //обратка только в одном, том где его нет в самой базе
+    @JoinColumn(name = "passport_id", nullable = false)
+    @JsonIgnore
+    private Passport passport;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TicketReservation> ticketReservations = new ArrayList<>();
+
 
     public Client() {
 

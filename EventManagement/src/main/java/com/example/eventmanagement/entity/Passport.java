@@ -1,5 +1,6 @@
 package com.example.eventmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -23,6 +24,10 @@ public class Passport {
 //    В SQL базах данных часто используют snake_case (например, created_at)
     @Column(name ="created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "passport", cascade = CascadeType.ALL) //обратка на себя
+    @JsonIgnore
+    private Client client;
 
     public Passport() {
 
