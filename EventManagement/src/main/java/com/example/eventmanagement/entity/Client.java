@@ -2,6 +2,7 @@ package com.example.eventmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,8 +18,10 @@ public class Client {
     @Column(nullable = false)
     private String full_name;
     @Column(nullable = false)
+    @Pattern(regexp = "^\\+7\\d{10}$", message = "Телефон должен начинаться с +7 и иметь 11 цифр")
     private String phone_number;
     @Column
+    @Pattern(regexp = ".+@.+", message = "Email должен иметь символ \'@\'")
     private String email;
 
     @OneToOne //обратка только в одном, том где его нет в самой базе

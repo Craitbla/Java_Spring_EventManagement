@@ -2,6 +2,7 @@ package com.example.eventmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -15,7 +16,9 @@ public class Passport {
     private Long id;
 
     @Column(nullable = false)
+    @Pattern(regexp = "\\d{4}", message = "Серия должна содержать 4 цифры")
     private String series;
+    @Pattern(regexp = "\\d{6}", message = "Нормер должен содержать 6 цифр")
     @Column(nullable = false)
     private String number;
 
