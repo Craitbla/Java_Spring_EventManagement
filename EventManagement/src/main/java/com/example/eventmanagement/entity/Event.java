@@ -1,6 +1,9 @@
 package com.example.eventmanagement.entity;
 
+import com.example.eventmanagement.enums.EventStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -20,9 +23,10 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime date;
     @Column(name = "ticket_price", nullable = false)
+@DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
     private Double ticketPrice;
     @Column
-    private String status;
+    private EventStatus status;
     @Column
     private String description;
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -40,7 +44,7 @@ public class Event {
     protected void onCreate(){
         date = LocalDateTime.now();
         ticketPrice = 0.0;
-        status = "запланировано";
+        status = EventStatus.PLANNED;
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -50,7 +54,7 @@ public class Event {
         updatedAt = LocalDateTime.now();
     }
 
-    public Event(String name, LocalDateTime date, Double ticketPrice, String status, String description) {
+    public Event(String name, LocalDateTime date, Double ticketPrice, EventStatus status, String description) {
         this.name = name;
         this.date = date;
         this.ticketPrice = ticketPrice;
@@ -90,11 +94,11 @@ public class Event {
         this.ticketPrice = ticketPrice;
     }
 
-    public String getStatus() {
+    public EventStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 

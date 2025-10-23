@@ -1,7 +1,9 @@
 package com.example.eventmanagement.entity;
 
+import com.example.eventmanagement.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
@@ -24,9 +26,10 @@ public class TicketReservation {
     @JsonIgnore
     private Event event;
     @Column(name = "number_of_tickets", nullable = false)
+    @Min(value =  1, message = "Количество билетов должно быть больше или равно 1")
     private Integer numberOfTickets;
     @Column(name = "booking_status", nullable = false)
-    private String bookingStatus;
+    private BookingStatus bookingStatus;
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
@@ -38,8 +41,8 @@ public class TicketReservation {
 
     @PrePersist
     protected void onCreate(){
-        numberOfTickets = 0;
-        bookingStatus = "ожидает подтверждения";
+        numberOfTickets = 1;
+        bookingStatus = BookingStatus.PENDING_CONFIRMATION;
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
 
@@ -50,7 +53,7 @@ public class TicketReservation {
         updatedAt = LocalDateTime.now();
     }
 
-    public TicketReservation(Integer numberOfTickets, String bookingStatus) {
+    public TicketReservation(Integer numberOfTickets, BookingStatus bookingStatus) {
         this.numberOfTickets = numberOfTickets;
         this.bookingStatus = bookingStatus;
     }
@@ -71,11 +74,11 @@ public class TicketReservation {
         this.numberOfTickets = numberOfTickets;
     }
 
-    public String getBookingStatus() {
+    public BookingStatus getBookingStatus() {
         return bookingStatus;
     }
 
-    public void setBookingStatus(String bookingStatus) {
+    public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
     }
 
