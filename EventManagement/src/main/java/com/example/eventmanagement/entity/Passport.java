@@ -38,7 +38,10 @@ public class Passport {
 
     @PrePersist
     protected void onCreate(){
-        createdAt = LocalDateTime.now();
+        if(createdAt==null){
+            createdAt = LocalDateTime.now();
+        }
+
     }
 
     public Passport(String series, String number) {

@@ -26,7 +26,7 @@ public class TicketReservation {
     @JsonIgnore
     private Event event;
     @Column(name = "number_of_tickets", nullable = false)
-    @Min(value =  1, message = "Количество билетов должно быть больше или равно 1")
+    @Min(value = 1, message = "Количество билетов должно быть больше или равно 1")
     private Integer numberOfTickets;
     @Column(name = "booking_status", nullable = false)
     private BookingStatus bookingStatus;
@@ -40,16 +40,23 @@ public class TicketReservation {
     }
 
     @PrePersist
-    protected void onCreate(){
-        numberOfTickets = 1;
-        bookingStatus = BookingStatus.PENDING_CONFIRMATION;
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-
+    protected void onCreate() {
+        if (numberOfTickets == null) {
+            numberOfTickets = 1;
+        }
+        if (bookingStatus == null) {
+            bookingStatus = BookingStatus.PENDING_CONFIRMATION;
+        }
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
     }
 
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 

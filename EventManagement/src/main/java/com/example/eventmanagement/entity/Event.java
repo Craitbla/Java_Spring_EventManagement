@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -23,8 +24,8 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime date;
     @Column(name = "ticket_price", nullable = false)
-@DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
-    private Double ticketPrice;
+    @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
+    private BigDecimal ticketPrice;
     @Column
     private EventStatus status;
     @Column
@@ -41,20 +42,32 @@ public class Event {
     }
 
     @PrePersist
-    protected void onCreate(){
-        date = LocalDateTime.now();
-        ticketPrice = 0.0;
-        status = EventStatus.PLANNED;
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    protected void onCreate() {
+        if (date == null) {
+            date = LocalDateTime.now();
+        }
+        if (ticketPrice == null) {
+            ticketPrice = BigDecimal.ZERO;
+        }
+        if (status == null) {
+            status = EventStatus.PLANNED;
+        }
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+
+
     }
 
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
-    public Event(String name, LocalDateTime date, Double ticketPrice, EventStatus status, String description) {
+    public Event(String name, LocalDateTime date, BigDecimal ticketPrice, EventStatus status, String description) {
         this.name = name;
         this.date = date;
         this.ticketPrice = ticketPrice;
@@ -86,11 +99,11 @@ public class Event {
         this.date = date;
     }
 
-    public Double getTicketPrice() {
+    public BigDecimal getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(Double ticketPrice) {
+    public void setTicketPrice(BigDecimal ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 
