@@ -18,12 +18,10 @@ public class TicketReservation {
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
-    @JsonIgnore
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    @JsonIgnore
     private Event event;
     @Column(name = "number_of_tickets", nullable = false)
     @Min(value = 1, message = "Количество билетов должно быть больше или равно 1")
