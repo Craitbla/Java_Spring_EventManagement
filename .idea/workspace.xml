@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="readme">
-      <change beforePath="$PROJECT_DIR$/.idea/Java_Spring_EventManagement.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/entity/Passport.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/entity/Passport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +27,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/MyJava/for github/Java_Spring_EventManagement/EventManagement",
+    "last_opened_file_path": "D:/MyJava/for github/Java_Spring_EventManagement",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -56,6 +51,7 @@
       <updated>1760960397421</updated>
       <workItem from="1760960398360" duration="495000" />
       <workItem from="1761121589688" duration="2942000" />
+      <workItem from="1761393419446" duration="630000" />
     </task>
     <task id="LOCAL-00001" summary="readme">
       <option name="closed" value="true" />

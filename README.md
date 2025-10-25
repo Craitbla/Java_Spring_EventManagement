@@ -14,6 +14,8 @@
 - **Maven** - управление зависимостями
 - **JUnit 5 & Mockito** - тестирование
 - **REST API** - архитектурный стиль для веб-сервисов
+- **Docker** - контейнеризация приложения
+- **Docker Compose** - оркестрация многоконтейнерного приложения
 
 ---
 
@@ -168,6 +170,77 @@ public class GlobalExceptionHandler {
 
 ---
 
+##  Docker & Контейнеризация
+
+### Полная контейнеризация приложения
+
+Проект использует Docker Compose для оркестрации многоконтейнерного приложения:
+
+```dockerfile
+# Многостадийный Dockerfile для оптимизации образа
+FROM eclipse-temurin:21-jdk-alpine as builder
+WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+```yaml
+# docker-compose.yml - полная инфраструктура
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ticket_postgres
+    environment:
+      POSTGRES_DB: ticket_system
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ticket_system"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: ticket_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ticket_system
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+###  Преимущества Docker реализации
+
+- **Быстрый старт** - одна команда для запуска всего стека
+- **Воспроизводимость** - идентичное окружение на всех машинах
+- **Надежность** - health checks и правильные зависимости
+- **Масштабируемость** - легко добавить новые сервисы
+- **️Управляемость** - централизованная конфигурация
+
+---
+
 ##  Тестирование
 
 ### Высокое качество кода обеспечивается комплексным тестированием:
@@ -247,22 +320,60 @@ public class EventService {
 
 ##  Запуск проекта
 
+### Рекомендуемый способ (Docker Compose)
+
+```bash
+# Полный запуск всего стека (приложение + БД)
+docker-compose up --build
+
+# Запуск в фоновом режиме
+docker-compose up -d
+
+# Остановка с очисткой
+docker-compose down -v
+
+# Просмотр логов приложения
+docker-compose logs -f app
+
+# Перезапуск только приложения
+docker-compose restart app
+```
+
+###  Традиционный способ (Maven)
+
 ```bash
 # Клонирование репозитория
 git clone <repository-url>
 
 # Запуск с Maven
-mvn spring-boot:run
+./mvnw spring-boot:run
 
 # Запуск тестов
-mvn test
+./mvnw test
+
+# Сборка JAR
+./mvnw clean package
+```
+
+###  Команды для разработки
+
+```bash
+# Запуск только базы данных
+docker-compose up -d postgres
+
+# Запуск приложения с локальной БД
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/ticket_system ./mvnw spring-boot:run
+
+# Тестирование API
+curl http://localhost:8080/api/events
 ```
 
 ---
 
 ##  Результаты разработки
 
-###  Полностью реализованная функциональность:
+###  Полностью реализованная функциональность
+
 - **RESTful API** с поддержкой CRUD операций
 - **Слоистая архитектура** с разделением ответственности
 - **Комплексная валидация** на уровне DTO и бизнес-логики
@@ -270,5 +381,26 @@ mvn test
 - **Высокое покрытие тестами** (87%)
 - **Оптимизированная работа с БД** через Spring Data JPA
 - **Логирование** ключевых операций системы
+- **Полная контейнеризация** с Docker и Docker Compose
 
-Проект демонстрирует **продвинутые навыки Java-backend разработки** и готов к использованию в production-среде!
+###  Production-готовность
+
+- **Health checks** для мониторинга состояния сервисов
+- **Автоматические миграции** базы данных
+- **Тома данных** для сохранения состояния между перезапусками
+- **Правильные зависимости** между сервисами
+- **Именованные контейнеры** для удобства управления
+
+---
+
+## Дополнительная информация
+
+После запуска приложение доступно по адресу: `http://localhost:8080`
+
+**Доступные эндпоинты:**
+- `GET /api/events` - список мероприятий
+- `POST /api/events` - создание мероприятия
+- `GET /api/clients` - список клиентов
+- `POST /api/reservations` - создание бронирования
+
+Проект демонстрирует **продвинутые навыки Java-backend разработки** и готов к использованию в production-среде! 
