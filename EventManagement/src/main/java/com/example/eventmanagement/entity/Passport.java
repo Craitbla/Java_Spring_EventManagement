@@ -1,6 +1,7 @@
 package com.example.eventmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 
@@ -15,8 +16,8 @@ public class Passport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     @Pattern(regexp = "\\d{4}", message = "Серия должна содержать 4 цифры")
+    @Column(nullable = false)
     private String series;
     @Pattern(regexp = "\\d{6}", message = "Нормер должен содержать 6 цифр")
     @Column(nullable = false)
@@ -28,8 +29,8 @@ public class Passport {
     @Column(name ="created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnoreProperties("passport")
     @OneToOne(mappedBy = "passport", cascade = CascadeType.ALL) //обратка на себя
-    @JsonIgnore
     private Client client;
 
     public Passport() {
@@ -77,11 +78,6 @@ public class Passport {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-//    public void setCreatedAt(LocalDateTime createdAt) {
-//        this.createdAt = createdAt;
-//    } насколько я понимаю не нужен
-
 
     @Override
     public boolean equals(Object o) {

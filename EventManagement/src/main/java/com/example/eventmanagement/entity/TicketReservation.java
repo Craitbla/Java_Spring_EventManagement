@@ -2,6 +2,7 @@ package com.example.eventmanagement.entity;
 
 import com.example.eventmanagement.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import org.springframework.cglib.core.Local;
@@ -15,12 +16,12 @@ public class TicketReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
+    @JsonIgnoreProperties({"ticketReservation", "passport"})
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
-
     @ManyToOne
+    @JsonIgnoreProperties({"ticketReservation"})
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
     @Column(name = "number_of_tickets", nullable = false)
@@ -90,10 +91,6 @@ public class TicketReservation {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-//    public void setCreatedAt(LocalDateTime createdAt) {
-//        this.createdAt = createdAt;
-//    }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;

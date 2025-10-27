@@ -1,6 +1,7 @@
 package com.example.eventmanagement.entity;
 
 import com.example.eventmanagement.enums.EventStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class Event {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
     @Column(name = "ticket_price", nullable = false)
     @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
     private BigDecimal ticketPrice;
@@ -35,6 +37,7 @@ public class Event {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"event", "client"}) //Поле event уже игнорируется в TicketReservation: ага, да нет уж
     private List<TicketReservation> ticketReservations = new ArrayList<>();
 
     public Event() {
@@ -44,7 +47,7 @@ public class Event {
     @PrePersist
     protected void onCreate() {
         if (date == null) {
-            date = LocalDateTime.now();
+            date = LocalDate.now();
         }
         if (ticketPrice == null) {
             ticketPrice = BigDecimal.ZERO;
@@ -67,7 +70,7 @@ public class Event {
         updatedAt = LocalDateTime.now();
     }
 
-    public Event(String name, LocalDateTime date, BigDecimal ticketPrice, EventStatus status, String description) {
+    public Event(String name, LocalDate date, BigDecimal ticketPrice, EventStatus status, String description) {
         this.name = name;
         this.date = date;
         this.ticketPrice = ticketPrice;
@@ -91,11 +94,11 @@ public class Event {
         this.name = name;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -126,10 +129,6 @@ public class Event {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-//    public void setCreatedAt(LocalDateTime createdAt) {
-//        this.createdAt = createdAt;
-//    }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;

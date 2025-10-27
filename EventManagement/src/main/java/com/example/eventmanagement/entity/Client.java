@@ -1,7 +1,9 @@
 package com.example.eventmanagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
@@ -21,12 +23,13 @@ public class Client {
     @Pattern(regexp = "^\\+7\\d{10}$", message = "Телефон должен начинаться с +7 и иметь 11 цифр")
     private String phoneNumber;
     @Column
-    @Pattern(regexp = ".+@.+", message = "Email должен иметь символ \'@\'")
+    @Email(message = "Email должен быть валидным") //есть два варианта из разных библиотек
     private String email;
 
+
     @OneToOne //обратка только в одном, том где его нет в самой базе
+    @JsonIgnoreProperties("client")
     @JoinColumn(name = "passport_id", nullable = false)
-//    @JsonIgnore я думаю
     private Passport passport;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -35,6 +38,7 @@ public class Client {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("client")
     private List<TicketReservation> ticketReservations = new ArrayList<>();
 
 
@@ -58,9 +62,9 @@ public class Client {
         updatedAt = LocalDateTime.now();
     }
 
-    public Client(String full_name, String phone_number, String email) {
-        this.fullName = full_name;
-        this.phoneNumber = phone_number;
+    public Client(String fullName, String phoneNumber, String email) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
         this.email = email;
     }
 
@@ -72,19 +76,19 @@ public class Client {
         this.id = id;
     }
 
-    public String getFull_name() {
+    public String getFullName() {
         return fullName;
     }
 
-    public void setFull_name(String fullName) {
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    public String getPhone_number() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhone_number(String phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -99,10 +103,6 @@ public class Client {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
-//    public void setCreatedAt(LocalDateTime createdAt) {
-//        this.createdAt = createdAt;
-//    }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
@@ -129,8 +129,8 @@ public class Client {
     public String toString() {
         return "Client{" +
                "id=" + id +
-               ", full_name='" + fullName + '\'' +
-               ", phone_number='" + phoneNumber + '\'' +
+               ", fullName='" + fullName + '\'' +
+               ", phoneNumber='" + phoneNumber + '\'' +
                ", email='" + email + '\'' +
                ", createdAt=" + createdAt +
                ", updatedAt=" + updatedAt +
