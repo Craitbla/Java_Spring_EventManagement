@@ -4,7 +4,7 @@ import com.example.eventmanagement.entity.TicketReservation;
 
 import java.util.List;
 
-public record ClientDto(
+public record ClientDto( //в рекорде автоматические геттеры прописаны как бы
         Long id,
         String fullName,
         String phoneNumber,

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "events")
+@Table(name = "events", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "date"})})
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

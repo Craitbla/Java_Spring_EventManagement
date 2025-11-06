@@ -15,7 +15,9 @@ CREATE TABLE clients
     email        TEXT           ,
     passport_id  INTEGER UNIQUE NOT NULL REFERENCES passports (id),
     created_at   TIMESTAMP DEFAULT NOW(),
-    updated_at   TIMESTAMP DEFAULT NOW()
+    updated_at   TIMESTAMP DEFAULT NOW(),
+    UNIQUE (phone_number),
+    UNIQUE (email)
 );
 
 CREATE TABLE events
@@ -27,7 +29,8 @@ CREATE TABLE events
     status       TEXT CHECK (status IN ('запланировано', 'проходит', 'отменено', 'завершено')) DEFAULT 'запланировано',
     description  TEXT,
     created_at   TIMESTAMP                                                                     DEFAULT NOW(),
-    updated_at   TIMESTAMP                                                                     DEFAULT NOW()
+    updated_at   TIMESTAMP                                                                     DEFAULT NOW(),
+    UNIQUE (name, date)
 );
 
 CREATE TABLE ticket_reservations

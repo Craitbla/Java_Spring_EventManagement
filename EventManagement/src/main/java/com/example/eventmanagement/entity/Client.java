@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "clients", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "phone_number"),  // ← Уникальность series
+        @UniqueConstraint(columnNames = "email")   // ← Уникальность number
+})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
