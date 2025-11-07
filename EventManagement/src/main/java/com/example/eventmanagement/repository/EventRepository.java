@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
-    Optional<Event> findById(Long id);
     List<Event> findByNameIgnoreCase(String name);
     List<Event> findByNameContainingIgnoreCase(String namePart);
     List<Event> findByDate(LocalDate date);
@@ -35,7 +34,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByUpdatedAtAfter(LocalDateTime date);
 
     @Query("SELECT e FROM Event e JOIN FETCH TicketReservation WHERE e.id = :id")
-    List<Event> findByIdTicketReservations(@Param("id") Long id);
+    Optional<Event> findByIdWithTicketReservations(@Param("id") Long id);
     boolean existsByNameAndDate(String name, LocalDate date);
 
     @Query("SELECT COALESCE(SUM(tr.numberOfTickets), 0L) " +
@@ -47,7 +46,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "FROM Event e LEFT JOIN e.ticketReservations t " +
            "WHERE e.id = :eventId " +
            "GROUP BY e")
-    Optional<EventWithReservationCountDto> findEventWithReservationCount(@Param("eventId") Long eventId);
+    Optional<EventWithReservationCountDto> findByIdWithReservationCount(@Param("eventId") Long eventId);
 
     //// В EventRepository
     //Optional<Event> findById(Long eventId);

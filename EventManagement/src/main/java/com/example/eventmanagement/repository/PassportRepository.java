@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PassportRepository extends JpaRepository<Passport, Long> {
-    Optional<Passport> findById(Long id);
     Optional<Passport> findBySeriesAndNumber(String series, String number);
     List<Passport> findByCreatedAt(LocalDateTime createdAt); //
     List<Passport> findByCreatedAtBefore(LocalDateTime date);
@@ -20,7 +19,7 @@ public interface PassportRepository extends JpaRepository<Passport, Long> {
     List<Passport> findByCreatedAtAfter(LocalDateTime date);
 
     @Query("SELECT p FROM Passport p JOIN FETCH p.client WHERE p.id = :id")
-    List<Client> findByIdWithClient(@Param("id") Long id);
+    Optional<Passport> findByIdWithClient(@Param("id") Long id);
     boolean existsBySeriesAndNumber(String series, String number);
 
 

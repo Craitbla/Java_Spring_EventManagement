@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TicketReservationRepository extends JpaRepository<TicketReservation, Long> {
-    Optional<TicketReservation> findById(Long id);
     List<TicketReservation> findByNumberOfTickets(Integer numberOfTickets);
     List<TicketReservation> findByClientId(Long clientId);
     List<TicketReservation> findByEventId(Long eventId);
@@ -35,11 +34,11 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
             Long clientId, Long eventId, BookingStatus status);
 
     @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client WHERE tr.id = :id")
-    List<Client> findByIdWithClient(@Param("id") Long id);
+    Optional<TicketReservation> findByIdWithClient(@Param("id") Long id);
     @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.event WHERE tr.id = :id")
-    List<Client> findByIdWithEvent(@Param("id") Long id);
+    Optional<TicketReservation> findByIdWithEvent(@Param("id") Long id);
 
     @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client JOIN FETCH tr.event WHERE tr.id = :id")
-    List<Client> findByIdWithClientAndEvent(@Param("id") Long id); //не проверено
+    Optional<TicketReservation> findByIdWithClientAndEvent(@Param("id") Long id); //не проверено
 
 }
