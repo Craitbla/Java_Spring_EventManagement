@@ -1,4 +1,5 @@
 package com.example.eventmanagement.repository;
+import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.entity.TicketReservation;
@@ -33,9 +34,12 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     List<TicketReservation> findByClientIdAndEventIdAndBookingStatus(
             Long clientId, Long eventId, BookingStatus status);
 
-    @Query("SELECT e, COUNT(t) as reservationCount " +
-           "FROM Event e LEFT JOIN e.ticketReservations t " +
-           "WHERE e.id = :eventId " +
-           "GROUP BY e")
-    Object[] findEventWithReservationCount(@Param("eventId") Long eventId);
+    @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client WHERE tr.id = :id")
+    List<Client> findByIdWithClient(@Param("id") Long id);
+    @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.event WHERE tr.id = :id")
+    List<Client> findByIdWithEvent(@Param("id") Long id);
+
+    @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client JOIN FETCH tr.event WHERE tr.id = :id")
+    List<Client> findByIdWithClientAndEvent(@Param("id") Long id); //не проверено
+
 }

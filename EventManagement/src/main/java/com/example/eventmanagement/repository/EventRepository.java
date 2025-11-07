@@ -1,5 +1,7 @@
 package com.example.eventmanagement.repository;
 
+import com.example.eventmanagement.dto.EventStatisticsDto;
+import com.example.eventmanagement.dto.EventWithReservationCountDto;
 import com.example.eventmanagement.entity.Event;
 import com.example.eventmanagement.enums.EventStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findById(Long id);
     List<Event> findByNameIgnoreCase(String name);
@@ -37,5 +38,41 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByIdTicketReservations(@Param("id") Long id);
     boolean existsByNameAndDate(String name, LocalDate date);
 
-    //пока без связных частей по  @OneToMany и тд
+    @Query("SELECT COALESCE(SUM(tr.numberOfTickets), 0L) " +
+           "FROM TicketReservation tr " +
+           "WHERE tr.event.id = :eventId AND tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.CONFIRMED")
+    Long countConfirmedTicketsByEventId(@Param("eventId") Long eventId);
+
+    @Query("SELECT e, COUNT(t) as reservationCount " +
+           "FROM Event e LEFT JOIN e.ticketReservations t " +
+           "WHERE e.id = :eventId " +
+           "GROUP BY e")
+    Optional<EventWithReservationCountDto> findEventWithReservationCount(@Param("eventId") Long eventId);
+
+    //// В EventRepository
+    //Optional<Event> findById(Long eventId);
+    //
+    //@Query("SELECT COALESCE(SUM(tr.numberOfTickets), 0L) " +
+    //       "FROM TicketReservation tr " +
+    //       "WHERE tr.event.id = :eventId AND tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.CONFIRMED")
+    //Long countConfirmedTicketsByEventId(@Param("eventId") Long eventId);
+    //
+    //// В сервисе
+    //public EventStatisticsDto getEventStatistics(Long eventId) {
+    //    Event event = eventRepository.findById(eventId)
+    //        .orElseThrow(() -> new EventNotFoundException(eventId));
+    //
+    //    Long confirmedTickets = eventRepository.countConfirmedTicketsByEventId(eventId);
+    //    BigDecimal totalRevenue = event.getTicketPrice().multiply(BigDecimal.valueOf(confirmedTickets));
+    //
+    //    return new EventStatisticsDto(
+    //        event.getId(),
+    //        event.getName(),
+    //        event.getDate(),
+    //        event.getStatus(),
+    //        confirmedTickets,
+    //        event.getTicketPrice(),
+    //        totalRevenue
+    //    );
+    //}
 }
