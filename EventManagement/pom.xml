@@ -28,20 +28,12 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
+        <!-- УБРАТЬ явное указание версии testcontainers -->
+        <!-- <testcontainers.version>1.19.7</testcontainers.version> -->
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <!-- УБРАТЬ dependencyManagement для Testcontainers - Spring Boot управляет версиями -->
+    <!-- <dependencyManagement>...</dependencyManagement> -->
 
     <dependencies>
         <dependency>
@@ -68,39 +60,48 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Тестовые зависимости -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--		-->
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- УБРАТЬ дублирование JUnit -->
+        <!-- <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
-        </dependency>
-        <!--		-->
+        </dependency> -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- Testcontainers - Spring Boot управляет версиями -->
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Сначала Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -113,7 +114,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!-- Затем Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -128,5 +128,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

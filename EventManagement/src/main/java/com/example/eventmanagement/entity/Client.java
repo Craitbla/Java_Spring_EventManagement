@@ -103,6 +103,14 @@ public class Client {
         this.email = email;
     }
 
+    public Passport getPassport() {//////
+        return passport;
+    }
+
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

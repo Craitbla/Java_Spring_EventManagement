@@ -1,23 +1,14 @@
 package com.example.eventmanagement;
 
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class EventManagementApplicationTests { //- интеграционный тест (проверяет поднятие контекста)
+@ActiveProfiles("test")  // ← ДОБАВЬТЕ ЭТУ АННОТАЦИЮ//- интеграционный тест (проверяет поднятие контекста)
+class EventManagementApplicationTests {
 
 	@Test
 	void contextLoads() {
 	}
-
-//	@Nested
-//	class SyntaxCheckTest {
-//
-//		@Test
-//		void contextLoads() {
-//			// Если этот тест проходит - Spring может создать все бины
-//		}
-//	}
-
 }
