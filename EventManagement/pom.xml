@@ -89,6 +89,7 @@
 
         <!-- Testcontainers - Spring Boot управляет версиями -->
         <dependency>
+<!--            добавить обратно оба потом когда доделаю ентити и репозитории-->
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
