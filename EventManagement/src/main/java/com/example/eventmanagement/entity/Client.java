@@ -3,8 +3,7 @@ package com.example.eventmanagement.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,15 +20,18 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "full_name", nullable = false)
+    @NotBlank(message = "ФИО не может быть пустым")
+    @Size(min = 2, max = 100, message = "Имя должно иметь длину между 2 и 100 буквами")
     private String fullName;
     @Column(name = "phone_number", nullable = false)
+    @NotBlank(message = "Телефон обязателен")
     @Pattern(regexp = "^\\+7\\d{10}$", message = "Телефон должен начинаться с +7 и иметь 11 цифр")
     private String phoneNumber;
     @Column
     @Email(message = "Email должен быть валидным") //есть два варианта из разных библиотек
     private String email;
 
-
+    @NotNull(message = "Паспорт обязателен")
     @OneToOne //обратка только в одном, том где его нет в самой базе
     @JsonIgnoreProperties("client")
     @JoinColumn(name = "passport_id", nullable = false)
@@ -65,7 +67,14 @@ public class Client {
         updatedAt = LocalDateTime.now();
     }
 
-    public Client(String fullName, String phoneNumber, String email) {
+    public Client(String fullName, String phoneNumber, String email, Passport passport) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.passport = passport;
+    }
+
+    public Client(String fullName, String phoneNumber, Passport passport) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.email = email;
