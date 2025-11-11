@@ -12,8 +12,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "clients", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "phone_number"),  // ← Уникальность series
-        @UniqueConstraint(columnNames = "email")   // ← Уникальность number
+        @UniqueConstraint(columnNames = "phone_number"),
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "passport_id")
 })
 public class Client {
     @Id
@@ -52,18 +53,18 @@ public class Client {
     }
 
     @PrePersist
-    protected void onCreate(){
-        if(createdAt == null){
+    protected void onCreate() {
+        if (createdAt == null) {
             createdAt = LocalDateTime.now();
         }
-        if(updatedAt == null) {
+        if (updatedAt == null) {
             updatedAt = LocalDateTime.now();
         }
 
     }
 
     @PreUpdate
-    protected void onUpdate(){
+    protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
@@ -77,7 +78,7 @@ public class Client {
     public Client(String fullName, String phoneNumber, Passport passport) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.email = email;
+        this.passport = passport;
     }
 
     public Long getId() {
@@ -132,6 +133,43 @@ public class Client {
         this.updatedAt = updatedAt;
     }
 
+    public List<TicketReservation> getTicketReservations() {
+        return ticketReservations;
+    }
+
+    public void setTicketReservations(List<TicketReservation> newReservations) {
+        if (this.ticketReservations != null) {
+            for (TicketReservation oldReservation : this.ticketReservations) {
+                if (oldReservation != null && this.equals(oldReservation.getClient())) {
+                    oldReservation.setClient(null);
+                }
+            }
+        }
+
+        this.ticketReservations = newReservations != null ?
+                new ArrayList<>(newReservations) : new ArrayList<>();
+
+        for (TicketReservation newReservation : this.ticketReservations) {
+            if (newReservation != null) {
+                newReservation.setClient(this);
+            }
+        }
+
+    }
+
+    public void addTicketReservations(TicketReservation ticketReservation) {
+        ticketReservation.setClient(this);
+        this.ticketReservations.add(ticketReservation);
+    }
+
+    public boolean removeTicketReservation(TicketReservation reservation) {
+        boolean removed = this.ticketReservations.remove(reservation);
+        if (removed) {
+            reservation.setClient(null);
+        }
+        return removed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,12 +186,12 @@ public class Client {
     @Override
     public String toString() {
         return "Client{" +
-               "id=" + id +
-               ", fullName='" + fullName + '\'' +
-               ", phoneNumber='" + phoneNumber + '\'' +
-               ", email='" + email + '\'' +
-               ", createdAt=" + createdAt +
-               ", updatedAt=" + updatedAt +
-               '}';
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

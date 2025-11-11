@@ -72,6 +72,22 @@ public class TicketReservation {
         this.id = id;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
     public Integer getNumberOfTickets() {
         return numberOfTickets;
     }

@@ -30,7 +30,7 @@ public class Passport {
     private LocalDateTime createdAt;
 
     @JsonIgnoreProperties("passport")
-    @OneToOne(mappedBy = "passport", cascade = CascadeType.ALL) //обратка на себя
+    @OneToOne(mappedBy = "passport") //обратка на себя
     private Client client;
 
     public Passport() {

@@ -138,6 +138,44 @@ public class Event {
         this.updatedAt = updatedAt;
     }
 
+    public List<TicketReservation> getTicketReservations() {
+        return ticketReservations;
+    }
+
+    public void setTicketReservations(List<TicketReservation> newReservations) {
+        if (this.ticketReservations != null) {
+            for (TicketReservation oldReservation : this.ticketReservations) {
+                if (oldReservation != null && this.equals(oldReservation.getEvent())) {
+                    oldReservation.setEvent(null);
+                }
+            }
+        }
+
+        this.ticketReservations = newReservations != null ?
+                new ArrayList<>(newReservations) : new ArrayList<>();
+
+        for (TicketReservation newReservation : this.ticketReservations) {
+            if (newReservation != null) {
+                newReservation.setEvent(this);
+            }
+        }
+
+    }
+
+    public void addTicketReservations(TicketReservation ticketReservation) {
+        ticketReservation.setEvent(this);
+        this.ticketReservations.add(ticketReservation);
+    }
+
+    public boolean removeTicketReservation(TicketReservation reservation) {
+        boolean removed = this.ticketReservations.remove(reservation);
+        if (removed) {
+            reservation.setEvent(null);
+        }
+        return removed;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,14 +192,14 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-               "id=" + id +
-               ", name='" + name + '\'' +
-               ", date=" + date +
-               ", ticketPrice=" + ticketPrice +
-               ", status='" + status + '\'' +
-               ", description='" + description + '\'' +
-               ", createdAt=" + createdAt +
-               ", updatedAt=" + updatedAt +
-               '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date=" + date +
+                ", ticketPrice=" + ticketPrice +
+                ", status='" + status + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
