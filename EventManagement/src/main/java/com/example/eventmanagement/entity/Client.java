@@ -33,7 +33,7 @@ public class Client {
     private String email;
 
     @NotNull(message = "Паспорт обязателен")
-    @OneToOne //обратка только в одном, том где его нет в самой базе
+    @OneToOne(cascade = CascadeType.ALL)
     @JsonIgnoreProperties("client")
     @JoinColumn(name = "passport_id", nullable = false)
     private Passport passport;
@@ -118,7 +118,14 @@ public class Client {
     }
 
     public void setPassport(Passport passport) {
+        if (this.getPassport() != null) {
+            this.getPassport().assignClient(null);
+        }
         this.passport = passport;
+        if (passport != null) {
+            passport.assignClient(this);
+        }
+
     }
 
     public LocalDateTime getCreatedAt() {
@@ -141,7 +148,7 @@ public class Client {
         if (this.ticketReservations != null) {
             for (TicketReservation oldReservation : this.ticketReservations) {
                 if (oldReservation != null && this.equals(oldReservation.getClient())) {
-                    oldReservation.setClient(null);
+                    oldReservation.assignClient(null);
                 }
             }
         }
@@ -151,21 +158,21 @@ public class Client {
 
         for (TicketReservation newReservation : this.ticketReservations) {
             if (newReservation != null) {
-                newReservation.setClient(this);
+                newReservation.assignClient(this);
             }
         }
 
     }
 
-    public void addTicketReservations(TicketReservation ticketReservation) {
-        ticketReservation.setClient(this);
+    public void addTicketReservation(TicketReservation ticketReservation) {
+        ticketReservation.assignClient(this);
         this.ticketReservations.add(ticketReservation);
     }
 
     public boolean removeTicketReservation(TicketReservation reservation) {
         boolean removed = this.ticketReservations.remove(reservation);
         if (removed) {
-            reservation.setClient(null);
+            reservation.assignClient(null);
         }
         return removed;
     }

@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")  // ← ДОБАВЬТЕ ЭТУ СТРОЧКУ
+@ActiveProfiles("test")
 class ClientRepositoryTest {
 
     @Autowired

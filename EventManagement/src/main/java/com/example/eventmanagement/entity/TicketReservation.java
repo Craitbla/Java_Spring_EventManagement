@@ -76,7 +76,7 @@ public class TicketReservation {
         return client;
     }
 
-    public void setClient(Client client) {
+    protected void assignClient(Client client) {
         this.client = client;
     }
 
@@ -84,7 +84,8 @@ public class TicketReservation {
         return event;
     }
 
-    public void setEvent(Event event) {
+    protected void assignEvent(Event event) {
+
         this.event = event;
     }
 

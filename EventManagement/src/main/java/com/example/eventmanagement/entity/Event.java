@@ -3,8 +3,7 @@ package com.example.eventmanagement.entity;
 import com.example.eventmanagement.enums.EventStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -22,8 +21,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    @NotBlank(message = "Название не может быть пустым")
     private String name;
     @Column(nullable = false)
+    @Future(message = "Дата должна быть будущей")
     private LocalDate date;
     @Column(name = "ticket_price", nullable = false)
     @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
@@ -146,7 +147,7 @@ public class Event {
         if (this.ticketReservations != null) {
             for (TicketReservation oldReservation : this.ticketReservations) {
                 if (oldReservation != null && this.equals(oldReservation.getEvent())) {
-                    oldReservation.setEvent(null);
+                    oldReservation.assignEvent(null);
                 }
             }
         }
@@ -156,21 +157,21 @@ public class Event {
 
         for (TicketReservation newReservation : this.ticketReservations) {
             if (newReservation != null) {
-                newReservation.setEvent(this);
+                newReservation.assignEvent(this);
             }
         }
 
     }
 
-    public void addTicketReservations(TicketReservation ticketReservation) {
-        ticketReservation.setEvent(this);
+    public void addTicketReservation(TicketReservation ticketReservation) {
+        ticketReservation.assignEvent(this);
         this.ticketReservations.add(ticketReservation);
     }
 
     public boolean removeTicketReservation(TicketReservation reservation) {
         boolean removed = this.ticketReservations.remove(reservation);
         if (removed) {
-            reservation.setEvent(null);
+            reservation.assignEvent(null);
         }
         return removed;
     }

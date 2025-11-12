@@ -79,6 +79,14 @@ public class Passport {
         return createdAt;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    protected void assignClient(Client client) {
+        this.client = client;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
