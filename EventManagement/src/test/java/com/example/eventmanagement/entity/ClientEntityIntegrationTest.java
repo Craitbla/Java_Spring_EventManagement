@@ -26,18 +26,18 @@ class ClientEntityIntegrationTest {
     void shouldSaveClientWithPassport() {
         // Сначала сохраняем паспорт отдельно
         Passport passport = new Passport("1234", "567890");
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", savedPassport);
+        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
 
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
 
-        assertThat(savedClient.getId()).isNotNull();
-        assertThat(savedClient.getFullName()).isEqualTo("Иванов Иван");
-        assertThat(savedClient.getPhoneNumber()).isEqualTo("+79123456789");
-        assertThat(savedClient.getEmail()).isEqualTo("test@mail.com");
-        assertThat(savedClient.getCreatedAt()).isNotNull();
-        assertThat(savedClient.getUpdatedAt()).isNotNull();
+        assertThat(client.getId()).isNotNull();
+        assertThat(client.getFullName()).isEqualTo("Иванов Иван");
+        assertThat(client.getPhoneNumber()).isEqualTo("+79123456789");
+        assertThat(client.getEmail()).isEqualTo("test@mail.com");
+        assertThat(client.getCreatedAt()).isNotNull();
+        assertThat(client.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -100,16 +100,16 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
     }
 
     @Test
-    void shouldSaveClientWithNullEmail() {
+    void shouldSaveClientWithNullEmail() {/////////////////////////////////переделка
         Passport passport = new Passport("1234", "567890");
         entityManager.persistAndFlush(passport);
 
         Client client = new Client("Иванов Иван", "+79123456789", passport);
 
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
 
-        assertThat(savedClient.getId()).isNotNull();
-        assertThat(savedClient.getEmail()).isNull();
+        assertThat(client.getId()).isNotNull();
+        assertThat(client.getEmail()).isNull();
     }
 
     @Test
@@ -118,13 +118,13 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
         entityManager.persistAndFlush(passport);
 
         Client client = new Client("Иванов Иван", "+79123456789", "old@mail.com", passport);
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
 
-        savedClient.setFullName("Петров Петр");
-        savedClient.setEmail("new@mail.com");
-        savedClient.setPhoneNumber("+79223456789");
+        client.setFullName("Петров Петр");
+        client.setEmail("new@mail.com");
+        client.setPhoneNumber("+79223456789");
 
-        Client updatedClient = entityManager.persistAndFlush(savedClient);
+        Client updatedClient = entityManager.persistAndFlush(client);
 
         assertThat(updatedClient.getFullName()).isEqualTo("Петров Петр");
         assertThat(updatedClient.getEmail()).isEqualTo("new@mail.com");
@@ -138,14 +138,14 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
         entityManager.persistAndFlush(oldPassport);
 
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", oldPassport);
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
 
         Passport newPassport = new Passport("9999", "888888");
         entityManager.persistAndFlush(newPassport);
 
-        savedClient.setPassport(newPassport);
+        client.setPassport(newPassport);
 
-        Client updatedClient = entityManager.persistAndFlush(savedClient);
+        Client updatedClient = entityManager.persistAndFlush(client);
 
         assertThat(updatedClient.getPassport().getSeries()).isEqualTo("9999");
         assertThat(updatedClient.getPassport().getNumber()).isEqualTo("888888");
@@ -166,10 +166,10 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
         reservation.assignEvent(event);
         client.addTicketReservation(reservation);
 
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
         entityManager.clear();
 
-        Client foundClient = entityManager.find(Client.class, savedClient.getId());
+        Client foundClient = entityManager.find(Client.class, client.getId());
 
         assertThat(foundClient.getTicketReservations()).hasSize(1);
         assertThat(foundClient.getTicketReservations().get(0).getNumberOfTickets()).isEqualTo(2);
@@ -203,10 +203,10 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
 
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
 
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
         entityManager.clear();
 
-        Client foundClient = entityManager.find(Client.class, savedClient.getId());
+        Client foundClient = entityManager.find(Client.class, client.getId());
         Passport foundPassport = foundClient.getPassport();
 
         assertThat(foundPassport.getClient()).isEqualTo(foundClient);
@@ -219,9 +219,9 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
 
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
 
-        Client savedClient = entityManager.persistAndFlush(client);
+        entityManager.persistAndFlush(client);
 
-        assertThat(savedClient.getTicketReservations()).isEmpty();
+        assertThat(client.getTicketReservations()).isEmpty();
     }
 
     @Test
@@ -231,12 +231,12 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
 
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
 
-        Client savedClient = entityManager.persistAndFlush(client);
-        LocalDateTime initialUpdatedAt = savedClient.getUpdatedAt();
+        entityManager.persistAndFlush(client);
+        LocalDateTime initialUpdatedAt = client.getUpdatedAt();
 
         Thread.sleep(1);
-        savedClient.setFullName("Обновленное имя");
-        Client updatedClient = entityManager.persistAndFlush(savedClient);
+        client.setFullName("Обновленное имя");
+        Client updatedClient = entityManager.persistAndFlush(client);
 
         assertThat(updatedClient.getUpdatedAt()).isAfter(initialUpdatedAt);
     }

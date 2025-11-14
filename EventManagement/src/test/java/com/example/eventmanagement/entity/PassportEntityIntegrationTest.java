@@ -22,22 +22,22 @@ class PassportEntityIntegrationTest {
     void shouldSavePassportWithAllFields() {
         Passport passport = new Passport("1234", "567890");
 
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        assertThat(savedPassport.getId()).isNotNull();
-        assertThat(savedPassport.getSeries()).isEqualTo("1234");
-        assertThat(savedPassport.getNumber()).isEqualTo("567890");
-        assertThat(savedPassport.getCreatedAt()).isNotNull();
+        assertThat(passport.getId()).isNotNull();
+        assertThat(passport.getSeries()).isEqualTo("1234");
+        assertThat(passport.getNumber()).isEqualTo("567890");
+        assertThat(passport.getCreatedAt()).isNotNull();
     }
 
     @Test
     void shouldSetTimestampOnPersist() {
         Passport passport = new Passport("1234", "567890");
 
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        assertThat(savedPassport.getCreatedAt()).isNotNull();
-        assertThat(savedPassport.getCreatedAt()).isBeforeOrEqualTo(LocalDateTime.now());
+        assertThat(passport.getCreatedAt()).isNotNull();
+        assertThat(passport.getCreatedAt()).isBeforeOrEqualTo(LocalDateTime.now());
     }
 
     @Test
@@ -56,13 +56,13 @@ class PassportEntityIntegrationTest {
         Passport passport1 = new Passport("1234", "567890");
         Passport passport2 = new Passport("5678", "567890");
 
-        Passport savedPassport1 = entityManager.persistAndFlush(passport1);
-        Passport savedPassport2 = entityManager.persistAndFlush(passport2);
+        entityManager.persistAndFlush(passport1);
+        entityManager.persistAndFlush(passport2);
 
-        assertThat(savedPassport1.getId()).isNotNull();
-        assertThat(savedPassport2.getId()).isNotNull();
-        assertThat(savedPassport1.getNumber()).isEqualTo(savedPassport2.getNumber());
-        assertThat(savedPassport1.getSeries()).isNotEqualTo(savedPassport2.getSeries());
+        assertThat(passport1.getId()).isNotNull();
+        assertThat(passport2.getId()).isNotNull();
+        assertThat(passport1.getNumber()).isEqualTo(passport2.getNumber());
+        assertThat(passport1.getSeries()).isNotEqualTo(passport2.getSeries());
     }
 
     @Test
@@ -70,24 +70,24 @@ class PassportEntityIntegrationTest {
         Passport passport1 = new Passport("1234", "567890");
         Passport passport2 = new Passport("1234", "987654");
 
-        Passport savedPassport1 = entityManager.persistAndFlush(passport1);
-        Passport savedPassport2 = entityManager.persistAndFlush(passport2);
+        entityManager.persistAndFlush(passport1);
+        entityManager.persistAndFlush(passport2);
 
-        assertThat(savedPassport1.getId()).isNotNull();
-        assertThat(savedPassport2.getId()).isNotNull();
-        assertThat(savedPassport1.getSeries()).isEqualTo(savedPassport2.getSeries());
-        assertThat(savedPassport1.getNumber()).isNotEqualTo(savedPassport2.getNumber());
+        assertThat(passport1.getId()).isNotNull();
+        assertThat(passport2.getId()).isNotNull();
+        assertThat(passport1.getSeries()).isEqualTo(passport2.getSeries());
+        assertThat(passport1.getNumber()).isNotEqualTo(passport2.getNumber());
     }
 
     @Test
     void shouldUpdatePassportFields() {
         Passport passport = new Passport("1234", "567890");
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        savedPassport.setSeries("9999");
-        savedPassport.setNumber("888888");
+        passport.setSeries("9999");
+        passport.setNumber("888888");
 
-        Passport updatedPassport = entityManager.persistAndFlush(savedPassport);
+        Passport updatedPassport = entityManager.persistAndFlush(passport);
 
         assertThat(updatedPassport.getSeries()).isEqualTo("9999");
         assertThat(updatedPassport.getNumber()).isEqualTo("888888");
@@ -97,28 +97,28 @@ class PassportEntityIntegrationTest {
     void shouldSavePassportWithoutClient() {
         Passport passport = new Passport("1234", "567890");
 
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        assertThat(savedPassport.getId()).isNotNull();
-        assertThat(savedPassport.getClient()).isNull();
+        assertThat(passport.getId()).isNotNull();
+        assertThat(passport.getClient()).isNull();
     }
 
     @Test
     void shouldSavePassportWithClient() {
         // Сначала сохраняем паспорт
         Passport passport = new Passport("1234", "567890");
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
         // Затем создаем и сохраняем клиента с этим паспортом
-        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", savedPassport);
-        Client savedClient = entityManager.persistAndFlush(client);
+        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
+        entityManager.persistAndFlush(client);
 
         entityManager.clear();
 
         // Проверяем, что связь установлена корректно
-        Passport foundPassport = entityManager.find(Passport.class, savedPassport.getId());
+        Passport foundPassport = entityManager.find(Passport.class, passport.getId());
         assertThat(foundPassport.getClient()).isNotNull();
-        assertThat(foundPassport.getClient().getId()).isEqualTo(savedClient.getId());
+        assertThat(foundPassport.getClient().getId()).isEqualTo(client.getId());
     }
 
     @Test
@@ -181,14 +181,14 @@ class PassportEntityIntegrationTest {
     @Test
     void shouldMaintainBidirectionalRelationship() {
         Passport passport = new Passport("1234", "567890");
-        Passport savedPassport = entityManager.persistAndFlush(passport);
+        entityManager.persistAndFlush(passport);
 
-        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", savedPassport);
-        Client savedClient = entityManager.persistAndFlush(client);
+        Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
+        entityManager.persistAndFlush(client);
 
         entityManager.clear();
 
-        Passport foundPassport = entityManager.find(Passport.class, savedPassport.getId());
+        Passport foundPassport = entityManager.find(Passport.class, passport.getId());
         Client foundClient = foundPassport.getClient();
 
         assertThat(foundClient).isNotNull();

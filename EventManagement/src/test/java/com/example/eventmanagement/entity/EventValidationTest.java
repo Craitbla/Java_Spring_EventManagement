@@ -27,7 +27,7 @@ class EventValidationTest {
     static Stream<Arguments> eventDataProvider() {
         return Stream.of(
                 Arguments.of(new Event(validName, validDate, validPrice, EventStatus.PLANNED, "Description"), true, "Валидно"),
-                Arguments.of(new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(50), EventStatus.CANCELLED, null), true, "Валидно"),
+                Arguments.of(new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(50), EventStatus.CANCELED, null), true, "Валидно"),
                 Arguments.of(new Event(null, validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
                 Arguments.of(new Event("", validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
                 Arguments.of(new Event("   ", validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),

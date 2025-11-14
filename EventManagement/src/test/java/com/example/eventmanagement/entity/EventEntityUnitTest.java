@@ -141,7 +141,7 @@ class EventEntityUnitTest {
     @Test
     void shouldMaintainEqualsAndHashCodeConsistency() {
         Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELLED, "Play");
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
 
         event1.setId(1L);
         event2.setId(1L);
@@ -153,7 +153,7 @@ class EventEntityUnitTest {
     @Test
     void shouldNotBeEqualWithDifferentIds() {
         Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELLED, "Play");
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
 
         event1.setId(1L);
         event2.setId(2L);

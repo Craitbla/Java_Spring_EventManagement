@@ -28,16 +28,16 @@ class EventEntityIntegrationTest {
         Event event = new Event("Concert", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Music concert");
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
 
-        assertThat(savedEvent.getId()).isNotNull();
-        assertThat(savedEvent.getName()).isEqualTo("Concert");
-        assertThat(savedEvent.getDate()).isAfter(LocalDate.now());
-        assertThat(savedEvent.getTicketPrice()).isEqualTo(BigDecimal.valueOf(100));
-        assertThat(savedEvent.getStatus()).isEqualTo(EventStatus.PLANNED);
-        assertThat(savedEvent.getDescription()).isEqualTo("Music concert");
-        assertThat(savedEvent.getCreatedAt()).isNotNull();
-        assertThat(savedEvent.getUpdatedAt()).isNotNull();
+        assertThat(event.getId()).isNotNull();
+        assertThat(event.getName()).isEqualTo("Concert");
+        assertThat(event.getDate()).isAfter(LocalDate.now());
+        assertThat(event.getTicketPrice()).isEqualTo(BigDecimal.valueOf(100));
+        assertThat(event.getStatus()).isEqualTo(EventStatus.PLANNED);
+        assertThat(event.getDescription()).isEqualTo("Music concert");
+        assertThat(event.getCreatedAt()).isNotNull();
+        assertThat(event.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -46,19 +46,19 @@ class EventEntityIntegrationTest {
         event.setName("Test Event");
         event.setDate(LocalDate.now().plusDays(5));
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
 
-        assertThat(savedEvent.getTicketPrice()).isEqualTo(BigDecimal.ZERO);
-        assertThat(savedEvent.getStatus()).isEqualTo(EventStatus.PLANNED);
-        assertThat(savedEvent.getCreatedAt()).isNotNull();
-        assertThat(savedEvent.getUpdatedAt()).isNotNull();
+        assertThat(event.getTicketPrice()).isEqualTo(BigDecimal.ZERO);
+        assertThat(event.getStatus()).isEqualTo(EventStatus.PLANNED);
+        assertThat(event.getCreatedAt()).isNotNull();
+        assertThat(event.getUpdatedAt()).isNotNull();
     }
 
     @Test
     void shouldEnforceUniqueNameAndDateConstraint() {
         LocalDate sameDate = LocalDate.now().plusDays(10);
         Event event1 = new Event("Concert", sameDate, BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
-        Event event2 = new Event("Concert", sameDate, BigDecimal.valueOf(150), EventStatus.CANCELLED, "Desc2");
+        Event event2 = new Event("Concert", sameDate, BigDecimal.valueOf(150), EventStatus.CANCELED, "Desc2");
 
         entityManager.persistAndFlush(event1);
 
@@ -71,31 +71,31 @@ class EventEntityIntegrationTest {
         Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
         Event event2 = new Event("Concert", LocalDate.now().plusDays(11), BigDecimal.valueOf(150), EventStatus.PLANNED, "Desc2");
 
-        Event savedEvent1 = entityManager.persistAndFlush(event1);
-        Event savedEvent2 = entityManager.persistAndFlush(event2);
+        entityManager.persistAndFlush(event1);
+        entityManager.persistAndFlush(event2);
 
-        assertThat(savedEvent1.getId()).isNotNull();
-        assertThat(savedEvent2.getId()).isNotNull();
-        assertThat(savedEvent1.getName()).isEqualTo(savedEvent2.getName());
-        assertThat(savedEvent1.getDate()).isNotEqualTo(savedEvent2.getDate());
+        assertThat(event1.getId()).isNotNull();
+        assertThat(event2.getId()).isNotNull();
+        assertThat(event1.getName()).isEqualTo(event2.getName());
+        assertThat(event1.getDate()).isNotEqualTo(event2.getDate());
     }
 
     @Test
     void shouldUpdateEventFields() {
         Event event = new Event("Old Name", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Old Desc");
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
 
-        savedEvent.setName("New Name");
-        savedEvent.setTicketPrice(BigDecimal.valueOf(200));
-        savedEvent.setStatus(EventStatus.CANCELLED);
-        savedEvent.setDescription("New Description");
+        event.setName("New Name");
+        event.setTicketPrice(BigDecimal.valueOf(200));
+        event.setStatus(EventStatus.CANCELED);
+        event.setDescription("New Description");
 
-        Event updatedEvent = entityManager.persistAndFlush(savedEvent);
+        Event updatedEvent = entityManager.persistAndFlush(event);
 
         assertThat(updatedEvent.getName()).isEqualTo("New Name");
         assertThat(updatedEvent.getTicketPrice()).isEqualTo(BigDecimal.valueOf(200));
-        assertThat(updatedEvent.getStatus()).isEqualTo(EventStatus.CANCELLED);
+        assertThat(updatedEvent.getStatus()).isEqualTo(EventStatus.CANCELED);
         assertThat(updatedEvent.getDescription()).isEqualTo("New Description");
         assertThat(updatedEvent.getUpdatedAt()).isAfter(updatedEvent.getCreatedAt());
     }
@@ -105,10 +105,10 @@ class EventEntityIntegrationTest {
         Event event = new Event("Concert", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, null);
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
 
-        assertThat(savedEvent.getId()).isNotNull();
-        assertThat(savedEvent.getDescription()).isNull();
+        assertThat(event.getId()).isNotNull();
+        assertThat(event.getDescription()).isNull();
     }
 
     @Test
@@ -126,10 +126,10 @@ class EventEntityIntegrationTest {
         reservation.assignClient(client);
         event.addTicketReservation(reservation);
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
         entityManager.clear();
 
-        Event foundEvent = entityManager.find(Event.class, savedEvent.getId());
+        Event foundEvent = entityManager.find(Event.class, event.getId());
 
         assertThat(foundEvent.getTicketReservations()).hasSize(1);
         assertThat(foundEvent.getTicketReservations().get(0).getNumberOfTickets()).isEqualTo(2);
@@ -151,11 +151,11 @@ class EventEntityIntegrationTest {
         reservation.assignClient(client);
         event.addTicketReservation(reservation);
 
-        Event savedEvent = entityManager.persistAndFlush(event);
-        Long eventId = savedEvent.getId();
-        Long reservationId = savedEvent.getTicketReservations().get(0).getId();
+        entityManager.persistAndFlush(event);
+        Long eventId = event.getId();
+        Long reservationId = event.getTicketReservations().get(0).getId();
 
-        entityManager.remove(savedEvent);
+        entityManager.remove(event);
         entityManager.flush();
 
         assertThat(entityManager.find(Event.class, eventId)).isNull();
@@ -184,7 +184,7 @@ class EventEntityIntegrationTest {
         Event event1 = new Event("Concert", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
         Event event2 = new Event("Theater", LocalDate.now().plusDays(5),
-                BigDecimal.valueOf(50), EventStatus.CANCELLED, "Desc2");
+                BigDecimal.valueOf(50), EventStatus.CANCELED, "Desc2");
 
         entityManager.persistAndFlush(event1);
         entityManager.persistAndFlush(event2);
@@ -228,9 +228,9 @@ class EventEntityIntegrationTest {
         Event event = new Event("Concert", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
 
-        assertThat(savedEvent.getTicketReservations()).isEmpty();
+        assertThat(event.getTicketReservations()).isEmpty();
     }
 
     @Test
@@ -238,12 +238,12 @@ class EventEntityIntegrationTest {
         Event event = new Event("Concert", LocalDate.now().plusDays(10),
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
-        Event savedEvent = entityManager.persistAndFlush(event);
-        LocalDateTime initialUpdatedAt = savedEvent.getUpdatedAt();
+        entityManager.persistAndFlush(event);
+        LocalDateTime initialUpdatedAt = event.getUpdatedAt();
 
         Thread.sleep(1);
-        savedEvent.setName("Updated Concert Name");
-        Event updatedEvent = entityManager.persistAndFlush(savedEvent);
+        event.setName("Updated Concert Name");
+        Event updatedEvent = entityManager.persistAndFlush(event);
 
         assertThat(updatedEvent.getUpdatedAt()).isAfter(initialUpdatedAt);
     }
@@ -263,10 +263,10 @@ class EventEntityIntegrationTest {
         reservation.assignClient(client);
         event.addTicketReservation(reservation);
 
-        Event savedEvent = entityManager.persistAndFlush(event);
+        entityManager.persistAndFlush(event);
         entityManager.clear();
 
-        Event foundEvent = entityManager.find(Event.class, savedEvent.getId());
+        Event foundEvent = entityManager.find(Event.class, event.getId());
         TicketReservation foundReservation = foundEvent.getTicketReservations().get(0);
 
         assertThat(foundReservation.getEvent()).isEqualTo(foundEvent);

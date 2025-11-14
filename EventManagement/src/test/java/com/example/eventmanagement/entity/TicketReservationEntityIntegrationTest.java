@@ -39,15 +39,15 @@ class TicketReservationEntityIntegrationTest {
         reservation.assignClient(client);
         reservation.assignEvent(event);
 
-        TicketReservation savedReservation = entityManager.persistAndFlush(reservation);
+        entityManager.persistAndFlush(reservation);
 
-        assertThat(savedReservation.getId()).isNotNull();
-        assertThat(savedReservation.getNumberOfTickets()).isEqualTo(2);
-        assertThat(savedReservation.getBookingStatus()).isEqualTo(BookingStatus.CONFIRMED);
-        assertThat(savedReservation.getCreatedAt()).isNotNull();
-        assertThat(savedReservation.getUpdatedAt()).isNotNull();
-        assertThat(savedReservation.getClient().getId()).isEqualTo(client.getId());
-        assertThat(savedReservation.getEvent().getId()).isEqualTo(event.getId());
+        assertThat(reservation.getId()).isNotNull();
+        assertThat(reservation.getNumberOfTickets()).isEqualTo(2);
+        assertThat(reservation.getBookingStatus()).isEqualTo(BookingStatus.CONFIRMED);
+        assertThat(reservation.getCreatedAt()).isNotNull();
+        assertThat(reservation.getUpdatedAt()).isNotNull();
+        assertThat(reservation.getClient().getId()).isEqualTo(client.getId());
+        assertThat(reservation.getEvent().getId()).isEqualTo(event.getId());
     }
 
     @Test
@@ -66,17 +66,18 @@ class TicketReservationEntityIntegrationTest {
         reservation.assignClient(client);
         reservation.assignEvent(event);
 
-        TicketReservation savedReservation = entityManager.persistAndFlush(reservation);
+        entityManager.persistAndFlush(reservation);
 
-        assertThat(savedReservation.getNumberOfTickets()).isEqualTo(1);
-        assertThat(savedReservation.getBookingStatus()).isEqualTo(BookingStatus.PENDING_CONFIRMATION);
-        assertThat(savedReservation.getCreatedAt()).isNotNull();
-        assertThat(savedReservation.getUpdatedAt()).isNotNull();
+        assertThat(reservation.getNumberOfTickets()).isEqualTo(1);
+        assertThat(reservation.getBookingStatus()).isEqualTo(BookingStatus.PENDING_CONFIRMATION);
+        assertThat(reservation.getCreatedAt()).isNotNull();
+        assertThat(reservation.getUpdatedAt()).isNotNull();
     }
 
     @Test
     void shouldUpdateReservationFields() {
         Passport passport = new Passport("1234", "567890");
+
         entityManager.persistAndFlush(passport);
 
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
@@ -90,12 +91,12 @@ class TicketReservationEntityIntegrationTest {
         reservation.assignClient(client);
         reservation.assignEvent(event);
 
-        TicketReservation savedReservation = entityManager.persistAndFlush(reservation);
+        entityManager.persistAndFlush(reservation);
 
-        savedReservation.setNumberOfTickets(5);
-        savedReservation.setBookingStatus(BookingStatus.CONFIRMED);
+        reservation.setNumberOfTickets(5);
+        reservation.setBookingStatus(BookingStatus.CONFIRMED);
 
-        TicketReservation updatedReservation = entityManager.persistAndFlush(savedReservation);
+        TicketReservation updatedReservation = entityManager.persistAndFlush(reservation);
 
         assertThat(updatedReservation.getNumberOfTickets()).isEqualTo(5);
         assertThat(updatedReservation.getBookingStatus()).isEqualTo(BookingStatus.CONFIRMED);
@@ -151,10 +152,10 @@ class TicketReservationEntityIntegrationTest {
         reservation.assignClient(client);
         reservation.assignEvent(event);
 
-        TicketReservation savedReservation = entityManager.persistAndFlush(reservation);
+        entityManager.persistAndFlush(reservation);
         entityManager.clear();
 
-        TicketReservation foundReservation = entityManager.find(TicketReservation.class, savedReservation.getId());
+        TicketReservation foundReservation = entityManager.find(TicketReservation.class, reservation.getId());
 
         assertThat(foundReservation.getClient()).isNotNull();
         assertThat(foundReservation.getEvent()).isNotNull();
@@ -267,12 +268,12 @@ class TicketReservationEntityIntegrationTest {
         reservation.assignClient(client);
         reservation.assignEvent(event);
 
-        TicketReservation savedReservation = entityManager.persistAndFlush(reservation);
-        LocalDateTime initialUpdatedAt = savedReservation.getUpdatedAt();
+        entityManager.persistAndFlush(reservation);
+        LocalDateTime initialUpdatedAt = reservation.getUpdatedAt();
 
         Thread.sleep(1);
-        savedReservation.setNumberOfTickets(3);
-        TicketReservation updatedReservation = entityManager.persistAndFlush(savedReservation);
+        reservation.setNumberOfTickets(3);
+        TicketReservation updatedReservation = entityManager.persistAndFlush(reservation);
 
         assertThat(updatedReservation.getUpdatedAt()).isAfter(initialUpdatedAt);
     }
@@ -297,12 +298,12 @@ class TicketReservationEntityIntegrationTest {
         reservation2.assignClient(client);
         reservation2.assignEvent(event);
 
-        TicketReservation saved1 = entityManager.persistAndFlush(reservation1);
-        TicketReservation saved2 = entityManager.persistAndFlush(reservation2);
+        entityManager.persistAndFlush(reservation1);
+        entityManager.persistAndFlush(reservation2);
 
-        assertThat(saved1.getId()).isNotNull();
-        assertThat(saved2.getId()).isNotNull();
-        assertThat(saved1.getClient()).isEqualTo(saved2.getClient());
-        assertThat(saved1.getEvent()).isEqualTo(saved2.getEvent());
+        assertThat(reservation1.getId()).isNotNull();
+        assertThat(reservation2.getId()).isNotNull();
+        assertThat(reservation1.getClient()).isEqualTo(reservation2.getClient());
+        assertThat(reservation1.getEvent()).isEqualTo(reservation2.getEvent());
     }
 }

@@ -13,7 +13,7 @@ import java.util.Arrays;
 public enum EventStatus {
     PLANNED("запланировано"),
     ONGOING("проходит"),
-    CANCELLED("отменено"),
+    CANCELED("отменено"),
     COMPLETED("завершено");
 
     private final String str;
