@@ -1,5 +1,7 @@
 package com.example.eventmanagement.entity;
 
+import com.example.eventmanagement.entity.Client;
+import com.example.eventmanagement.entity.Passport;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

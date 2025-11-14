@@ -1,5 +1,9 @@
 package com.example.eventmanagement.entity;
 
+import com.example.eventmanagement.entity.Client;
+import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.entity.Passport;
+import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
 import org.junit.jupiter.api.BeforeEach;

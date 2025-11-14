@@ -80,6 +80,12 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.passport = passport;
     }
+    public static Client createForTesting(String fullName, String phoneNumber, String email, Passport passport, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        Client client = new Client(fullName, phoneNumber, email, passport);
+        client.setCreatedAt(createdAt);
+        client.setUpdatedAt(updatedAt);
+        return client;
+    }
 
     public Long getId() {
         return id;
@@ -130,6 +136,10 @@ public class Client {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    private void setCreatedAt(LocalDateTime time) { //можно использовать только в пакете, поэтому безопасно
+        createdAt = time;
     }
 
     public LocalDateTime getUpdatedAt() {
