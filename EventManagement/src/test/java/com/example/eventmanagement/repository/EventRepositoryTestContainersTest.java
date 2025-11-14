@@ -1,4 +1,4 @@
 package com.example.eventmanagement.repository;
 
-public class PassportRepositoryTest {
+public class EventRepositoryTestContainersTest {
 }

@@ -28,10 +28,8 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <testcontainers.version>1.20.4</testcontainers.version>
+<!--        <testcontainers.version>1.20.4</testcontainers.version>-->
         <commons-compress.version>1.26.0</commons-compress.version>
-        <!-- УБРАТЬ явное указание версии testcontainers -->
-        <!-- <testcontainers.version>1.19.7</testcontainers.version> -->
     </properties>
 
     <!-- УБРАТЬ dependencyManagement для Testcontainers - Spring Boot управляет версиями -->
@@ -105,13 +103,13 @@
 <!--            добавить обратно оба потом когда доделаю ентити и репозитории-->
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
+<!--            <version>${testcontainers.version}</version>-->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
+<!--            <version>${testcontainers.version}</version>-->
             <scope>test</scope>
         </dependency>
 
