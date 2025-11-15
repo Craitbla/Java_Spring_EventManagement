@@ -64,8 +64,22 @@ public class TicketReservation {
         this.bookingStatus = bookingStatus;
     }
 
+    public TicketReservation(Integer numberOfTickets, BookingStatus bookingStatus, Client client, Event event) {
+        this.numberOfTickets = numberOfTickets;
+        this.bookingStatus = bookingStatus;
+        client.addTicketReservation(this);
+        event.addTicketReservation(this);
+    }
+
     public static TicketReservation createForTesting(Integer numberOfTickets, BookingStatus bookingStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
         TicketReservation reservation = new TicketReservation(numberOfTickets, bookingStatus);
+        reservation.setCreatedAt(createdAt);
+        reservation.setUpdatedAt(updatedAt);
+        return reservation;
+    }
+
+    public static TicketReservation createForTestingAll(Integer numberOfTickets, BookingStatus bookingStatus, Client client, Event event, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        TicketReservation reservation = new TicketReservation(numberOfTickets, bookingStatus, client, event);
         reservation.setCreatedAt(createdAt);
         reservation.setUpdatedAt(updatedAt);
         return reservation;

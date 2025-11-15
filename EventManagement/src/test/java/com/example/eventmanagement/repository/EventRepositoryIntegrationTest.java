@@ -1,6 +1,8 @@
 package com.example.eventmanagement.repository;
 
+import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
@@ -214,15 +216,22 @@ class EventRepositoryIntegrationTest {
 
     @Nested
     class EventRepositoryAdvancedTests {
+        private Passport passport1;
+        private Client client1;
 
         @BeforeEach
         void setUp() {
+            passport1 = new Passport("1234", "123456");
+            client1 = new Client("Иванов Иван Иванович", "+79123456789", "ivanov@mail.com", passport1);
             event1 = new Event("Тестовое мероприятие",
                     LocalDate.now().plusDays(7),
                     BigDecimal.valueOf(500),
                     EventStatus.PLANNED,
                     "Тестовое описание");
 
+
+            entityManager.persist(passport1);
+            entityManager.persist(client1);
             entityManager.persist(event1);
             entityManager.flush();
             entityManager.clear();
@@ -230,12 +239,12 @@ class EventRepositoryIntegrationTest {
 
         @Test
         void shouldFindByIdWithTicketReservations() {
-            TicketReservation reservation = new TicketReservation(3, BookingStatus.CONFIRMED);
-            event1.addTicketReservation(reservation);
+            TicketReservation reservation = new TicketReservation(3, BookingStatus.CONFIRMED, client1, event1);
 
             entityManager.persist(reservation);
             entityManager.flush();
             entityManager.clear();
+
 
             Optional<Event> foundEvent = eventRepository.findByIdWithTicketReservations(event1.getId());
 
@@ -246,19 +255,18 @@ class EventRepositoryIntegrationTest {
 
         @Test
         void shouldCountConfirmedTicketsByEventId() {
-            TicketReservation reservation1 = new TicketReservation(2, BookingStatus.CONFIRMED);
-            TicketReservation reservation2 = new TicketReservation(3, BookingStatus.CONFIRMED);
-            TicketReservation reservation3 = new TicketReservation(1, BookingStatus.CANCELED);
-
-            event1.addTicketReservation(reservation1);
-            event1.addTicketReservation(reservation2);
-            event1.addTicketReservation(reservation3);
+            TicketReservation reservation1 = new TicketReservation(2, BookingStatus.CONFIRMED, client1, event1);
+            TicketReservation reservation2 = new TicketReservation(3, BookingStatus.CONFIRMED, client1, event1);
+            TicketReservation reservation3 = new TicketReservation(1, BookingStatus.CANCELED, client1, event1);
 
             entityManager.persist(reservation1);
             entityManager.persist(reservation2);
             entityManager.persist(reservation3);
-            entityManager.persist(event1); //////
+//            entityManager.persist(client1); //
+//            entityManager.persist(event1);
+
             entityManager.flush();
+            entityManager.clear();
 
             Long confirmedCount = eventRepository.countConfirmedTicketsByEventId(event1.getId());
 
@@ -294,8 +302,8 @@ class EventRepositoryIntegrationTest {
 
             Optional<Event> foundEvent = eventRepository.findByIdWithTicketReservations(eventWithoutReservations.getId());
 
-            assertThat(foundEvent).isPresent(); // ✅ С LEFT JOIN проходит
-            assertThat(foundEvent.get().getTicketReservations()).isEmpty(); // ✅ Список броней пустой
+            assertThat(foundEvent).isPresent();
+            assertThat(foundEvent.get().getTicketReservations()).isEmpty();
         }
     }
 }

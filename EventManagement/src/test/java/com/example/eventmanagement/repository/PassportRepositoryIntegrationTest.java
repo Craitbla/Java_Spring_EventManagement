@@ -127,16 +127,10 @@ class PassportRepositoryIntegrationTest {
     @Nested
     class PassportRepositoryAdvancedTests {
 
-        @BeforeEach
-        void setUp() {
-            passport1 = new Passport("1234", "567890");
-            entityManager.persist(passport1);
-            entityManager.flush();
-            entityManager.clear();
-        }
-
         @Test
         void shouldFindByIdWithClient() {
+            passport1 = new Passport("1234", "567890");
+            entityManager.persist(passport1);
             Client client = new Client("Test Client", "+79123456789", "test@mail.com", passport1);
             entityManager.persist(client);
             entityManager.flush();
@@ -151,12 +145,20 @@ class PassportRepositoryIntegrationTest {
 
         @Test
         void shouldReturnEmptyForNonExistentIdWithClient() {
+            passport1 = new Passport("1234", "567890");
+            entityManager.persist(passport1);
+            entityManager.flush();
+            entityManager.clear();
             Optional<Passport> foundPassport = passportRepository.findByIdWithClient(999L);
             assertThat(foundPassport).isEmpty();
         }
 
         @Test
         void shouldEnforceUniqueSeriesAndNumberConstraint() {
+            passport1 = new Passport("1234", "567890");
+            entityManager.persist(passport1);
+            entityManager.flush();
+            entityManager.clear();
             Passport duplicatePassport = new Passport("1234", "567890");
 
             assertThat(org.junit.jupiter.api.Assertions.assertThrows(
