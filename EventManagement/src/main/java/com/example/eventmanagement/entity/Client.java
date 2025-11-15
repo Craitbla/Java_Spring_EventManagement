@@ -138,7 +138,7 @@ public class Client {
         return createdAt;
     }
 
-    private void setCreatedAt(LocalDateTime time) { //можно использовать только в пакете, поэтому безопасно
+    private void setCreatedAt(LocalDateTime time) {
         createdAt = time;
     }
 

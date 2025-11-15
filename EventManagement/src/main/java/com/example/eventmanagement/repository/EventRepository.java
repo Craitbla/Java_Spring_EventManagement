@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByUpdatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Event> findByUpdatedAtAfter(LocalDateTime date);
 
-    @Query("SELECT e FROM Event e JOIN FETCH TicketReservation WHERE e.id = :id")
+    @Query("SELECT e FROM Event e LEFT JOIN FETCH e.ticketReservations WHERE e.id = :id")
     Optional<Event> findByIdWithTicketReservations(@Param("id") Long id);
     boolean existsByNameAndDate(String name, LocalDate date);
 

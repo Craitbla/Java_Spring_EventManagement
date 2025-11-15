@@ -79,6 +79,13 @@ public class Event {
         this.description = description;
     }
 
+    public static Event createForTesting(String name, LocalDate date, BigDecimal ticketPrice, EventStatus status, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        Event event = new Event(name, date, ticketPrice, status, description);
+        event.setCreatedAt(createdAt);
+        event.setUpdatedAt(updatedAt);
+        return event;
+    }
+
     public Long getId() {
         return id;
     }
@@ -130,6 +137,10 @@ public class Event {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    private void setCreatedAt(LocalDateTime time) {
+        createdAt = time;
+    }
+
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;

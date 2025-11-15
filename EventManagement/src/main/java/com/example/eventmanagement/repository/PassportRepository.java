@@ -20,6 +20,9 @@ public interface PassportRepository extends JpaRepository<Passport, Long> {
 
     @Query("SELECT p FROM Passport p JOIN FETCH p.client WHERE p.id = :id")
     Optional<Passport> findByIdWithClient(@Param("id") Long id);
+
+    @Query("SELECT p FROM Passport p LEFT JOIN FETCH p.client WHERE p.id = :id")
+    Optional<Passport> findByIdWithClientForDiagnostics(@Param("id") Long id);
     boolean existsBySeriesAndNumber(String series, String number);
 
 

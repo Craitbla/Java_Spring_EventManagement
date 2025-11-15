@@ -34,7 +34,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c JOIN FETCH c.passport WHERE c.id = :id")
     Optional<Client> findByIdWithPassport(@Param("id") Long id);
 
-    @Query("SELECT c FROM Client c JOIN FETCH c.ticketReservations WHERE c.id = :id")
+    @Query("SELECT c FROM Client c LEFT JOIN FETCH c.ticketReservations WHERE c.id = :id")
     Optional<Client> findByIdWithTicketReservations(@Param("id") Long id);
 
     @Query("SELECT c FROM Client c WHERE " +

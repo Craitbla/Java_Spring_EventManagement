@@ -1,11 +1,14 @@
 package com.example.eventmanagement.entity;
 
+import com.example.eventmanagement.enums.EventStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -51,6 +54,12 @@ public class Passport {
         this.number = number;
     }
 
+    public static Passport createForTesting(String series, String number, LocalDateTime createdAt) {
+        Passport passport = new Passport(series, number);
+        passport.setCreatedAt(createdAt);
+        return passport;
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,6 +87,10 @@ public class Passport {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    private void setCreatedAt(LocalDateTime time) {
+        createdAt = time;
+    }
+
 
     public Client getClient() {
         return client;

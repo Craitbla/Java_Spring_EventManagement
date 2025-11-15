@@ -31,7 +31,7 @@ class ClientRepositoryTestContainersTest {
             .withDatabaseName("testdb")
             .withUsername("test")
             .withPassword("test")
-            .withReuse(false);
+            .withReuse(true); //#быстрее но может CI/CD и возможно что-то еще
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {

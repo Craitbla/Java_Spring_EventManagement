@@ -64,6 +64,13 @@ public class TicketReservation {
         this.bookingStatus = bookingStatus;
     }
 
+    public static TicketReservation createForTesting(Integer numberOfTickets, BookingStatus bookingStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        TicketReservation reservation = new TicketReservation(numberOfTickets, bookingStatus);
+        reservation.setCreatedAt(createdAt);
+        reservation.setUpdatedAt(updatedAt);
+        return reservation;
+    }
+
     public Long getId() {
         return id;
     }
@@ -108,6 +115,10 @@ public class TicketReservation {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    private void setCreatedAt(LocalDateTime time) {
+        createdAt = time;
+    }
+
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;

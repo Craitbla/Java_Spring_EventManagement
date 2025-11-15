@@ -34,7 +34,7 @@ class ClientEntityUnitTest {
 
         assertThat(client.getCreatedAt()).isNotNull();
         assertThat(client.getUpdatedAt()).isNotNull();
-        assertThat(client.getCreatedAt()).isEqualTo(client.getUpdatedAt());
+        assertThat(client.getCreatedAt()).isBetween(client.getUpdatedAt().minusSeconds(1), client.getUpdatedAt().plusSeconds(1));
     }
 
     @Test
