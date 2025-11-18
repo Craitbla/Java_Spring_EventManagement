@@ -1,8 +1,6 @@
 package com.example.eventmanagement.dto;
 
-
-public record PassportDto(
-        Long id,
+public record PassportCreateDto(
         String series,
         String number
 ) {
