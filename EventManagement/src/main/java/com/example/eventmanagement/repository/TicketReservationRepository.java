@@ -32,6 +32,8 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     List<TicketReservation> findByUpdatedAtAfter(LocalDateTime date);
     List<TicketReservation> findByClientIdAndEventIdAndBookingStatus(
             Long clientId, Long eventId, BookingStatus status);
+    List<TicketReservation> findByClientIdAndBookingStatusIn(
+            Long clientId, List<BookingStatus> bookingStatusList);
 
     @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client WHERE tr.id = :id")
     Optional<TicketReservation> findByIdWithClient(@Param("id") Long id);

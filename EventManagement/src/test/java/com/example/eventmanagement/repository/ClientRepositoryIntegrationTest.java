@@ -85,10 +85,10 @@ class ClientRepositoryIntegrationTest {
         }
 
         @Test
-        void shouldFindByPassport() {
-            List<Client> foundClients = clientRepository.findByPassport(passport1);
-            assertThat(foundClients).hasSize(1);
-            assertThat(foundClients.get(0).getPassport()).isEqualTo(passport1);
+        void shouldFindByPassport() { ///////////////////////////////
+            Optional<Client> foundClient = clientRepository.findByPassport(passport1);
+            assertThat(foundClient.isPresent()).isTrue();
+            assertThat(foundClient.get().getPassport()).isEqualTo(passport1);
         }
 
         @Test

@@ -20,7 +20,9 @@ public interface PassportMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "client", ignore = true)
-    Passport fromCreateWithoutDependenciesDto(PassportCreateWithDependenciesDto dto);
+    Passport fromCreateWithoutDependenciesDto(PassportCreateDto dto);
+    //Passport fromCreateWithoutDependenciesDto(PassportCreateWithDependenciesDto dto);
+    //no
 
 //UPDATE FROM DTO это конечно очень весело, но именно в пасспорте не нужно обновление
 

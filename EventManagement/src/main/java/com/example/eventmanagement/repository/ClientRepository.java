@@ -1,10 +1,13 @@
 package com.example.eventmanagement.repository;
+import com.example.eventmanagement.dto.PassportCreateDto;
+import com.example.eventmanagement.dto.PassportDto;
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Passport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.security.auth.spi.LoginModule;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByFullNameContainingIgnoreCase(String fullNamePart);
     Optional<Client> findByPhoneNumber(String phoneNumber);
     Optional<Client> findByEmail(String email);
-    List<Client> findByPassport(Passport passport);
+    Optional<Client> findByPassport(Passport passport);
     List<Client> findByCreatedAt(LocalDateTime createdAt); //
     List<Client> findByCreatedAtBefore(LocalDateTime date);
     List<Client> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
@@ -50,6 +53,9 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     boolean existsByPhoneNumber(String phoneNumber);
     boolean existsByEmail(String email);
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, Long id);
+    boolean existsByEmailAndIdNot(String email, Long id);
+
 
 
 }

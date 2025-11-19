@@ -3,7 +3,9 @@ package com.example.eventmanagement.service;
 import com.example.eventmanagement.dto.PassportCreateDto;
 import com.example.eventmanagement.dto.PassportDto;
 import com.example.eventmanagement.entity.Passport;
+import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.exception.DuplicateEntityException;
+import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.mapper.PassportMapper;
 import com.example.eventmanagement.repository.EventRepository;
 import com.example.eventmanagement.repository.PassportRepository;
@@ -27,13 +29,23 @@ public class PassportService {
     }
 
     //буду кэтчить видимо дальше
-    public PassportDto createPassport(PassportCreateDto passportCreateDto) {
-        Passport passportForSaving = passportMapper.fromPassportCreateDto(passportCreateDto);
+    //плевать что с Passport
+    public Passport createPassport(PassportCreateDto passportCreateDto) {
+        Passport passportForSaving = passportMapper.fromCreateWithoutDependenciesDto(passportCreateDto);
         if (passportRepository.existsBySeriesAndNumber(passportForSaving.getSeries(), passportForSaving.getNumber())) {
             throw new DuplicateEntityException("Такой пасспорт уже есть");
         }
         Passport savedPassport = passportRepository.save(passportForSaving);
-        return passportMapper.toPassportDto(savedPassport);
+        return savedPassport;
+
+    }
+
+    public void deletePassport(Long id) {
+        Passport passport = passportRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Пасспорт с id %d не найден", id)
+                ));
+        passportRepository.delete(passport);
 
     }
 
