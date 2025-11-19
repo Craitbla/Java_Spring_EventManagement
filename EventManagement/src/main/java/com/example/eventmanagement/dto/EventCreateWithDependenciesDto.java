@@ -4,17 +4,14 @@ import com.example.eventmanagement.enums.EventStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-//где-то в репозитории вроде как
-public record EventStatisticsDto(
-        Long id,
+public record EventCreateWithDependenciesDto(
         String name,
         LocalDate date,
-        EventStatus status,
-        Long confirmedTickets,
         BigDecimal ticketPrice,
-        BigDecimal totalRevenue
-
+        EventStatus status,
+        String description
 ) {
 }
-
