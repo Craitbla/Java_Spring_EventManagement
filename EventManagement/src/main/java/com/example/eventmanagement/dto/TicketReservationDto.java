@@ -4,8 +4,8 @@ import com.example.eventmanagement.enums.BookingStatus;
 
 public record TicketReservationDto(
         Long id,
-        ClientSummaryDto client,
-        EventSummaryDto event,
+        ClientCreateDto client,
+        EventCreateDto event,
         Integer numberOfTickets,
         BookingStatus bookingStatus
 

@@ -23,7 +23,7 @@ public interface EventMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)  // Создаем отдельно
     @Mapping(target = "ticketReservations", ignore = true)
-    Event fromCreateWithoutDependenciesDto(EventCreateWithDependenciesDto dto);
+    Event fromCreateWithoutDependenciesDto(EventCreateDto dto);
 
     // ========== UPDATE METHODS ==========
 

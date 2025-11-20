@@ -1,7 +1,6 @@
 package com.example.eventmanagement.mapper;
 
 import com.example.eventmanagement.dto.*;
-import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.TicketReservation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,7 +22,7 @@ public interface TicketReservationMapper {
     @Mapping(target = "updatedAt", ignore = true)  // Создаем отдельно
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "event", ignore = true)
-    TicketReservation fromCreateWithoutDependenciesDto(TicketReservationCreateWithDependenciesDto dto);
+    TicketReservation fromCreateWithoutDependenciesDto(TicketReservationCreateDto dto);
 
     // ========== UPDATE METHODS ==========
 
