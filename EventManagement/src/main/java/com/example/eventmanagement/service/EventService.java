@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.example.eventmanagement.enums.EventStatus;
 
+import java.math.BigDecimal;
+
 @Service
 @Transactional
 public class EventService {
@@ -54,7 +56,7 @@ public class EventService {
                 () -> new EntityNotFoundException(String.format("Мероприятие по id %d не найдено", eventId))
         );
         Long countedConfirmedTickets = eventRepository.countConfirmedTicketsByEventId(eventId);
-
+        BigDecimal totalRevenue = foundedEvent.getTicketPrice().multiply(BigDecimal.valueOf(co
 //        // Получить базовую информацию о мероприятии
 //        // Посчитать подтвержденные билеты
 //        // Вычислить выручку
