@@ -273,15 +273,15 @@ class EventRepositoryIntegrationTest {
             entityManager.flush();
             entityManager.clear();
 
-            Long confirmedCount = eventRepository.countConfirmedTicketsByEventId(event1.getId());
+            Integer confirmedCount = eventRepository.countConfirmedTicketsByEventId(event1.getId());
 
-            assertThat(confirmedCount).isEqualTo(5L);
+            assertThat(confirmedCount).isEqualTo(5);
         }
 
         @Test
         void shouldReturnZeroConfirmedTicketsForNonExistentEvent() {
-            Long confirmedCount = eventRepository.countConfirmedTicketsByEventId(999L);
-            assertThat(confirmedCount).isEqualTo(0L);
+            Integer confirmedCount = eventRepository.countConfirmedTicketsByEventId(999L);
+            assertThat(confirmedCount).isEqualTo(0);
         }
 
         @Test

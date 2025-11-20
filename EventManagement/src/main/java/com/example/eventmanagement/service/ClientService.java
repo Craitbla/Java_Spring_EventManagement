@@ -25,14 +25,12 @@ public class ClientService {
     private final PassportRepository passportRepository;
     private final TicketReservationRepository ticketReservationRepository;
     private final ClientMapper clientMapper;
-    private final PassportService passportService;
 
-    public ClientService(ClientRepository clientRepository, PassportRepository passportRepository, TicketReservationRepository ticketReservationRepository, ClientMapper clientMapper, PassportService passportService) {
+    public ClientService(ClientRepository clientRepository, PassportRepository passportRepository, TicketReservationRepository ticketReservationRepository, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
         this.passportRepository = passportRepository;
         this.ticketReservationRepository = ticketReservationRepository;
         this.clientMapper = clientMapper;
-        this.passportService = passportService;
     }
 
     public ClientDoneDto createClient(ClientCreateWithDependenciesDto dto) {

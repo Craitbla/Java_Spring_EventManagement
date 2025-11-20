@@ -12,7 +12,7 @@ public record EventStatisticsDto(
         LocalDate date,
         Integer numberOfSeats,
         EventStatus status,
-        Long confirmedTickets,
+        Integer confirmedTickets,
         BigDecimal ticketPrice,
         BigDecimal totalRevenue
 
