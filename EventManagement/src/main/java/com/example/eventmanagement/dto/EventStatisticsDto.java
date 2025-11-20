@@ -10,6 +10,7 @@ public record EventStatisticsDto(
         Long id,
         String name,
         LocalDate date,
+        Integer numberOfSeats,
         EventStatus status,
         Long confirmedTickets,
         BigDecimal ticketPrice,

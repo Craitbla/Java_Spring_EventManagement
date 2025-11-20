@@ -17,6 +17,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByNameIgnoreCase(String name);
     List<Event> findByNameContainingIgnoreCase(String namePart);
     List<Event> findByDate(LocalDate date);
+    List<Event> findByNumberOfSeats(Integer numberOfSeats);
+    List<Event> findByNumberOfSeatsBetween(Integer numberOfSeatsStart,Integer numberOfSeatsEnd);
+    List<Event> findByNumberOfSeatsAfter(Integer numberOfSeats);
+    List<Event> findByNumberOfSeatsBefore(Integer numberOfSeats);
     Optional<Event> findByNameAndDate(String name, LocalDate date);
     List<Event> findByTicketPrice(BigDecimal ticketPrice);
     List<Event> findByTicketPriceLessThan(BigDecimal ticketPrice);

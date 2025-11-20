@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public record EventCreateDto(
         String name,
         LocalDate date,
+        Integer numberOfSeats,
         BigDecimal ticketPrice,
         EventStatus status,
         String description

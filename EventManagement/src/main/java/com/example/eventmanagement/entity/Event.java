@@ -26,6 +26,10 @@ public class Event {
     @Column(nullable = false)
     @Future(message = "Дата должна быть будущей")
     private LocalDate date;
+    @Column(name = "number_of_seats", nullable = false)
+    @Min(value = 1, message = "Количество мест должно быть больше или равно 1")
+    private Integer numberOfSeats;
+
     @Column(name = "ticket_price", nullable = false)
     @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
     private BigDecimal ticketPrice;
@@ -56,6 +60,9 @@ public class Event {
         if (status == null) {
             status = EventStatus.PLANNED;
         }
+        if (numberOfSeats == null) {
+            numberOfSeats = 1;
+        }
         if (createdAt == null) {
             createdAt = LocalDateTime.now();
         }
@@ -71,16 +78,17 @@ public class Event {
         updatedAt = LocalDateTime.now();
     }
 
-    public Event(String name, LocalDate date, BigDecimal ticketPrice, EventStatus status, String description) {
+    public Event(String name, LocalDate date, Integer numberOfSeats, BigDecimal ticketPrice, EventStatus status, String description) {
         this.name = name;
         this.date = date;
+        this.numberOfSeats =numberOfSeats;
         this.ticketPrice = ticketPrice;
         this.status = status;
         this.description = description;
     }
 
-    public static Event createForTesting(String name, LocalDate date, BigDecimal ticketPrice, EventStatus status, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        Event event = new Event(name, date, ticketPrice, status, description);
+    public static Event createForTesting(String name, LocalDate date, Integer numberOfSeats, BigDecimal ticketPrice, EventStatus status, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        Event event = new Event(name, date, numberOfSeats, ticketPrice, status, description);
         event.setCreatedAt(createdAt);
         event.setUpdatedAt(updatedAt);
         return event;
@@ -108,6 +116,14 @@ public class Event {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Integer getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(Integer numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
     }
 
     public BigDecimal getTicketPrice() {

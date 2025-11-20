@@ -10,6 +10,7 @@ public record EventDoneDto(
         Long id,
         String name,
         LocalDate date,
+        Integer numberOfSeats,
         BigDecimal ticketPrice,
         EventStatus status,
         String description,

@@ -41,6 +41,7 @@ class EventRepositoryIntegrationTest {
         void setUp() {
             event1 = new Event("Концерт рок-группы",
                     LocalDate.now().plusDays(10),
+                    100,
                     BigDecimal.valueOf(1500),
                     EventStatus.PLANNED,
                     "Концерт известной рок-группы");
@@ -144,6 +145,7 @@ class EventRepositoryIntegrationTest {
 
             event1 = Event.createForTesting("Концерт 1",
                     LocalDate.now().plusDays(5),
+                    1,
                     BigDecimal.valueOf(1000),
                     EventStatus.PLANNED,
                     "Описание 1",
@@ -152,6 +154,7 @@ class EventRepositoryIntegrationTest {
 
             event2 = Event.createForTesting("Концерт 2",
                     LocalDate.now().plusDays(3),
+                    1000,
                     BigDecimal.valueOf(2000),
                     EventStatus.ONGOING,
                     "Описание 2",
@@ -160,6 +163,7 @@ class EventRepositoryIntegrationTest {
 
             event3 = Event.createForTesting("Концерт 3",
                     LocalDate.now().plusDays(1),
+                    100,
                     BigDecimal.valueOf(3000),
                     EventStatus.COMPLETED,
                     "Описание 3",
@@ -225,6 +229,7 @@ class EventRepositoryIntegrationTest {
             client1 = new Client("Иванов Иван Иванович", "+79123456789", "ivanov@mail.com", passport1);
             event1 = new Event("Тестовое мероприятие",
                     LocalDate.now().plusDays(7),
+                    100,
                     BigDecimal.valueOf(500),
                     EventStatus.PLANNED,
                     "Тестовое описание");
@@ -289,6 +294,7 @@ class EventRepositoryIntegrationTest {
             // Создаем событие БЕЗ броней
             Event eventWithoutReservations = new Event("Концерт без броней",
                     LocalDate.now().plusDays(5),
+                    100,
                     BigDecimal.valueOf(500),
                     EventStatus.PLANNED,
                     "У этого события нет броней");
