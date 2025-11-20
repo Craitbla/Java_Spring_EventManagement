@@ -89,7 +89,7 @@ class ClientEntityUnitTest {
     @Test
     void shouldAddTicketReservation() {
         Client client = new Client();
-        Event event = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100, BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
         reservation.assignEvent(event);
 
@@ -102,7 +102,7 @@ class ClientEntityUnitTest {
     @Test
     void shouldRemoveTicketReservation() {
         Client client = new Client();
-        Event event = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,  BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
         reservation.assignEvent(event);
 
@@ -117,7 +117,7 @@ class ClientEntityUnitTest {
     @Test
     void shouldReturnFalseWhenRemovingNonExistentReservation() {
         Client client = new Client();
-        Event event = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event = new Event("Concert", LocalDate.now().plusDays(10), 100, BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
         reservation.assignEvent(event);
 
@@ -129,8 +129,8 @@ class ClientEntityUnitTest {
     @Test
     void shouldSetTicketReservationsBidirectional() {
         Client client = new Client();
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.PLANNED, "Play");
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),100,  BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5),100,  BigDecimal.valueOf(50), EventStatus.PLANNED, "Play");
 
         List<TicketReservation> reservations = List.of(
                 new TicketReservation(1, BookingStatus.PENDING_CONFIRMATION),
@@ -149,7 +149,7 @@ class ClientEntityUnitTest {
     @Test
     void shouldClearOldReservationsWhenSettingNewOnes() {
         Client client = new Client();
-        Event event = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,  BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         TicketReservation oldReservation = new TicketReservation(1, BookingStatus.PENDING_CONFIRMATION);
         oldReservation.assignEvent(event);
@@ -167,7 +167,7 @@ class ClientEntityUnitTest {
     @Test
     void shouldHandleNullReservationsList() {
         Client client = new Client();
-        Event event = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,  BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         TicketReservation reservation = new TicketReservation(1, BookingStatus.PENDING_CONFIRMATION);
         reservation.assignEvent(event);

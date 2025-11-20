@@ -21,19 +21,23 @@ class EventValidationTest {
     private static final String validName = "Test Event";
     private static final LocalDate validDate = LocalDate.now().plusDays(1);
     private static final BigDecimal validPrice = BigDecimal.valueOf(100);
+    private static final Integer validNumberOfSeats = 100;
 
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     static Stream<Arguments> eventDataProvider() {
         return Stream.of(
-                Arguments.of(new Event(validName, validDate, validPrice, EventStatus.PLANNED, "Description"), true, "Валидно"),
-                Arguments.of(new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(50), EventStatus.CANCELED, null), true, "Валидно"),
-                Arguments.of(new Event(null, validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
-                Arguments.of(new Event("", validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
-                Arguments.of(new Event("   ", validDate, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
-                Arguments.of(new Event(validName, LocalDate.now().minusDays(1), validPrice, EventStatus.PLANNED, "Desc"), false, "Дата должна быть будущей"),
-                Arguments.of(new Event(validName, validDate, BigDecimal.valueOf(-1), EventStatus.PLANNED, "Desc"), false, "Цена билета должна быть больше или равна 0")
-        );
+                Arguments.of(new Event(validName, validDate,validNumberOfSeats, validPrice, EventStatus.PLANNED, "Desc"), true, "Валидно"),
+                Arguments.of(new Event("Concert", LocalDate.now().plusDays(10),validNumberOfSeats, BigDecimal.valueOf(50), EventStatus.CANCELED, null), true, "Валидно"),
+                Arguments.of(new Event(null, validDate,validNumberOfSeats, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
+                Arguments.of(new Event("", validDate,validNumberOfSeats, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
+                Arguments.of(new Event("   ", validDate,validNumberOfSeats, validPrice, EventStatus.PLANNED, "Desc"), false, "Название не может быть пустым"),
+                Arguments.of(new Event(validName, LocalDate.now().minusDays(1),validNumberOfSeats, validPrice, EventStatus.PLANNED, "Desc"), false, "Дата должна быть будущей"),
+                Arguments.of(new Event(validName, validDate,validNumberOfSeats, BigDecimal.valueOf(-1), EventStatus.PLANNED, "Desc"), false, "Цена билета должна быть больше или равна 0"),
+                Arguments.of(new Event(validName, validDate,1, validPrice, EventStatus.PLANNED, "Desc"), true,"Валидно"),
+                Arguments.of(new Event(validName, validDate, 0, validPrice, EventStatus.PLANNED, "Desc"), false, "Количество мест должно быть больше или равно 1"),
+                Arguments.of(new Event(validName, validDate, -100, validPrice, EventStatus.PLANNED, "Desc"), false, "Количество мест должно быть больше или равно 1")
+                );
     }
 
     @ParameterizedTest(name = "[{index}] {2}")

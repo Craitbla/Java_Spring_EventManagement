@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EventEntityUnitTest {
 
     private Event createValidEvent() {
-        return new Event("Test Event", LocalDate.now().plusDays(10),
+        return new Event("Test Event", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
     }
 
@@ -140,8 +140,8 @@ class EventEntityUnitTest {
 
     @Test
     void shouldMaintainEqualsAndHashCodeConsistency() {
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),100,  BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5),100,  BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
 
         event1.setId(1L);
         event2.setId(1L);
@@ -152,8 +152,8 @@ class EventEntityUnitTest {
 
     @Test
     void shouldNotBeEqualWithDifferentIds() {
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10), 100, BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc");
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5), 100, BigDecimal.valueOf(50), EventStatus.CANCELED, "Play");
 
         event1.setId(1L);
         event2.setId(2L);
@@ -179,7 +179,7 @@ class EventEntityUnitTest {
 
     @Test
     void toStringShouldContainImportantFields() {
-        Event event = new Event("Test Event", LocalDate.of(2024, 12, 31),
+        Event event = new Event("Test Event", LocalDate.of(2024, 12, 31),100,
                 BigDecimal.valueOf(150), EventStatus.PLANNED, "Test Description");
         event.setId(1L);
 
@@ -197,7 +197,7 @@ class EventEntityUnitTest {
 
     @Test
     void shouldCreateEventWithAllFields() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Music concert");
 
         assertThat(event.getName()).isEqualTo("Concert");
@@ -229,7 +229,7 @@ class EventEntityUnitTest {
 
     @Test
     void shouldHandleNullDescription() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, null);
 
         assertThat(event.getDescription()).isNull();

@@ -61,8 +61,10 @@ public class ClientService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Клиент с id %d не найден", id)
                 ));
+        if(!canDeleteClient(id)){
+            throw new OperationNotAllowedException(String.format("Этого клиента с id %d нельзя удалить, у него еще есть активные бронирования", id));
+        }
         clientRepository.delete(client);
-
     }
     public List<ClientDto> searchClients(String searchTerm) {
         List<Client> foundedClients = clientRepository.searchClients(searchTerm);
@@ -72,10 +74,7 @@ public class ClientService {
         List<BookingStatus> bookingStatusList = new ArrayList<>();
         bookingStatusList.add(BookingStatus.CONFIRMED);
         bookingStatusList.add(BookingStatus.PENDING_CONFIRMATION);
-        if(ticketReservationRepository.findByClientIdAndBookingStatusIn(clientId, bookingStatusList).isEmpty()){
-            return true;
-        }
-        return false;
+        return ticketReservationRepository.findByClientIdAndBookingStatusIn(clientId, bookingStatusList).isEmpty();
     }
     public ClientDoneDto updateClientBasicInfo(Long id, ClientCreateDto dto) { //пока один
         Client client = clientRepository.findById(id).orElseThrow(
@@ -103,16 +102,21 @@ public class ClientService {
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", clientId))
         );
+        Passport oldPassport = client.getPassport();
         if (passportRepository.existsBySeriesAndNumber(
                 newPassportDto.series(), newPassportDto.number())) {
             throw new DuplicateEntityException("Паспорт " +newPassportDto.series()+" "+ newPassportDto.number()+ " уже существует");
         }
         Passport newPassport = new Passport(newPassportDto.series(), newPassportDto.number());
 
-        // старый удалится каскадно
+        // старый НЕ удалится каскадно, надо вручную
         client.setPassport(newPassport);
-
         Client updatedClient = clientRepository.save(client);
+
+        if(oldPassport!=null){
+            passportRepository.delete(oldPassport);
+        }
+
         return clientMapper.toClientDoneDto(updatedClient);
     }
 

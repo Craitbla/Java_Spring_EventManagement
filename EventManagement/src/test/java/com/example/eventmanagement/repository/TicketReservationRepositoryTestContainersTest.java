@@ -66,7 +66,7 @@ class TicketReservationRepositoryTestContainersTest {
         Passport passport = new Passport("1234", "567890");
         client = new Client("Test Client", "+79123456789", "test@mail.com", passport);
         event = new Event("Test Event",
-                LocalDate.now().plusDays(5),
+                LocalDate.now().plusDays(5), 100,
                 BigDecimal.valueOf(1000),
                 EventStatus.PLANNED,
                 "Test Description");

@@ -22,7 +22,7 @@ class TicketReservationEntityUnitTest {
     void setUp() {
         Passport passport = new Passport("1234", "567890");
         client = new Client("Test Client", "+79123456789", "test@mail.com", passport);
-        event = new Event("Test Event", LocalDate.now().plusDays(10),
+        event = new Event("Test Event", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
     }
 

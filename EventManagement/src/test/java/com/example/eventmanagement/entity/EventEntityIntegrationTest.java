@@ -25,7 +25,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldSaveEventWithAllFields() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Music concert");
 
         entityManager.persistAndFlush(event);
@@ -57,8 +57,8 @@ class EventEntityIntegrationTest {
     @Test
     void shouldEnforceUniqueNameAndDateConstraint() {
         LocalDate sameDate = LocalDate.now().plusDays(10);
-        Event event1 = new Event("Concert", sameDate, BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
-        Event event2 = new Event("Concert", sameDate, BigDecimal.valueOf(150), EventStatus.CANCELED, "Desc2");
+        Event event1 = new Event("Concert", sameDate,100, BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
+        Event event2 = new Event("Concert", sameDate,100, BigDecimal.valueOf(150), EventStatus.CANCELED, "Desc2");
 
         entityManager.persistAndFlush(event1);
 
@@ -68,8 +68,8 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldAllowSameNameWithDifferentDates() {
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10), BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
-        Event event2 = new Event("Concert", LocalDate.now().plusDays(11), BigDecimal.valueOf(150), EventStatus.PLANNED, "Desc2");
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),100, BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
+        Event event2 = new Event("Concert", LocalDate.now().plusDays(11),100, BigDecimal.valueOf(150), EventStatus.PLANNED, "Desc2");
 
         entityManager.persistAndFlush(event1);
         entityManager.persistAndFlush(event2);
@@ -82,7 +82,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldUpdateEventFields() {
-        Event event = new Event("Old Name", LocalDate.now().plusDays(10),
+        Event event = new Event("Old Name", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Old Desc");
         entityManager.persistAndFlush(event);
 
@@ -102,7 +102,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldSaveEventWithNullDescription() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, null);
 
         entityManager.persistAndFlush(event);
@@ -113,7 +113,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldSaveEventWithTicketReservations() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         Passport passport = new Passport("1234", "567890");
@@ -138,7 +138,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldCascadeRemoveEventWithReservations() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         Passport passport = new Passport("1234", "567890");
@@ -164,7 +164,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldFindEventByName() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         entityManager.persistAndFlush(event);
@@ -181,9 +181,9 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldFindEventsByStatus() {
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(5),
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(5),100,
                 BigDecimal.valueOf(50), EventStatus.CANCELED, "Desc2");
 
         entityManager.persistAndFlush(event1);
@@ -204,9 +204,9 @@ class EventEntityIntegrationTest {
         LocalDate startDate = LocalDate.now().plusDays(5);
         LocalDate endDate = LocalDate.now().plusDays(15);
 
-        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event1 = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Desc1");
-        Event event2 = new Event("Theater", LocalDate.now().plusDays(20),
+        Event event2 = new Event("Theater", LocalDate.now().plusDays(20),100,
                 BigDecimal.valueOf(50), EventStatus.PLANNED, "Desc2");
 
         entityManager.persistAndFlush(event1);
@@ -225,7 +225,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldHandleEventWithoutReservations() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         entityManager.persistAndFlush(event);
@@ -235,7 +235,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldUpdateEventTimestampOnUpdate() throws InterruptedException {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         entityManager.persistAndFlush(event);
@@ -250,7 +250,7 @@ class EventEntityIntegrationTest {
 
     @Test
     void shouldMaintainBidirectionalRelationshipAfterPersist() {
-        Event event = new Event("Concert", LocalDate.now().plusDays(10),
+        Event event = new Event("Concert", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(100), EventStatus.PLANNED, "Description");
 
         Passport passport = new Passport("1234", "567890");

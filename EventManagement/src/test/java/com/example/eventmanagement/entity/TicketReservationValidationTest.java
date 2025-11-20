@@ -21,7 +21,7 @@ class TicketReservationValidationTest {
 
     static Stream<Arguments> ticketReservationDataProvider() {
         Client client = new Client("Test Client", "+79123456789", new Passport("1234", "567890"));
-        Event event = new Event("Test Event", java.time.LocalDate.now().plusDays(10),
+        Event event = new Event("Test Event", java.time.LocalDate.now().plusDays(10),100,
                 java.math.BigDecimal.valueOf(100), com.example.eventmanagement.enums.EventStatus.PLANNED, "Description");
 
         return Stream.of(

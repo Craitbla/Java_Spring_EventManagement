@@ -48,7 +48,7 @@ class TicketReservationRepositoryIntegrationTest {
             entityManager.persist(client1);
 
             event1 = new Event("Концерт",
-                    LocalDate.now().plusDays(10),
+                    LocalDate.now().plusDays(10),100,
                     BigDecimal.valueOf(1000),
                     EventStatus.PLANNED,
                     "Концерт классической музыки");
@@ -144,7 +144,7 @@ class TicketReservationRepositoryIntegrationTest {
             entityManager.persist(client1);
 
             event1 = new Event("Концерт",
-                    LocalDate.now().plusDays(10),
+                    LocalDate.now().plusDays(10),100,
                     BigDecimal.valueOf(1000),
                     EventStatus.PLANNED,
                     "Концерт классической музыки");
@@ -241,7 +241,7 @@ class TicketReservationRepositoryIntegrationTest {
             entityManager.persist(client1);
 
             event1 = new Event("Концерт",
-                    LocalDate.now().plusDays(10),
+                    LocalDate.now().plusDays(10),100,
                     BigDecimal.valueOf(1000),
                     EventStatus.PLANNED,
                     "Концерт классической музыки");

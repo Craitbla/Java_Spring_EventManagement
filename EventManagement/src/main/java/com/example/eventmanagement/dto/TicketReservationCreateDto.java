@@ -3,8 +3,8 @@ package com.example.eventmanagement.dto;
 import com.example.eventmanagement.enums.BookingStatus;
 
 public record TicketReservationCreateDto(
-        ClientDoneDto client,
-        EventDoneDto event,
+        Long clientId,
+        Long eventId,
         Integer numberOfTickets,
         BookingStatus bookingStatus
 ) {

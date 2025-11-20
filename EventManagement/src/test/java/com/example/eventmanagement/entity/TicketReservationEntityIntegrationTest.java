@@ -30,7 +30,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -60,7 +60,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -87,7 +87,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -117,7 +117,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -152,7 +152,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -181,7 +181,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -211,7 +211,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -241,7 +241,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -278,7 +278,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
@@ -306,7 +306,7 @@ class TicketReservationEntityIntegrationTest {
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+        Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 

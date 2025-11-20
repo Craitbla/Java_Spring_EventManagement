@@ -56,7 +56,7 @@ class EventRepositoryTestContainersTest {
     @Test
     void shouldSaveAndRetrieveEventWithRealPostgreSQL() {
         Event event = new Event("Test Event",
-                LocalDate.now().plusDays(5),
+                LocalDate.now().plusDays(5),100,
                 BigDecimal.valueOf(1000),
                 EventStatus.PLANNED,
                 "Test Description");
@@ -74,13 +74,13 @@ class EventRepositoryTestContainersTest {
     @Test
     void shouldEnforceUniqueNameAndDateConstraint() {
         Event event1 = new Event("Unique Event",
-                LocalDate.now().plusDays(10),
+                LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(1500),
                 EventStatus.PLANNED,
                 "Description 1");
 
         Event event2 = new Event("Unique Event",
-                LocalDate.now().plusDays(10),
+                LocalDate.now().plusDays(10),100,
                 BigDecimal.valueOf(2000),
                 EventStatus.ONGOING,
                 "Description 2");

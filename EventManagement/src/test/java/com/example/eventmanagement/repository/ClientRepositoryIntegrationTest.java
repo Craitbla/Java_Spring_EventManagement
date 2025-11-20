@@ -235,7 +235,7 @@ class ClientRepositoryIntegrationTest {
             TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
             client1.addTicketReservation(reservation);
 
-            Event event = new Event("Концерт", LocalDate.now().plusDays(10),
+            Event event = new Event("Концерт", LocalDate.now().plusDays(10),100,
                     BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
             entityManager.persist(event);
             event.addTicketReservation(reservation);
