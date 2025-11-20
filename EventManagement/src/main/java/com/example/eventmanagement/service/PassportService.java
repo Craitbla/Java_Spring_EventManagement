@@ -1,11 +1,14 @@
 package com.example.eventmanagement.service;
 
 import com.example.eventmanagement.dto.PassportCreateDto;
+import com.example.eventmanagement.dto.PassportDoneDto;
 import com.example.eventmanagement.dto.PassportDto;
+import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
+import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.PassportMapper;
 import com.example.eventmanagement.repository.EventRepository;
 import com.example.eventmanagement.repository.PassportRepository;
@@ -17,6 +20,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PassportService {
+    //По итогу вообще не нужен оказался, круто, класс, ладно
 
     //после досоздания разобраться сразу с логированием
     private final PassportRepository passportRepository;
@@ -27,29 +31,19 @@ public class PassportService {
         this.passportMapper = passportMapper;
 
     }
+//по идее не нужен потому что паспорт сохраняется каскадно
 
-    //буду кэтчить видимо дальше
-    //плевать что с Passport
-    public Passport createPassport(PassportCreateDto passportCreateDto) {
-        Passport passportForSaving = passportMapper.fromCreateWithoutDependenciesDto(passportCreateDto);
-        if (passportRepository.existsBySeriesAndNumber(passportForSaving.getSeries(), passportForSaving.getNumber())) {
-            throw new DuplicateEntityException("Такой пасспорт уже есть");
-        }
-        Passport savedPassport = passportRepository.save(passportForSaving);
-        return savedPassport;
-
-    }
-
-    public void deletePassport(Long id) {
-        Passport passport = passportRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Пасспорт с id %d не найден", id)
-                ));
-        passportRepository.delete(passport);
-
-    }
-
-//    public Optional<PassportDto> savePassport(){
-// нет потому что это обновление паспорта, его не будет, только черз клиента напрямую
+//    public PassportDoneDto updatePassport(Long id, PassportCreateDto dto) {
+//        //найти, обновить, засейвить
+//        Passport passportForUpdating = passportRepository.findById(id).orElseThrow(
+//                () -> new EntityNotFoundException("Паспорт с id " +id+ " для обновления не найден")
+//        );
+//        passportForUpdating.setSeries(dto.series());
+//        passportForUpdating.setNumber(dto.number());
+//
+//        Passport updatedPassport = passportRepository.save(passportForUpdating);
+//        return passportMapper.toPassportDoneDto(updatedPassport);
+//
+//    }
 
 }

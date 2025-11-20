@@ -43,4 +43,24 @@
 //
 //        return ticketReservationRepository.save(reservation);
 //    }
+// 1. Создание бронирования с проверками
+//public TicketReservationDto createReservation(ReservationRequest request) {
+//        // Проверить существование клиента и мероприятия
+//        // Проверить доступность билетов
+//        // Проверить бизнес-правила (дата мероприятия и т.д.)
+//        // Создать бронирование
+//        }
+//
+//// 2. Подтверждение/отмена брони
+//public void confirmReservation(Long reservationId) {
+//        // Проверить существование брони
+//        // Проверить возможность подтверждения
+//        // Обновить статус
+//        }
+//
+//// 3. Бизнес-логика отмены
+//public void cancelReservation(Long reservationId) {
+//        // Проверить можно ли отменить (время до мероприятия)
+//        // Обновить статус
+//        }
 //}

@@ -48,14 +48,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "GROUP BY e")
     Optional<EventWithReservationCountDto> findByIdWithReservationCount(@Param("eventId") Long eventId);
 
-    //// В EventRepository
-    //Optional<Event> findById(Long eventId);
-    //
-    //@Query("SELECT COALESCE(SUM(tr.numberOfTickets), 0L) " +
-    //       "FROM TicketReservation tr " +
-    //       "WHERE tr.event.id = :eventId AND tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.CONFIRMED")
-    //Long countConfirmedTicketsByEventId(@Param("eventId") Long eventId);
-    //
     //// В сервисе
     //public EventStatisticsDto getEventStatistics(Long eventId) {
     //    Event event = eventRepository.findById(eventId)

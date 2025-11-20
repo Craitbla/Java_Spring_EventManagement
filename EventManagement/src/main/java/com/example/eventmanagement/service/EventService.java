@@ -1,18 +1,68 @@
 package com.example.eventmanagement.service;
 
+import com.example.eventmanagement.dto.EventStatisticsDto;
+import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.exception.EntityNotFoundException;
+import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.ClientMapper;
 import com.example.eventmanagement.mapper.EventMapper;
 import com.example.eventmanagement.repository.EventRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import com.example.eventmanagement.enums.EventStatus;
 
 @Service
 @Transactional
 public class EventService {
-    private  final EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    EventService(EventRepository eventRepository, EventMapper eventMapper){
+
+    EventService(EventRepository eventRepository, EventMapper eventMapper) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
     }
+    //минимум, пока больше придумывать не буду
+
+    // 1. Бизнес-логика статусов
+    public void updateEventStatus(Long eventId, EventStatus newStatus) {
+        Event foundedEvent = eventRepository.findById(eventId).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Мероприятие по id %d не найдено", eventId))
+        );
+        EventStatus oldStatus = foundedEvent.getStatus();
+        if (oldStatus == newStatus) {
+            return;
+        }
+        if (!(oldStatus == EventStatus.PLANNED && newStatus == EventStatus.CANCELED ||
+                oldStatus == EventStatus.PLANNED && newStatus == EventStatus.ONGOING ||
+                oldStatus == EventStatus.CANCELED && newStatus == EventStatus.PLANNED ||
+                oldStatus == EventStatus.ONGOING && newStatus == EventStatus.CANCELED ||
+                oldStatus == EventStatus.ONGOING && newStatus == EventStatus.COMPLETED
+        )) {
+            throw new OperationNotAllowedException(String.format("Статус %s не может поменяться на %s", oldStatus, newStatus));
+        }
+        foundedEvent.setStatus(newStatus);
+        eventRepository.save(foundedEvent);
+
+//        // Проверить возможность смены статуса
+//        // (например, нельзя отменить завершенное мероприятие)
+//        // Обновить статус
+    }
+//
+//    // 2. Статистика
+    public EventStatisticsDto getEventStatistics(Long eventId) {
+        Event foundedEvent = eventRepository.findById(eventId).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Мероприятие по id %d не найдено", eventId))
+        );
+        Long countedConfirmedTickets = eventRepository.countConfirmedTicketsByEventId(eventId);
+
+//        // Получить базовую информацию о мероприятии
+//        // Посчитать подтвержденные билеты
+//        // Вычислить выручку
+    }
+//
+//    // 3. Валидация дат
+//    public EventDto createEvent(EventDto eventDto) {
+//        // Проверить что дата в будущем
+//        // Проверить уникальность названия+даты
+//    }
 }

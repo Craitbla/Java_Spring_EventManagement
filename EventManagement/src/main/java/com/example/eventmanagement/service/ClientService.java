@@ -47,6 +47,7 @@ public class ClientService {
         if (passportRepository.existsBySeriesAndNumber(passportDto.series(), passportDto.number())) {
             throw new DuplicateEntityException("Клиент c таким паспортом " + passportDto.number() + passportDto.series() + " уже существует");
         }
+        //каскад
         Client client = new Client(
                 dto.fullName(),
                 dto.phoneNumber(),
@@ -78,7 +79,7 @@ public class ClientService {
         }
         return false;
     }
-    public ClientDoneDto updateClientBasicInfo(Long id, ClientCreateWithDependenciesDto dto) { //пока один
+    public ClientDoneDto updateClientBasicInfo(Long id, ClientCreateDto dto) { //пока один
         Client client = clientRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", id))
         );
@@ -92,27 +93,29 @@ public class ClientService {
         client.setPhoneNumber(dto.phoneNumber());
         client.setEmail(dto.email());
 
-        PassportCreateDto passportDto = dto.passport();
-        if (passportDto != null) {
-            if (passportRepository.existsBySeriesAndNumberAndIdNot(passportDto.series(), passportDto.number(), id)) {
-                throw new OperationNotAllowedException("Клиент c таким паспортом " + passportDto.number() + passportDto.series() + " уже существует");
-            }
-            Passport foundedPassport = passportRepository.findBySeriesAndNumber(passportDto.series(), passportDto.number()).orElseThrow(
-                    () -> new EntityNotFoundException("Паспорт клиента, которого хотят обновить не найден, id клиента: " + id)
-            );
-            passportService.deletePassport(foundedPassport.getId());
-            Passport newPassport = passportService.createPassport(passportDto);
-            client.setPassport(newPassport);
-
-        }
-
-
         //проверить существует ли    ок
         //проверить такой же ли, если другой то
         //удалить старый, похуй, сделаю через сервис паспорта
         Client updatedClient = clientRepository.save(client);
         return clientMapper.toClientDoneDto(updatedClient);
         //насколько я понимаю flush потом в контроллере
+    }
+
+    public ClientDoneDto replacePassport(Long clientId, PassportCreateDto newPassportDto){
+        Client client = clientRepository.findById(clientId).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", clientId))
+        );
+        if (passportRepository.existsBySeriesAndNumber(
+                newPassportDto.series(), newPassportDto.number())) {
+            throw new DuplicateEntityException("Паспорт " +newPassportDto.series()+" "+ newPassportDto.number()+ " уже существует");
+        }
+        Passport newPassport = new Passport(newPassportDto.series(), newPassportDto.number());
+
+        // старый удалится каскадно
+        client.setPassport(newPassport);
+
+        Client updatedClient = clientRepository.save(client);
+        return clientMapper.toClientDoneDto(updatedClient);
     }
 
 }
