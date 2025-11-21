@@ -1,8 +1,6 @@
 package com.example.eventmanagement.service.integration;
 
-import com.example.eventmanagement.dto.ClientCreateWithDependenciesDto;
-import com.example.eventmanagement.dto.EventCreateDto;
-import com.example.eventmanagement.dto.TicketReservationCreateDto;
+import com.example.eventmanagement.dto.*;
 import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
@@ -13,6 +11,7 @@ import com.example.eventmanagement.service.TicketReservationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TicketReservationServiceIntegrationTest {
 
     @Autowired
@@ -38,27 +38,28 @@ class TicketReservationServiceIntegrationTest {
     @Autowired
     private TicketReservationRepository ticketReservationRepository;
 
+    // Тесты остаются такими же как выше, но без @BeforeEach
     @Test
     void createReservation_WithValidData_SavesToDatabase() {
-        // Arrange - создаем клиента и событие
+        // Arrange
         ClientCreateWithDependenciesDto clientDto = new ClientCreateWithDependenciesDto(
                 "Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new com.example.eventmanagement.dto.PassportCreateDto("1234", "567890")
+                new PassportCreateDto("1234", "567890")
         );
-        var client = clientService.createClient(clientDto);
+        ClientDoneDto client = clientService.createClient(clientDto);
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
         );
-        var event = eventService.createEvent(eventDto);
+        EventDoneDto event = eventService.createEvent(eventDto);
 
-        // Act - создаем резервацию
         TicketReservationCreateDto reservationDto = new TicketReservationCreateDto(
                 client.id(), event.id(), 2, BookingStatus.PENDING_CONFIRMATION
         );
 
-        var result = ticketReservationService.createReservation(reservationDto);
+        // Act
+        TicketReservationDoneDto result = ticketReservationService.createReservation(reservationDto);
 
         // Assert
         assertNotNull(result.id());
@@ -74,21 +75,21 @@ class TicketReservationServiceIntegrationTest {
     void confirmReservation_UpdatesStatusInDatabase() {
         // Arrange
         ClientCreateWithDependenciesDto clientDto = new ClientCreateWithDependenciesDto(
-                "Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new com.example.eventmanagement.dto.PassportCreateDto("1234", "567890")
+                "Петр Петров", "+79123456780", "petr@mail.ru",
+                new PassportCreateDto("1235", "567891")
         );
-        var client = clientService.createClient(clientDto);
+        ClientDoneDto client = clientService.createClient(clientDto);
 
         EventCreateDto eventDto = new EventCreateDto(
-                "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                "Выставка", LocalDate.now().plusDays(15), 50,
+                BigDecimal.valueOf(500), EventStatus.PLANNED, "Описание"
         );
-        var event = eventService.createEvent(eventDto);
+        EventDoneDto event = eventService.createEvent(eventDto);
 
         TicketReservationCreateDto reservationDto = new TicketReservationCreateDto(
-                client.id(), event.id(), 2, BookingStatus.PENDING_CONFIRMATION
+                client.id(), event.id(), 3, BookingStatus.PENDING_CONFIRMATION
         );
-        var reservation = ticketReservationService.createReservation(reservationDto);
+        TicketReservationDoneDto reservation = ticketReservationService.createReservation(reservationDto);
 
         // Act
         ticketReservationService.confirmReservation(reservation.id());
@@ -102,21 +103,21 @@ class TicketReservationServiceIntegrationTest {
     void cancelReservation_UpdatesStatusInDatabase() {
         // Arrange
         ClientCreateWithDependenciesDto clientDto = new ClientCreateWithDependenciesDto(
-                "Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new com.example.eventmanagement.dto.PassportCreateDto("1234", "567890")
+                "Сергей Сергеев", "+79123456781", "sergey@mail.ru",
+                new PassportCreateDto("1236", "567892")
         );
-        var client = clientService.createClient(clientDto);
+        ClientDoneDto client = clientService.createClient(clientDto);
 
         EventCreateDto eventDto = new EventCreateDto(
-                "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                "Семинар", LocalDate.now().plusDays(20), 30,
+                BigDecimal.valueOf(300), EventStatus.PLANNED, "Описание"
         );
-        var event = eventService.createEvent(eventDto);
+        EventDoneDto event = eventService.createEvent(eventDto);
 
         TicketReservationCreateDto reservationDto = new TicketReservationCreateDto(
-                client.id(), event.id(), 2, BookingStatus.PENDING_CONFIRMATION
+                client.id(), event.id(), 1, BookingStatus.PENDING_CONFIRMATION
         );
-        var reservation = ticketReservationService.createReservation(reservationDto);
+        TicketReservationDoneDto reservation = ticketReservationService.createReservation(reservationDto);
 
         // Act
         ticketReservationService.cancelReservation(reservation.id());
