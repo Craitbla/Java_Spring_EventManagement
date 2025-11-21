@@ -33,6 +33,17 @@ public class ClientService {
         this.clientMapper = clientMapper;
     }
 
+    public List<ClientDto> getAll() {
+        return clientMapper.toClientDtoList(clientRepository.findAll());
+    }
+    public ClientDoneDto getById(Long id) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Клиент с id %d не найден", id)
+                ));
+        return clientMapper.toClientDoneDto(client);
+    }
+
     public ClientDoneDto createClient(ClientCreateWithDependenciesDto dto) {
 
         if (clientRepository.existsByEmail(dto.email())) {
