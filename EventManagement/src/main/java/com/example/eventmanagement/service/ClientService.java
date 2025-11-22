@@ -7,13 +7,12 @@ import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
-import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.ClientMapper;
-import com.example.eventmanagement.mapper.PassportMapper;
 import com.example.eventmanagement.repository.ClientRepository;
 import com.example.eventmanagement.repository.PassportRepository;
 import com.example.eventmanagement.repository.TicketReservationRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class ClientService {
     private final ClientRepository clientRepository;
     private final PassportRepository passportRepository;
@@ -35,9 +35,12 @@ public class ClientService {
     }
 
     public List<ClientDto> getAll() {
+        log.debug("Получение списка всех клиентов");
         return clientMapper.toClientDtoList(clientRepository.findAll());
     }
+
     public ClientDoneDto getById(Long id) {
+        log.debug("Получение клиента по ID: {}", id);
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Клиент с id %d не найден", id)
@@ -46,6 +49,7 @@ public class ClientService {
     }
 
     public ClientDoneDto createClient(ClientCreateWithDependenciesDto dto) {
+        log.info("Создание клиента: {}", dto.email());
 
         if (clientRepository.existsByEmail(dto.email())) {
             throw new DuplicateEntityException("Клиент c таким email " + dto.email() + " уже существует");
@@ -57,7 +61,7 @@ public class ClientService {
         if (passportRepository.existsBySeriesAndNumber(passportDto.series(), passportDto.number())) {
             throw new DuplicateEntityException("Клиент c таким паспортом " + passportDto.number() + passportDto.series() + " уже существует");
         }
-        //каскад
+
         Client client = new Client(
                 dto.fullName(),
                 dto.phoneNumber(),
@@ -65,10 +69,12 @@ public class ClientService {
                 new Passport(passportDto.series(), passportDto.number())
         );
         Client savedClient = clientRepository.save(client);
+        log.info("Клиент создан с ID: {}", savedClient.getId());
         return clientMapper.toClientDoneDto(savedClient);
     }
 
     public void deleteClient(Long id) {
+        log.info("Удаление клиента с ID: {}", id);
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Клиент с id %d не найден", id)
@@ -77,18 +83,25 @@ public class ClientService {
             throw new BusinessValidationException(String.format("Этого клиента с id %d нельзя удалить, у него еще есть активные бронирования", id));
         }
         clientRepository.delete(client);
+        log.info("Клиент с ID {} удален", id);
     }
+
     public List<ClientDto> searchClients(String searchTerm) {
+        log.debug("Поиск клиентов по запросу: {}", searchTerm);
         List<Client> foundedClients = clientRepository.searchClients(searchTerm);
         return clientMapper.toClientDtoList(foundedClients);
     }
+
     public boolean canDeleteClient(Long clientId) {
+        log.debug("Проверка возможности удаления клиента с ID: {}", clientId);
         List<BookingStatus> bookingStatusList = new ArrayList<>();
         bookingStatusList.add(BookingStatus.CONFIRMED);
         bookingStatusList.add(BookingStatus.PENDING_CONFIRMATION);
         return ticketReservationRepository.findByClientIdAndBookingStatusIn(clientId, bookingStatusList).isEmpty();
     }
-    public ClientDoneDto updateClientBasicInfo(Long id, ClientCreateDto dto) { //пока один
+
+    public ClientDoneDto updateClientBasicInfo(Long id, ClientCreateDto dto) {
+        log.info("Обновление базовой информации клиента с ID: {}", id);
         Client client = clientRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", id))
         );
@@ -102,15 +115,13 @@ public class ClientService {
         client.setPhoneNumber(dto.phoneNumber());
         client.setEmail(dto.email());
 
-        //проверить существует ли    ок
-        //проверить такой же ли, если другой то
-        //удалить старый, похуй, сделаю через сервис паспорта
         Client updatedClient = clientRepository.save(client);
+        log.info("Базовая информация клиента с ID {} обновлена", id);
         return clientMapper.toClientDoneDto(updatedClient);
-        //насколько я понимаю flush потом в контроллере
     }
 
     public ClientDoneDto replacePassport(Long clientId, PassportCreateDto newPassportDto){
+        log.info("Замена паспорта для клиента с ID: {}", clientId);
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", clientId))
         );
@@ -121,16 +132,15 @@ public class ClientService {
         }
         Passport newPassport = new Passport(newPassportDto.series(), newPassportDto.number());
 
-        // старый НЕ удалится каскадно, надо вручную
         client.setPassport(newPassport);
         Client updatedClient = clientRepository.save(client);
 
         if(oldPassport!=null){
             passportRepository.delete(oldPassport);
+            log.debug("Старый паспорт удален");
         }
 
+        log.info("Паспорт для клиента с ID {} заменен", clientId);
         return clientMapper.toClientDoneDto(updatedClient);
     }
-
 }
-

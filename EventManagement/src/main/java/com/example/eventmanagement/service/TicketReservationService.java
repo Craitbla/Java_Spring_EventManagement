@@ -1,7 +1,6 @@
 package com.example.eventmanagement.service;
 
-import com.example.eventmanagement.dto.TicketReservationCreateDto;
-import com.example.eventmanagement.dto.TicketReservationDoneDto;
+import com.example.eventmanagement.dto.*;
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Event;
 import com.example.eventmanagement.entity.TicketReservation;
@@ -9,21 +8,20 @@ import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
 import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
-import com.example.eventmanagement.exception.OperationNotAllowedException;
-import com.example.eventmanagement.mapper.EventMapper;
 import com.example.eventmanagement.mapper.TicketReservationMapper;
 import com.example.eventmanagement.repository.ClientRepository;
 import com.example.eventmanagement.repository.EventRepository;
-import com.example.eventmanagement.repository.PassportRepository;
 import com.example.eventmanagement.repository.TicketReservationRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 public class TicketReservationService {
     private final TicketReservationRepository ticketReservationRepository;
     private final ClientRepository clientRepository;
@@ -37,7 +35,22 @@ public class TicketReservationService {
         this.ticketReservationMapper = ticketReservationMapper;
     }
 
+    public List<TicketReservationDto> getAll() {
+        log.debug("Получение списка всех бронирований");
+        return ticketReservationMapper.toTicketReservationDtoList(ticketReservationRepository.findAll());
+    }
+
+    public TicketReservationDoneDto getById(Long id) {
+        log.debug("Получение бронирования по ID: {}", id);
+        TicketReservation ticketReservation = ticketReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Бронь с id %d не найдена", id)
+                ));
+        return ticketReservationMapper.toTicketReservationDoneDto(ticketReservation);
+    }
+
     public TicketReservationDoneDto createReservation(TicketReservationCreateDto dto) {
+        log.info("Создание бронирования для клиента {} на мероприятие {}", dto.clientId(), dto.eventId());
         TicketReservation reservation = ticketReservationMapper.fromCreateWithoutDependenciesDto(dto);
 
         Client client = clientRepository.findById(dto.clientId())
@@ -53,22 +66,19 @@ public class TicketReservationService {
         if (event.getStatus() == EventStatus.CANCELED || event.getStatus() == EventStatus.COMPLETED || event.getStatus() == EventStatus.ONGOING) {
             throw new BusinessValidationException(String.format("Бронирование билетов для мероприятия %s %s закрылось", event.getName(), event.getDate().toString()));
         }
-        if (event.getDate().isBefore(LocalDate.now())) {     //на всякий
+        if (event.getDate().isBefore(LocalDate.now())) {
             throw new BusinessValidationException(String.format("Мероприятие %s %s уже прошло", event.getName(), event.getDate().toString()));
         }
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
         TicketReservation savedTicketReservation = ticketReservationRepository.save(reservation);
+        log.info("Бронирование создано с ID: {}", savedTicketReservation.getId());
         return ticketReservationMapper.toTicketReservationDoneDto(savedTicketReservation);
-        // Проверить существование клиента и мероприятия
-//        // Проверить доступность билетов
-//        // Проверить бизнес-правила (дата мероприятия и т.д.)
-//        // Создать бронирование
     }
 
-    //// 2. Подтверждение/отмена брони
     public void confirmReservation(Long reservationId) {
+        log.info("Подтверждение бронирования с ID: {}", reservationId);
         TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдено", reservationId))
         );
@@ -84,14 +94,11 @@ public class TicketReservationService {
         }
         ticketReservation.setBookingStatus(BookingStatus.CONFIRMED);
         ticketReservationRepository.save(ticketReservation);
-//        // Проверить существование брони
-//        // Проверить возможность подтверждения
-//        // Обновить статус
+        log.info("Бронирование с ID {} подтверждено", reservationId);
     }
 
-    //
-//// 3. Бизнес-логика отмены
     public void cancelReservation(Long reservationId) {
+        log.info("Отмена бронирования с ID: {}", reservationId);
         TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдено", reservationId))
         );
@@ -100,7 +107,6 @@ public class TicketReservationService {
         }
         ticketReservation.setBookingStatus(BookingStatus.CANCELED);
         ticketReservationRepository.save(ticketReservation);
-//        // Проверить можно ли отменить (время до мероприятия)
-//        // Обновить статус
+        log.info("Бронирование с ID {} отменено", reservationId);
     }
 }
