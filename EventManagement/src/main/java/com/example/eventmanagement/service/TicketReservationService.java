@@ -7,6 +7,7 @@ import com.example.eventmanagement.entity.Event;
 import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.EventMapper;
@@ -47,13 +48,13 @@ public class TicketReservationService {
         event.setId(1L);
         Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedTicketsByEventId(event.getId());
         if (availableSeats < dto.numberOfTickets()) {
-            throw new OperationNotAllowedException(String.format("Билеты на мероприятие %s %s закончились", event.getName(), event.getDate().toString()));
+            throw new BusinessValidationException(String.format("Билеты на мероприятие %s %s закончились", event.getName(), event.getDate().toString()));
         }
         if (event.getStatus() == EventStatus.CANCELED || event.getStatus() == EventStatus.COMPLETED || event.getStatus() == EventStatus.ONGOING) {
-            throw new OperationNotAllowedException(String.format("Бронирование билетов для мероприятия %s %s закрылось", event.getName(), event.getDate().toString()));
+            throw new BusinessValidationException(String.format("Бронирование билетов для мероприятия %s %s закрылось", event.getName(), event.getDate().toString()));
         }
         if (event.getDate().isBefore(LocalDate.now())) {     //на всякий
-            throw new OperationNotAllowedException(String.format("Мероприятие %s %s уже прошло", event.getName(), event.getDate().toString()));
+            throw new BusinessValidationException(String.format("Мероприятие %s %s уже прошло", event.getName(), event.getDate().toString()));
         }
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
@@ -72,14 +73,14 @@ public class TicketReservationService {
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдено", reservationId))
         );
         if (ticketReservation.getBookingStatus() == BookingStatus.CANCELED) {
-            throw new OperationNotAllowedException(String.format("Подтверждение резервации по id %d невозможно после отмены бронирования", reservationId));
+            throw new BusinessValidationException(String.format("Подтверждение резервации по id %d невозможно после отмены бронирования", reservationId));
         }
         if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now())) {
-            throw new OperationNotAllowedException(String.format("Подтверждение резервации по id %d невозможно после того как мероприятие уже прошло", reservationId));
+            throw new BusinessValidationException(String.format("Подтверждение резервации по id %d невозможно после того как мероприятие уже прошло", reservationId));
         }
         Integer confirmedTickets = eventRepository.countConfirmedTicketsByEventId(ticketReservation.getEvent().getId());
         if (confirmedTickets + ticketReservation.getNumberOfTickets() > ticketReservation.getEvent().getNumberOfSeats()) {
-            throw new OperationNotAllowedException(String.format("Недостаточно мест для подтверждения бронипо id %d", reservationId));
+            throw new BusinessValidationException(String.format("Недостаточно мест для подтверждения брони по id %d", reservationId));
         }
         ticketReservation.setBookingStatus(BookingStatus.CONFIRMED);
         ticketReservationRepository.save(ticketReservation);
@@ -95,7 +96,7 @@ public class TicketReservationService {
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдено", reservationId))
         );
         if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now().minusDays(1))) {
-            throw new OperationNotAllowedException(String.format("Отмена резервации по id %d невозможна позже чем за день до начала мероприятия", reservationId));
+            throw new BusinessValidationException(String.format("Отмена резервации по id %d невозможна позже чем за день до начала мероприятия", reservationId));
         }
         ticketReservation.setBookingStatus(BookingStatus.CANCELED);
         ticketReservationRepository.save(ticketReservation);

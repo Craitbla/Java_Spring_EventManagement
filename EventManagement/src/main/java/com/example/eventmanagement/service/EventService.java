@@ -5,6 +5,8 @@ import com.example.eventmanagement.dto.EventCreateDto;
 import com.example.eventmanagement.dto.EventDoneDto;
 import com.example.eventmanagement.dto.EventStatisticsDto;
 import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.exception.BusinessValidationException;
+import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.ClientMapper;
@@ -44,7 +46,7 @@ public class EventService {
                 oldStatus == EventStatus.ONGOING && newStatus == EventStatus.CANCELED ||
                 oldStatus == EventStatus.ONGOING && newStatus == EventStatus.COMPLETED
         )) {
-            throw new OperationNotAllowedException(String.format("Статус %s не может поменяться на %s", oldStatus, newStatus));
+            throw new BusinessValidationException(String.format("Статус %s не может поменяться на %s", oldStatus, newStatus));
         }
         foundedEvent.setStatus(newStatus);
         eventRepository.save(foundedEvent);
@@ -74,10 +76,10 @@ return new EventStatisticsDto(foundedEvent.getId(),
     public EventDoneDto createEvent(EventCreateDto eventDto) {
         Event event = eventMapper.fromCreateWithoutDependenciesDto(eventDto);
         if(eventDto.date().isBefore(LocalDate.now())){
-            throw new OperationNotAllowedException("Нельзя создать мероприятие с прошедшей датой");
+            throw new BusinessValidationException("Нельзя создать мероприятие с прошедшей датой");
         }
         if(eventRepository.existsByNameAndDate(event.getName(), event.getDate())){
-            throw new OperationNotAllowedException(String.format("Такое мероприятие уже существует: %s %s", event.getName(), event.getDate().toString()));
+            throw new DuplicateEntityException(String.format("Такое мероприятие уже существует: %s %s", event.getName(), event.getDate().toString()));
         }
         Event savedEvent = eventRepository.save(event);
         return eventMapper.toEventDoneDto(savedEvent);

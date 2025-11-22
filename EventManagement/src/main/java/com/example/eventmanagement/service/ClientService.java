@@ -4,6 +4,7 @@ import com.example.eventmanagement.dto.*;
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.enums.BookingStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.exception.OperationNotAllowedException;
@@ -73,7 +74,7 @@ public class ClientService {
                         String.format("Клиент с id %d не найден", id)
                 ));
         if(!canDeleteClient(id)){
-            throw new OperationNotAllowedException(String.format("Этого клиента с id %d нельзя удалить, у него еще есть активные бронирования", id));
+            throw new BusinessValidationException(String.format("Этого клиента с id %d нельзя удалить, у него еще есть активные бронирования", id));
         }
         clientRepository.delete(client);
     }
@@ -92,10 +93,10 @@ public class ClientService {
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", id))
         );
         if (clientRepository.existsByEmailAndIdNot(dto.email(), id)) {
-            throw new OperationNotAllowedException("Клиент c таким email " + dto.email() + " уже существует");
+            throw new DuplicateEntityException("Клиент c таким email " + dto.email() + " уже существует");
         }
         if (clientRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), id)) {
-            throw new OperationNotAllowedException("Клиент c таким телефоном " + dto.phoneNumber() + " уже существует");
+            throw new DuplicateEntityException("Клиент c таким телефоном " + dto.phoneNumber() + " уже существует");
         }
         client.setFullName(dto.fullName());
         client.setPhoneNumber(dto.phoneNumber());
