@@ -4,6 +4,7 @@ import com.example.eventmanagement.enums.EventStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.sql.Date;

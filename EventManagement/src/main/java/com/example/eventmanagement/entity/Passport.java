@@ -22,7 +22,7 @@ public class Passport {
     @Pattern(regexp = "\\d{4}", message = "Серия должна содержать 4 цифры")
     @Column(nullable = false)
     private String series;
-    @Pattern(regexp = "\\d{6}", message = "Нормер должен содержать 6 цифр")
+    @Pattern(regexp = "\\d{6}", message = "Номер должен содержать 6 цифр")
     @Column(nullable = false)
     private String number;
 
