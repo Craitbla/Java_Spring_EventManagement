@@ -21,6 +21,7 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     List<TicketReservation> findByNumberOfTicketsGreaterThan(Integer numberOfTickets);
     List<TicketReservation> findByBookingStatus(BookingStatus bookingStatus);
     List<TicketReservation> findByBookingStatusIn(List<BookingStatus> bookingStatus);
+    List<TicketReservation> findByBookingStatusAndUpdatedAtBefore(BookingStatus bookingStatus, LocalDateTime dateTime);
 
     List<TicketReservation> findByCreatedAt(LocalDateTime createdAt); //
     List<TicketReservation> findByCreatedAtBefore(LocalDateTime date);

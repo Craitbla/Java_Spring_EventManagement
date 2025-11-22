@@ -14,9 +14,11 @@ import com.example.eventmanagement.repository.EventRepository;
 import com.example.eventmanagement.repository.TicketReservationRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -100,7 +102,7 @@ public class TicketReservationService {
     public void cancelReservation(Long reservationId) {
         log.info("Отмена бронирования с ID: {}", reservationId);
         TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Резервация по id %d не найдено", reservationId))
+                () -> new EntityNotFoundException(String.format("Резервация по id %d не найдена", reservationId))
         );
         if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now().minusDays(1))) {
             throw new BusinessValidationException(String.format("Отмена резервации по id %d невозможна позже чем за день до начала мероприятия", reservationId));
@@ -109,4 +111,36 @@ public class TicketReservationService {
         ticketReservationRepository.save(ticketReservation);
         log.info("Бронирование с ID {} отменено", reservationId);
     }
+    public void deleteCanceledReservation(Long reservationId) {
+        TicketReservation reservation = ticketReservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Резервация по id %d не найдена", reservationId)));
+
+        if (reservation.getBookingStatus() != BookingStatus.CANCELED) {
+            throw new BusinessValidationException(
+                    "Можно удалять только отмененные бронирования. Текущий статус: " + reservation.getBookingStatus()
+            );
+        }
+
+        // Отсоединяем от клиента и мероприятия перед удалением
+//        reservation.assignClient(null);
+//        reservation.assignEvent(null);
+
+        ticketReservationRepository.delete(reservation);
+        log.info("Отмененное бронирование {} удалено администратором", reservationId);
+    }
+
+    // Метод для массовой очистки старых отмененных бронирований
+    @Scheduled(cron = "0 0 2 * * ?")  // Каждый день в 2:00
+    public void cleanupOldCanceledReservations() {
+        LocalDateTime monthAgo = LocalDateTime.now().minusMonths(1);
+        List<TicketReservation> oldCanceled = ticketReservationRepository
+                .findByBookingStatusAndUpdatedAtBefore(BookingStatus.CANCELED, monthAgo);
+
+        if (!oldCanceled.isEmpty()) {
+            log.info("Очистка {} старых отмененных бронирований", oldCanceled.size());
+            ticketReservationRepository.deleteAll(oldCanceled);
+        }
+    }
+
+
 }

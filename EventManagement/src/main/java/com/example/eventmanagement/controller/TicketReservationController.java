@@ -43,6 +43,12 @@ public class TicketReservationController {
         log.info("Бронирование создано с id {}: id клиента {} и id мероприятия {}", createdTicketReservation.id(), dto.clientId(), dto.eventId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTicketReservation);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCanceledReservation(@PathVariable Long id) {
+        log.info("Админское удаление отмененного бронирования ID: {}", id);
+        ticketReservationService.deleteCanceledReservation(id);
+        return ResponseEntity.noContent().build();
+    }
 
 //    @PutMapping("/{id}/status")
 //    public ResponseEntity<TicketReservationDoneDto> updateTicketReservationStatus(@PathVariable Long id, @RequestBody TicketReservationStatus status) {
