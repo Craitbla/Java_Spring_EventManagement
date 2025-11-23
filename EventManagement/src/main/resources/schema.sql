@@ -25,6 +25,7 @@ CREATE TABLE events
     id     SERIAL PRIMARY KEY,
     name         TEXT NOT NULL,
     date         DATE NOT NULL                                                                 DEFAULT CURRENT_DATE,
+    number_of_seats INTEGER NOT NULL DEFAULT 1 CHECK (number_of_seats > 0),
     ticket_price NUMERIC NOT NULL                                                                       DEFAULT 0 CHECK (ticket_price >= 0),
     status       TEXT CHECK (status IN ('запланировано', 'проходит', 'отменено', 'завершено')) DEFAULT 'запланировано',
     description  TEXT,

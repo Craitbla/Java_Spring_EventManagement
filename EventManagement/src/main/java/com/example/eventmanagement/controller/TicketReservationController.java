@@ -1,6 +1,7 @@
 package com.example.eventmanagement.controller;
 
 import com.example.eventmanagement.dto.*;
+import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.service.TicketReservationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,26 +44,21 @@ public class TicketReservationController {
         log.info("Бронирование создано с id {}: id клиента {} и id мероприятия {}", createdTicketReservation.id(), dto.clientId(), dto.eventId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTicketReservation);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCanceledReservation(@PathVariable Long id) {
-        log.info("Админское удаление отмененного бронирования ID: {}", id);
-        ticketReservationService.deleteCanceledReservation(id);
-        return ResponseEntity.noContent().build();
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<TicketReservationDoneDto> cancelTicketReservation(@PathVariable Long id) {
+        log.info("PUT /api/ticketReservations/{}/cancel - отмена бронирования", id);
+        TicketReservationDoneDto canceledTicketReservation = ticketReservationService.cancelReservation(id);
+        log.info("Бронирование с id {} было отменено", id);
+        return ResponseEntity.ok(canceledTicketReservation);
     }
 
-//    @PutMapping("/{id}/status")
-//    public ResponseEntity<TicketReservationDoneDto> updateTicketReservationStatus(@PathVariable Long id, @RequestBody TicketReservationStatus status) {
-//        log.info("PUT /api/ticketReservations/{}/status - обновление бронирования на {}", id, status.getStr());
-//        TicketReservationDoneDto updatedTicketReservation = ticketReservationService.updateTicketReservationStatus(id, status);
-//        log.info("У бронирования с id {} обновлен статус на: {}", id, status.getStr());
-//        return ResponseEntity.ok(updatedTicketReservation);
-//    }
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<TicketReservationDoneDto> confirmTicketReservation(@PathVariable Long id) {
+        log.info("PUT /api/ticketReservations/{}/confirm - подтверждение бронирования", id);
+        TicketReservationDoneDto confirmedTicketReservation = ticketReservationService.confirmReservation(id);
+        log.info("Бронирование с id {} было подтверждено", id);
+        return ResponseEntity.ok(confirmedTicketReservation);
+    }
 
-//    @DeleteMapping("/{id}") по идее не может быть
-//    public ResponseEntity<Void> deleteTicketReservation(@PathVariable Long id) {
-//        log.info("DELETE /api/ticketReservations/{} - удаление бронирования", id);
-//        ticketReservationService.deleteReservation(id);
-//        log.info("Бронирование с id {} удалено", id);
-//        return ResponseEntity.noContent().build();
-//    }
 }
