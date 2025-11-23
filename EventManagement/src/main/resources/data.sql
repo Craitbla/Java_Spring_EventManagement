@@ -1,3 +1,7 @@
+DELETE FROM ticket_reservations;
+DELETE FROM clients;
+DELETE FROM events;
+DELETE FROM passports;
 -- 1. Паспорта (5 записей)
 INSERT INTO passports (series, number, created_at)
 VALUES ('8454', '123456', '2023-01-15 10:30:00'),

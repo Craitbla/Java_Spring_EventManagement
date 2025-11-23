@@ -14,6 +14,7 @@ import java.util.List;
 public interface PassportMapper {
     PassportDto toPassportDto(Passport passport);
     List<PassportDto> toPassportDtoList(List<Passport> passports);
+    @Mapping(target = "updatedAt", ignore = true)
     PassportDoneDto toPassportDoneDto(Passport passport);
 
     //по идее toCreate никогда не нужен будет вроде как, только если в логах
