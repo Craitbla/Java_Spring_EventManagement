@@ -1,6 +1,7 @@
 package com.example.eventmanagement.controller.unit;
 
 import com.example.eventmanagement.controller.AdminController;
+import com.example.eventmanagement.dto.CleanupResponse;
 import com.example.eventmanagement.service.AdminService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,24 +25,26 @@ class AdminControllerUnitTest {
     private AdminController adminController;
 
     @Test
-    void cleanupOldCanceledReservations_WhenReservationsDeleted_ShouldReturnOkWithCount() throws Exception {
+    void cleanupOldCanceledReservations_WhenReservationsDeleted_ShouldReturnOkWithCount() {
         when(adminService.cleanupOldCanceledReservations()).thenReturn(5);
 
-        ResponseEntity<String> response = adminController.cleanupOldCanceledReservations();
+        ResponseEntity<CleanupResponse> response = adminController.cleanupOldCanceledReservations();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Удалено 5 старых отмененных бронирований", response.getBody());
+        assertEquals(5, response.getBody().deletedCount());
+        assertEquals("Удалено 5 бронирований", response.getBody().message());
         verify(adminService).cleanupOldCanceledReservations();
     }
 
     @Test
-    void cleanupOldCanceledReservations_WhenNoReservations_ShouldReturnOkWithNoDeletionsMessage() throws Exception {
+    void cleanupOldCanceledReservations_WhenNoReservations_ShouldReturnOkWithNoDeletionsMessage() {
         when(adminService.cleanupOldCanceledReservations()).thenReturn(0);
 
-        ResponseEntity<String> response = adminController.cleanupOldCanceledReservations();
+        ResponseEntity<CleanupResponse> response = adminController.cleanupOldCanceledReservations();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Нет старых отмененных бронирований для очистки", response.getBody());
+        assertEquals(0, response.getBody().deletedCount());
+        assertEquals("Нет старых отмененных бронирований для очистки", response.getBody().message());
         verify(adminService).cleanupOldCanceledReservations();
     }
 }

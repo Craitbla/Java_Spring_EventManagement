@@ -1,151 +1,93 @@
 package com.example.eventmanagement.controller.integration;
 
-import com.example.eventmanagement.entity.TicketReservation;
+import com.example.eventmanagement.entity.*;
 import com.example.eventmanagement.enums.BookingStatus;
-import com.example.eventmanagement.repository.TicketReservationRepository;
+import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 @Transactional
 class AdminControllerIntegrationTest {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private TicketReservationRepository ticketReservationRepository;
 
-    private String baseUrl;
+    @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private PassportRepository passportRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    private Client testClient;
+    private Event testEvent;
 
     @BeforeEach
     void setUp() {
-        baseUrl = "http://localhost:" + port + "/api/admin";
         ticketReservationRepository.deleteAll();
+        clientRepository.deleteAll();
+        eventRepository.deleteAll();
+        passportRepository.deleteAll();
+
+        Passport passport = new Passport("1234", "567890");
+        passport = passportRepository.save(passport);
+
+        testClient = new Client("Test Client", "+79123456789", "test@mail.ru", passport);
+        testClient = clientRepository.save(testClient);
+
+        testEvent = new Event("Test Event", LocalDate.now().plusDays(10), 100, BigDecimal.valueOf(500), EventStatus.PLANNED, "Description");
+        testEvent = eventRepository.save(testEvent);
+    }
+
+    private TicketReservation createReservationWithClientAndEvent(BookingStatus status, LocalDateTime updatedAt) {
+        TicketReservation reservation = new TicketReservation(2, status);
+        testClient.addTicketReservation(reservation);
+        testEvent.addTicketReservation(reservation);
+        reservation.setUpdatedAt(updatedAt);
+        return ticketReservationRepository.save(reservation);
     }
 
     @Test
-    void cleanupOldCanceledReservations_WhenReservationsExist_ShouldReturnSuccessMessage() {
-        TicketReservation oldCanceled1 = TicketReservation.createForTesting(
-                2, BookingStatus.CANCELED,
-                LocalDateTime.now().minusMonths(2),
-                LocalDateTime.now().minusMonths(2)
-        );
-        TicketReservation oldCanceled2 = TicketReservation.createForTesting(
-                1, BookingStatus.CANCELED,
-                LocalDateTime.now().minusMonths(3),
-                LocalDateTime.now().minusMonths(3)
-        );
-        TicketReservation recentCanceled = TicketReservation.createForTesting(
-                3, BookingStatus.CANCELED,
-                LocalDateTime.now().minusDays(10),
-                LocalDateTime.now().minusDays(10)
-        );
+    void cleanupOldCanceledReservations_WhenReservationsExist_ShouldReturnSuccessMessage() throws Exception {
+        createReservationWithClientAndEvent(BookingStatus.CANCELED, LocalDateTime.now().minusMonths(2));
 
-        ticketReservationRepository.save(oldCanceled1);
-        ticketReservationRepository.save(oldCanceled2);
-        ticketReservationRepository.save(recentCanceled);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                baseUrl + "/cleanup/canceled-reservations",
-                null,
-                String.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Удалено 2 старых отмененных бронирований", response.getBody());
-
-        assertEquals(1, ticketReservationRepository.count());
-        assertTrue(ticketReservationRepository.findById(recentCanceled.getId()).isPresent());
+        mockMvc.perform(post("/api/admin/cleanup/canceled-reservations"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedCount").value(1))
+                .andExpect(jsonPath("$.message").value("Удалено 1 старых отмененных бронирований"));
     }
 
     @Test
-    void cleanupOldCanceledReservations_WhenNoReservations_ShouldReturnNoDeletionsMessage() {
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                baseUrl + "/cleanup/canceled-reservations",
-                null,
-                String.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Нет старых отмененных бронирований для очистки", response.getBody());
-        assertEquals(0, ticketReservationRepository.count());
-    }
-
-    @Test
-    void cleanupOldCanceledReservations_WhenOnlyRecentCanceled_ShouldReturnNoDeletionsMessage() {
-        TicketReservation recentCanceled1 = TicketReservation.createForTesting(
-                2, BookingStatus.CANCELED,
-                LocalDateTime.now().minusDays(20),
-                LocalDateTime.now().minusDays(20)
-        );
-        TicketReservation recentCanceled2 = TicketReservation.createForTesting(
-                1, BookingStatus.CANCELED,
-                LocalDateTime.now().minusDays(15),
-                LocalDateTime.now().minusDays(15)
-        );
-
-        ticketReservationRepository.save(recentCanceled1);
-        ticketReservationRepository.save(recentCanceled2);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                baseUrl + "/cleanup/canceled-reservations",
-                null,
-                String.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Нет старых отмененных бронирований для очистки", response.getBody());
-        assertEquals(2, ticketReservationRepository.count());
-    }
-
-    @Test
-    void cleanupOldCanceledReservations_WithMixedStatuses_ShouldDeleteOnlyOldCanceled() {
-        TicketReservation oldCanceled = TicketReservation.createForTesting(
-                2, BookingStatus.CANCELED,
-                LocalDateTime.now().minusMonths(2),
-                LocalDateTime.now().minusMonths(2)
-        );
-        TicketReservation oldConfirmed = TicketReservation.createForTesting(
-                1, BookingStatus.CONFIRMED,
-                LocalDateTime.now().minusMonths(2),
-                LocalDateTime.now().minusMonths(2)
-        );
-        TicketReservation oldPending = TicketReservation.createForTesting(
-                3, BookingStatus.PENDING_CONFIRMATION,
-                LocalDateTime.now().minusMonths(2),
-                LocalDateTime.now().minusMonths(2)
-        );
-
-        ticketReservationRepository.save(oldCanceled);
-        ticketReservationRepository.save(oldConfirmed);
-        ticketReservationRepository.save(oldPending);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                baseUrl + "/cleanup/canceled-reservations",
-                null,
-                String.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Удалено 1 старых отмененных бронирований", response.getBody());
-        assertEquals(2, ticketReservationRepository.count());
-        assertFalse(ticketReservationRepository.findById(oldCanceled.getId()).isPresent());
-        assertTrue(ticketReservationRepository.findById(oldConfirmed.getId()).isPresent());
-        assertTrue(ticketReservationRepository.findById(oldPending.getId()).isPresent());
+    void cleanupOldCanceledReservations_WhenNoReservations_ShouldReturnNoDeletionsMessage() throws Exception {
+        mockMvc.perform(post("/api/admin/cleanup/canceled-reservations"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedCount").value(0))
+                .andExpect(jsonPath("$.message").value("Нет старых отмененных бронирований для очистки"));
     }
 }

@@ -33,7 +33,10 @@ public class TicketReservationController {
     public ResponseEntity<TicketReservationDoneDto> getTicketReservationById(@PathVariable Long id) {
         log.info("GET /api/ticketReservations/{} - получение бронирования по ID", id);
         TicketReservationDoneDto ticketReservation = ticketReservationService.getById(id);
-        log.info("Бронирование с id {} найдено c почтой клиента {} и названием мероприятия {} и датой {} ", id, ticketReservation.client().email(), ticketReservation.event().name(), ticketReservation.event().date());
+        log.info("Бронирование с id {} найдено. Клиент: {}, Мероприятие: {}",
+                id,
+                ticketReservation.client() != null ? ticketReservation.client().email() : "null",
+                ticketReservation.event() != null ? ticketReservation.event().name() : "null");
         return ResponseEntity.ok(ticketReservation);
     }
 

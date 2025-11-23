@@ -37,7 +37,7 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/statistics")
     public ResponseEntity<EventStatisticsDto> getEventStatisticsById(@PathVariable Long id) {
         log.info("GET /api/events/{} - получение статистики мероприятия по ID", id);
         EventStatisticsDto eventStatisticsDto = eventService.getEventStatistics(id);

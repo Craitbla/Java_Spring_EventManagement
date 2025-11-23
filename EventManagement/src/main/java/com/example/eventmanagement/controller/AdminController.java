@@ -1,4 +1,5 @@
 package com.example.eventmanagement.controller;
+import com.example.eventmanagement.dto.CleanupResponse;
 import com.example.eventmanagement.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,16 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+
     @PostMapping("/cleanup/canceled-reservations")
-    public ResponseEntity<String> cleanupOldCanceledReservations() {
+    public ResponseEntity<CleanupResponse> cleanupOldCanceledReservations() {
         int deletedCount = adminService.cleanupOldCanceledReservations();
 
         if (deletedCount > 0) {
-            return ResponseEntity.ok("Удалено " + deletedCount + " старых отмененных бронирований");
+            return ResponseEntity.ok(new CleanupResponse(deletedCount, "Удалено " + deletedCount + " бронирований"));
         } else {
-            return ResponseEntity.ok("Нет старых отмененных бронирований для очистки");
+            return ResponseEntity.ok(new CleanupResponse(deletedCount,"Нет старых отмененных бронирований для очистки"));
         }
     }
+
 }
