@@ -1,0 +1,22 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.list-group-item {
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.status-planned { border-left: 4px solid #0d6efd; }
+.status-ongoing { border-left: 4px solid #198754; }
+.status-canceled { border-left: 4px solid #dc3545; }
+.status-completed { border-left: 4px solid #6c757d; }
+
+.booking-confirmed { border-left: 4px solid #198754; }
+.booking-canceled { border-left: 4px solid #dc3545; }
+.booking-pending { border-left: 4px solid #ffc107; }
+
+.btn-action {
+    margin: 2px;
+    font-size: 0.8rem;
+}

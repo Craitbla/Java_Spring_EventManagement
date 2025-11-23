@@ -3,20 +3,25 @@ package com.example.eventmanagement.controller.unit;
 import com.example.eventmanagement.controller.AdminController;
 import com.example.eventmanagement.dto.CleanupResponse;
 import com.example.eventmanagement.service.AdminService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class AdminControllerUnitTest {
+
+    private MockMvc mockMvc;
 
     @Mock
     private AdminService adminService;
@@ -24,27 +29,33 @@ class AdminControllerUnitTest {
     @InjectMocks
     private AdminController adminController;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
-    void cleanupOldCanceledReservations_WhenReservationsDeleted_ShouldReturnOkWithCount() {
-        when(adminService.cleanupOldCanceledReservations()).thenReturn(5);
+    void cleanupOldCanceledReservations_shouldReturnSuccessMessageWhenReservationsDeleted() throws Exception {
+        int deletedCount = 5;
+        when(adminService.cleanupOldCanceledReservations()).thenReturn(deletedCount);
 
-        ResponseEntity<CleanupResponse> response = adminController.cleanupOldCanceledReservations();
+        mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(5, response.getBody().deletedCount());
-        assertEquals("Удалено 5 бронирований", response.getBody().message());
-        verify(adminService).cleanupOldCanceledReservations();
+        mockMvc.perform(post("/api/admin/cleanup/canceled-reservations")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedCount").value(deletedCount))
+                .andExpect(jsonPath("$.message").value("Удалено " + deletedCount + " бронирований"));
     }
 
     @Test
-    void cleanupOldCanceledReservations_WhenNoReservations_ShouldReturnOkWithNoDeletionsMessage() {
-        when(adminService.cleanupOldCanceledReservations()).thenReturn(0);
+    void cleanupOldCanceledReservations_shouldReturnNoReservationsMessageWhenNoneDeleted() throws Exception {
+        int deletedCount = 0;
+        when(adminService.cleanupOldCanceledReservations()).thenReturn(deletedCount);
 
-        ResponseEntity<CleanupResponse> response = adminController.cleanupOldCanceledReservations();
+        mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(0, response.getBody().deletedCount());
-        assertEquals("Нет старых отмененных бронирований для очистки", response.getBody().message());
-        verify(adminService).cleanupOldCanceledReservations();
+        mockMvc.perform(post("/api/admin/cleanup/canceled-reservations")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedCount").value(deletedCount))
+                .andExpect(jsonPath("$.message").value("Нет старых отмененных бронирований для очистки"));
     }
 }
