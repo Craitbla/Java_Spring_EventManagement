@@ -64,4 +64,15 @@ public class TicketReservationController {
         return ResponseEntity.ok(confirmedTicketReservation);
     }
 
+    @PostMapping("/cleanup/canceled-reservations")
+    public ResponseEntity<CleanupResponse> cleanupOldCanceledReservations() {
+        int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
+
+        if (deletedCount > 0) {
+            return ResponseEntity.ok(new CleanupResponse(deletedCount, "Удалено " + deletedCount + " бронирований"));
+        } else {
+            return ResponseEntity.ok(new CleanupResponse(deletedCount,"Нет старых отмененных бронирований для очистки"));
+        }
+    }
+
 }

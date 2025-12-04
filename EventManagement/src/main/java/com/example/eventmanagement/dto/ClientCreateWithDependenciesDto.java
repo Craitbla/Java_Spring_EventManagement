@@ -1,10 +1,7 @@
 package com.example.eventmanagement.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +17,7 @@ public record ClientCreateWithDependenciesDto(
         @Email(message = "Email должен быть валидным") //есть два варианта из разных библиотек
         String email,
         @Valid
+        @NotNull(message = "Паспорт обязателен") //возможно что-то сломает
         PassportCreateDto passport
 
 ) {

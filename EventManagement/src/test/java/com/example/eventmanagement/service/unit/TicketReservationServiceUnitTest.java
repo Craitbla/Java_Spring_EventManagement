@@ -1,15 +1,14 @@
 package com.example.eventmanagement.service.unit;
 
-import com.example.eventmanagement.dto.TicketReservationCreateDto;
-import com.example.eventmanagement.dto.TicketReservationDoneDto;
+import com.example.eventmanagement.dto.*;
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Event;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.entity.TicketReservation;
 import com.example.eventmanagement.enums.BookingStatus;
 import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
-import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.TicketReservationMapper;
 import com.example.eventmanagement.repository.ClientRepository;
 import com.example.eventmanagement.repository.EventRepository;
@@ -24,10 +23,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,169 +50,75 @@ class TicketReservationServiceUnitTest {
     @InjectMocks
     private TicketReservationService ticketReservationService;
 
+
     @Test
-    void createReservation_Success() {
-        TicketReservationCreateDto createDto = new TicketReservationCreateDto(
-                1L, 1L, 2, BookingStatus.PENDING_CONFIRMATION
-        );
-        Client client = new Client("Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new Passport("1234", "567890"));
-        client.setId(1L);
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
-        event.setId(1L);
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-        TicketReservationDoneDto expectedDto = new TicketReservationDoneDto(
-                1L, null, null, 2, BookingStatus.PENDING_CONFIRMATION,
-                LocalDateTime.now(), LocalDateTime.now()
+    void cleanupOldCanceledReservations_WhenOldCanceledReservationsExist_DeletesThem() {
+        List<TicketReservation> oldCanceledReservations = Arrays.asList(
+                TicketReservation.createForTesting(2, BookingStatus.CANCELED,
+                        LocalDateTime.now().minusMonths(2), LocalDateTime.now().minusMonths(2)),
+                TicketReservation.createForTesting(1, BookingStatus.CANCELED,
+                        LocalDateTime.now().minusMonths(3), LocalDateTime.now().minusMonths(3))
         );
 
-        when(ticketReservationMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(reservation);
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(eventRepository.countConfirmedTicketsByEventId(1L)).thenReturn(50);
-        when(ticketReservationRepository.save(reservation)).thenReturn(reservation);
-        when(ticketReservationMapper.toTicketReservationDoneDto(reservation)).thenReturn(expectedDto);
+        when(ticketReservationRepository.findByBookingStatusAndUpdatedAtBefore(
+                eq(BookingStatus.CANCELED), any(LocalDateTime.class))
+        ).thenReturn(oldCanceledReservations);
 
-        TicketReservationDoneDto result = ticketReservationService.createReservation(createDto);
+        int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
 
-        assertNotNull(result);
-        assertEquals(2, result.numberOfTickets());
-        verify(ticketReservationRepository).save(reservation);
+        assertEquals(2, deletedCount);
+        verify(ticketReservationRepository).deleteAll(oldCanceledReservations);
+        verify(ticketReservationRepository).findByBookingStatusAndUpdatedAtBefore(
+                eq(BookingStatus.CANCELED), any(LocalDateTime.class));
     }
 
     @Test
-    void createReservation_ClientNotFound_ThrowsException() {
-        TicketReservationCreateDto createDto = new TicketReservationCreateDto(
-                1L, 1L, 2, BookingStatus.PENDING_CONFIRMATION
-        );
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
+    void cleanupOldCanceledReservations_WhenNoOldCanceledReservations_ReturnsZero() {
+        when(ticketReservationRepository.findByBookingStatusAndUpdatedAtBefore(
+                eq(BookingStatus.CANCELED), any(LocalDateTime.class))
+        ).thenReturn(Collections.emptyList());
 
-        when(ticketReservationMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(reservation);
-        when(clientRepository.findById(1L)).thenReturn(Optional.empty());
+        int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
 
-        assertThrows(EntityNotFoundException.class, () -> ticketReservationService.createReservation(createDto));
-        verify(ticketReservationRepository, never()).save(any());
+        assertEquals(0, deletedCount);
+        verify(ticketReservationRepository, never()).deleteAll(any());
+        verify(ticketReservationRepository).findByBookingStatusAndUpdatedAtBefore(
+                eq(BookingStatus.CANCELED), any(LocalDateTime.class));
     }
 
     @Test
-    void createReservation_EventNotFound_ThrowsException() {
-        TicketReservationCreateDto createDto = new TicketReservationCreateDto(
-                1L, 1L, 2, BookingStatus.PENDING_CONFIRMATION
-        );
-        Client client = new Client("Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new Passport("1234", "567890"));
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-
-        when(ticketReservationMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(reservation);
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        when(eventRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> ticketReservationService.createReservation(createDto));
-        verify(ticketReservationRepository, never()).save(any());
-    }
-
-    @Test
-    void createReservation_NotEnoughSeats_ThrowsException() {
-        TicketReservationCreateDto createDto = new TicketReservationCreateDto(
-                1L, 1L, 60, BookingStatus.PENDING_CONFIRMATION
-        );
-        Client client = new Client("Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new Passport("1234", "567890"));
-        client.setId(1L);
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
-        event.setId(1L);
-        TicketReservation reservation = new TicketReservation(60, BookingStatus.PENDING_CONFIRMATION);
-
-        when(ticketReservationMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(reservation);
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(eventRepository.countConfirmedTicketsByEventId(1L)).thenReturn(50);
-
-        assertThrows(OperationNotAllowedException.class, () -> ticketReservationService.createReservation(createDto));
-        verify(ticketReservationRepository, never()).save(any());
-    }
-
-    @Test
-    void createReservation_EventCanceled_ThrowsException() {
-        TicketReservationCreateDto createDto = new TicketReservationCreateDto(
-                1L, 1L, 2, BookingStatus.PENDING_CONFIRMATION
-        );
-        Client client = new Client("Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new Passport("1234", "567890"));
-        client.setId(1L);
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.CANCELED, "Описание");
-       event.setId(1L);
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-
-        when(ticketReservationMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(reservation);
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(eventRepository.countConfirmedTicketsByEventId(1L)).thenReturn(50);
-
-        assertThrows(OperationNotAllowedException.class, () -> ticketReservationService.createReservation(createDto));
-        verify(ticketReservationRepository, never()).save(any());
-    }
-
-    @Test
-    void confirmReservation_Success() {
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-        event.addTicketReservation(reservation);
-//        reservation.setEvent(event);
-
-        when(ticketReservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
-        when(eventRepository.countConfirmedTicketsByEventId(any())).thenReturn(50);
-        when(ticketReservationRepository.save(reservation)).thenReturn(reservation);
-
-        ticketReservationService.confirmReservation(1L);
-
-        assertEquals(BookingStatus.CONFIRMED, reservation.getBookingStatus());
-        verify(ticketReservationRepository).save(reservation);
-    }
-
-    @Test
-    void confirmReservation_AlreadyCanceled_ThrowsException() {
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
+    void deleteCanceledReservation_Success() {
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CANCELED);
-//        reservation.setEvent(event);
-        event.addTicketReservation(reservation);
+        reservation.setId(1L);
+
         when(ticketReservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
-        assertThrows(OperationNotAllowedException.class, () -> ticketReservationService.confirmReservation(1L));
-        verify(ticketReservationRepository, never()).save(any());
+        ticketReservationService.deleteCanceledReservation(1L);
+
+        verify(ticketReservationRepository).delete(reservation);
+        verify(ticketReservationRepository).findById(1L);
     }
 
     @Test
-    void cancelReservation_Success() {
-        Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-//        reservation.setEvent(event);
-        event.addTicketReservation(reservation);
-        when(ticketReservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
-        when(ticketReservationRepository.save(reservation)).thenReturn(reservation);
+    void deleteCanceledReservation_WhenReservationNotFound_ThrowsException() {
+        when(ticketReservationRepository.findById(1L)).thenReturn(Optional.empty());
 
-        ticketReservationService.cancelReservation(1L);
+        assertThrows(EntityNotFoundException.class,
+                () -> ticketReservationService.deleteCanceledReservation(1L));
 
-        assertEquals(BookingStatus.CANCELED, reservation.getBookingStatus());
-        verify(ticketReservationRepository).save(reservation);
+        verify(ticketReservationRepository, never()).delete(any());
     }
 
     @Test
-    void cancelReservation_TooLate_ThrowsException() {
-        Event event = new Event("Концерт", LocalDate.now().minusDays(2), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
-        TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-//        reservation.setEvent(event);
-        event.addTicketReservation(reservation);
+    void deleteCanceledReservation_WhenReservationNotCanceled_ThrowsException() {
+        TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
+        reservation.setId(1L);
+
         when(ticketReservationRepository.findById(1L)).thenReturn(Optional.of(reservation));
 
-        assertThrows(OperationNotAllowedException.class, () -> ticketReservationService.cancelReservation(1L));
-        verify(ticketReservationRepository, never()).save(any());
+        assertThrows(BusinessValidationException.class,
+                () -> ticketReservationService.deleteCanceledReservation(1L));
+
+        verify(ticketReservationRepository, never()).delete(any());
     }
 }

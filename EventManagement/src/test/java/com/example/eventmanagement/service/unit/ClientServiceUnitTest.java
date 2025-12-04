@@ -4,6 +4,7 @@ import com.example.eventmanagement.dto.*;
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.enums.BookingStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
 import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.exception.OperationNotAllowedException;
@@ -145,7 +146,7 @@ class ClientServiceUnitTest {
         when(ticketReservationRepository.findByClientIdAndBookingStatusIn(eq(1L), any()))
                 .thenReturn(List.of(mock(com.example.eventmanagement.entity.TicketReservation.class)));
 
-        assertThrows(OperationNotAllowedException.class, () -> clientService.deleteClient(1L));
+        assertThrows(BusinessValidationException.class, () -> clientService.deleteClient(1L));
         verify(clientRepository, never()).delete(any());
     }
 

@@ -5,6 +5,8 @@ import com.example.eventmanagement.dto.EventDoneDto;
 import com.example.eventmanagement.dto.EventStatisticsDto;
 import com.example.eventmanagement.entity.Event;
 import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
+import com.example.eventmanagement.exception.DuplicateEntityException;
 import com.example.eventmanagement.exception.EntityNotFoundException;
 import com.example.eventmanagement.exception.OperationNotAllowedException;
 import com.example.eventmanagement.mapper.EventMapper;
@@ -72,7 +74,7 @@ class EventServiceUnitTest {
 
         when(eventMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(event);
 
-        assertThrows(OperationNotAllowedException.class, () -> eventService.createEvent(createDto));
+        assertThrows(BusinessValidationException.class, () -> eventService.createEvent(createDto));
         verify(eventRepository, never()).save(any());
     }
 
@@ -88,7 +90,7 @@ class EventServiceUnitTest {
         when(eventMapper.fromCreateWithoutDependenciesDto(createDto)).thenReturn(event);
         when(eventRepository.existsByNameAndDate("Концерт", LocalDate.now().plusDays(10))).thenReturn(true);
 
-        assertThrows(OperationNotAllowedException.class, () -> eventService.createEvent(createDto));
+        assertThrows(DuplicateEntityException.class, () -> eventService.createEvent(createDto));
         verify(eventRepository, never()).save(any());
     }
 
@@ -123,7 +125,7 @@ class EventServiceUnitTest {
 
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
 
-        assertThrows(OperationNotAllowedException.class, () -> eventService.updateEventStatus(1L, EventStatus.PLANNED));
+        assertThrows(BusinessValidationException.class, () -> eventService.updateEventStatus(1L, EventStatus.PLANNED));
         verify(eventRepository, never()).save(any());
     }
 

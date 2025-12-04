@@ -16,6 +16,21 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     public record ErrorResponse(String error, String message){};
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex){
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.toList());
+        ErrorResponse errorResponse = new ErrorResponse(
+                "VALIDATION_ERROR",
+                String.join(";", errors)
+        );
+        log.warn("Validation errors: {}", errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException ex){
         ErrorResponse errorResponse = new ErrorResponse(
@@ -52,6 +67,7 @@ public class GlobalExceptionHandler {
         log.warn("Business validation error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex){
         ErrorResponse errorResponse = new ErrorResponse(
@@ -61,19 +77,6 @@ public class GlobalExceptionHandler {
         log.warn("Internal server error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex){
-        List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
-        ErrorResponse errorResponse = new ErrorResponse(
-                "VALIDATION_ERROR",
-                String.join(";", errors)
-        );
-        log.warn("Validation errors: {}", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
+
 
 }

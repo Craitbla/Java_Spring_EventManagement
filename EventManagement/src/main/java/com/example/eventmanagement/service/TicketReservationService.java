@@ -123,12 +123,20 @@ public class TicketReservationService {
             );
         }
 
-        // Отсоединяем от клиента и мероприятия перед удалением
-//        reservation.assignClient(null);
-//        reservation.assignEvent(null);
-
         ticketReservationRepository.delete(reservation);
-        log.info("Отмененное бронирование {} удалено администратором", reservationId);
+        log.info("Отмененное бронирование {} удалено", reservationId);
+    }
+
+    public int cleanupOldCanceledReservations() {
+        LocalDateTime monthAgo = LocalDateTime.now().minusMonths(1);
+        List<TicketReservation> oldCanceled = ticketReservationRepository
+                .findByBookingStatusAndUpdatedAtBefore(BookingStatus.CANCELED, monthAgo);
+
+        if (!oldCanceled.isEmpty()) {
+            log.info("Очистка {} старых отмененных бронирований", oldCanceled.size());
+            ticketReservationRepository.deleteAll(oldCanceled);
+        }
+        return oldCanceled.size();
     }
 
 }
