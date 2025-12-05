@@ -1,21 +1,22 @@
 package com.example.eventmanagement.dto;
 
 import com.example.eventmanagement.enums.EventStatus;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record EventCreateDto(
+public record EventCreateDto( //экперимент
+        @NotNull(message = "Название обязательно для заполнения")
         @NotBlank(message = "Название не может быть пустым")
         String name,
+        @NotNull(message = "Дата обязательна для заполнения")
         @Future(message = "Дата должна быть будущей")
         LocalDate date,
+        @NotNull(message = "Количество мест обязательно для заполнения")
         @Min(value = 1, message = "Количество мест должно быть больше или равно 1")
         Integer numberOfSeats,
+        @NotNull(message = "Цена билета обязательна для заполнения")
         @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
         BigDecimal ticketPrice,
         EventStatus status,
