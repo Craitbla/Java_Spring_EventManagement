@@ -58,7 +58,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Конференция", LocalDate.now().plusDays(25), 200,
-                BigDecimal.valueOf(1500), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1500), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -94,7 +94,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Фестиваль", LocalDate.now().plusDays(30), 300,
-                BigDecimal.valueOf(2000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(2000), "Описание"
         );
         EventDoneDto event = eventService.createEvent(eventDto);
 
@@ -122,7 +122,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Выставка картин", LocalDate.now().plusDays(35), 150,
-                BigDecimal.valueOf(800), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(800), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -169,7 +169,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Семинар", LocalDate.now().plusDays(40), 100,
-                BigDecimal.valueOf(400), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(400), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -199,7 +199,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Мастер-класс", LocalDate.now().plusDays(45), 80,
-                BigDecimal.valueOf(600), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(600), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -228,7 +228,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Воркшоп", LocalDate.now().plusDays(50), 120,
-                BigDecimal.valueOf(700), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(700), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -258,7 +258,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Круглый стол", LocalDate.now().plusDays(55), 90,
-                BigDecimal.valueOf(900), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(900), "Описание"
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
@@ -287,7 +287,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
         EventDoneDto event = eventService.createEvent(eventDto);
 
@@ -314,7 +314,7 @@ class TicketReservationServiceIntegrationTest {
 
         EventCreateDto eventDto = new EventCreateDto(
                 "Выставка", LocalDate.now().plusDays(15), 50,
-                BigDecimal.valueOf(500), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(500), "Описание"
         );
         EventDoneDto event = eventService.createEvent(eventDto);
 

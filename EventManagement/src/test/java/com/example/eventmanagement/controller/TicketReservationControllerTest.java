@@ -55,7 +55,6 @@ class TicketReservationControllerTest {
                 java.time.LocalDate.now().plusDays(30),
                 100,
                 java.math.BigDecimal.valueOf(1500.00),
-                com.example.eventmanagement.enums.EventStatus.PLANNED,
                 "Концерт симфонического оркестра"
         );
 

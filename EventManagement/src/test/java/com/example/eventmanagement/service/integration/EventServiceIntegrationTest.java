@@ -32,7 +32,7 @@ class EventServiceIntegrationTest {
     void createEvent_WithValidData_SavesToDatabase() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
 
         EventDoneDto result = eventService.createEvent(createDto);
@@ -50,7 +50,7 @@ class EventServiceIntegrationTest {
     void updateEventStatus_ChangesStatusInDatabase() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
 
         EventDoneDto created = eventService.createEvent(createDto);
@@ -65,7 +65,7 @@ class EventServiceIntegrationTest {
     void getEventStatistics_ReturnsCorrectData() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
 
         EventDoneDto created = eventService.createEvent(createDto);

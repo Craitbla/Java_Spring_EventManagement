@@ -43,7 +43,7 @@ class EventServiceUnitTest {
     void createEvent_Success() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
         Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
@@ -67,7 +67,7 @@ class EventServiceUnitTest {
     void createEvent_PastDate_ThrowsException() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().minusDays(1), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000),  "Описание"
         );
         Event event = new Event("Концерт", LocalDate.now().minusDays(1), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
@@ -82,7 +82,7 @@ class EventServiceUnitTest {
     void createEvent_DuplicateEvent_ThrowsException() {
         EventCreateDto createDto = new EventCreateDto(
                 "Концерт", LocalDate.now().plusDays(10), 100,
-                BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание"
+                BigDecimal.valueOf(1000), "Описание"
         );
         Event event = new Event("Концерт", LocalDate.now().plusDays(10), 100,
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");

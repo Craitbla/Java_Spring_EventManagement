@@ -83,7 +83,6 @@ class EventControllerTest {
                 LocalDate.now().plusDays(60),
                 200,
                 new BigDecimal("2000.00"),
-                EventStatus.PLANNED,
                 "Описание нового концерта"
         );
 
@@ -128,7 +127,7 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.name", is("Концерт классической музыки")))
                 .andExpect(jsonPath("$.ticketPrice", is(1500.00)))
                 .andExpect(jsonPath("$.numberOfSeats", is(100)))
-                .andExpect(jsonPath("$.status", is("PLANNED")))
+                .andExpect(jsonPath("$.status", is("запланировано")))
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
 
@@ -205,25 +204,26 @@ class EventControllerTest {
                 .andExpect(jsonPath("$.name", is("Новый концерт")))
                 .andExpect(jsonPath("$.numberOfSeats", is(200)))
                 .andExpect(jsonPath("$.ticketPrice", is(2000.00)))
-                .andExpect(jsonPath("$.status", is("PLANNED")));
+                .andExpect(jsonPath("$.status", is("запланировано")));
 
         verify(eventService, times(1)).createEvent(any(EventCreateDto.class));
     }
 
     @Test
     void createEvent_WithInvalidData_ShouldReturn400() throws Exception {
-        EventCreateDto invalidDto = new EventCreateDto(
-                "",
-                LocalDate.now().minusDays(1),
-                -1,
-                new BigDecimal("-100.00"),
-                EventStatus.PLANNED,
-                ""
-        );
+        String invalidJson = """
+        {
+            "name": "",
+            "date": "2020-01-01",
+            "numberOfSeats": -1,
+            "ticketPrice": -100.00,
+            "description": ""
+        }
+        """;
 
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDto)))
+                        .content(invalidJson))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("VALIDATION_ERROR")))
                 .andExpect(jsonPath("$.message", containsString("name")))
@@ -335,6 +335,16 @@ class EventControllerTest {
     }
 
     @Test
+    void updateEventStatus_WithEmptyBody_ShouldReturn400() throws Exception {
+        mockMvc.perform(put("/api/events/{id}/status", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
+                .andExpect(status().isBadRequest());
+
+        verify(eventService, never()).updateEventStatus(any(), any());
+    }
+
+    @Test
     void deleteEvent_WithValidId_ShouldReturn204() throws Exception {
         doNothing().when(eventService).deleteEvent(1L);
 
@@ -385,45 +395,39 @@ class EventControllerTest {
     @Test
     void createEvent_WithMissingRequiredFields_ShouldReturn400() throws Exception {
         String invalidJson = """
-                {
-                    "date": "2024-12-31",
-                    "numberOfSeats": 100,
-                    "ticketPrice": 1500.00
-                }
-                """;
+        {
+            "date": "2024-12-31",
+            "numberOfSeats": 100,
+            "ticketPrice": 1500.00,
+            "description": "Описание"
+        }
+        """;
 
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("VALIDATION_ERROR")))
+                .andExpect(jsonPath("$.message", containsString("name")));
 
         verify(eventService, never()).createEvent(any());
     }
 
     @Test
-    void updateEventStatus_WithEmptyBody_ShouldReturn400() throws Exception {
-        mockMvc.perform(put("/api/events/{id}/status", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(""))
-                .andExpect(status().isBadRequest());
-
-        verify(eventService, never()).updateEventStatus(any(), any());
-    }
-
-    @Test
     void createEvent_WithZeroSeats_ShouldReturn400() throws Exception {
-        EventCreateDto invalidDto = new EventCreateDto(
-                "Концерт",
-                LocalDate.now().plusDays(30),
-                0,
-                new BigDecimal("1000.00"),
-                EventStatus.PLANNED,
-                "Описание"
-        );
+        String invalidJson = """
+        {
+            "name": "Концерт",
+            "date": "2024-12-31",
+            "numberOfSeats": 0,
+            "ticketPrice": 1000.00,
+            "description": "Описание"
+        }
+        """;
 
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDto)))
+                        .content(invalidJson))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("VALIDATION_ERROR")))
                 .andExpect(jsonPath("$.message", containsString("numberOfSeats")));
@@ -434,20 +438,93 @@ class EventControllerTest {
     @Test
     void createEvent_WithNullTicketPrice_ShouldReturn400() throws Exception {
         String invalidJson = """
-                {
-                    "name": "Концерт",
-                    "date": "2024-12-31",
-                    "numberOfSeats": 100,
-                    "status": "запланировано"
-                }
-                """;
+        {
+            "name": "Концерт",
+            "date": "2024-12-31",
+            "numberOfSeats": 100,
+            "description": "Описание"
+        }
+        """;
 
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("VALIDATION_ERROR")))
+                .andExpect(jsonPath("$.message", containsString("ticketPrice")));
 
         verify(eventService, never()).createEvent(any());
+    }
+
+    @Test
+    void createEvent_WithZeroTicketPrice_ShouldSucceed() throws Exception {
+        String freeEventJson = """
+        {
+            "name": "Бесплатный концерт",
+            "date": "%s",
+            "numberOfSeats": 100,
+            "ticketPrice": 0.00,
+            "description": "Бесплатный вход"
+        }
+        """.formatted(LocalDate.now().plusDays(30));
+
+        EventDoneDto createdEvent = new EventDoneDto(
+                4L,
+                "Бесплатный концерт",
+                LocalDate.now().plusDays(30),
+                100,
+                BigDecimal.ZERO,
+                EventStatus.PLANNED,
+                "Бесплатный вход",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(eventService.createEvent(any(EventCreateDto.class)))
+                .thenReturn(createdEvent);
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(freeEventJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(4)))
+                .andExpect(jsonPath("$.ticketPrice", is(0)));
+
+        verify(eventService, times(1)).createEvent(any(EventCreateDto.class));
+    }
+
+    @Test
+    void createEvent_WithValidDataButNullDescription_ShouldSucceed() throws Exception {
+        String jsonWithoutDescription = """
+        {
+            "name": "Концерт",
+            "date": "%s",
+            "numberOfSeats": 100,
+            "ticketPrice": 1500.00
+        }
+        """.formatted(LocalDate.now().plusDays(30));
+
+        EventDoneDto createdEvent = new EventDoneDto(
+                5L,
+                "Концерт",
+                LocalDate.now().plusDays(30),
+                100,
+                new BigDecimal("1500.00"),
+                EventStatus.PLANNED,
+                null,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(eventService.createEvent(any(EventCreateDto.class)))
+                .thenReturn(createdEvent);
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonWithoutDescription))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(5)));
+
+        verify(eventService, times(1)).createEvent(any(EventCreateDto.class));
     }
 }

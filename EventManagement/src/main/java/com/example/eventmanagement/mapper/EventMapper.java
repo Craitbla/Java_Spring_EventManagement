@@ -23,14 +23,16 @@ public interface EventMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)  // Создаем отдельно
     @Mapping(target = "ticketReservations", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Event fromCreateWithoutDependenciesDto(EventCreateDto dto);
 
-    // ========== UPDATE METHODS ==========
-
-    // Обновление только основных полей (имя, телефон, email)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "ticketReservations", ignore = true)
-    void updateBasicInfo(EventCreateDto dto, @MappingTarget Event event);
+//    // ========== UPDATE METHODS ========== как бы и не используется нигде
+//
+//    // Обновление только основных полей (имя, телефон, email)
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(target = "ticketReservations", ignore = true)
+//    @Mapping(target = "status", ignore = true) ////////////////подумать
+//    void updateBasicInfo(EventCreateDto dto, @MappingTarget Event event);
 }
