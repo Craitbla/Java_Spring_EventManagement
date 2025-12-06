@@ -58,7 +58,7 @@ class BookingStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(invalidValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус бронирования: " + invalidValue);
+                .hasMessageContaining("Неизвестный статус: " + invalidValue);
     }
 
     @Test
@@ -67,7 +67,7 @@ class BookingStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(emptyValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус бронирования: " + emptyValue);
+                .hasMessageContaining("Неизвестный статус: " + emptyValue);
     }
 
     @Test
@@ -76,6 +76,7 @@ class BookingStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(upperCaseValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус бронирования: " + upperCaseValue);
+                .hasMessageContaining("Неизвестный статус: " + upperCaseValue);
+//                .hasMessageContaining("Неизвестный статус: " + upperCaseValue);
     }
 }

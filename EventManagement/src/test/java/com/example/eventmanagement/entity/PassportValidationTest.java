@@ -25,9 +25,9 @@ class PassportValidationTest {
                 Arguments.of(new Passport("123", "567890"), false, "Серия должна содержать 4 цифры"),
                 Arguments.of(new Passport("12345", "567890"), false, "Серия должна содержать 4 цифры"),
                 Arguments.of(new Passport("12a4", "567890"), false, "Серия должна содержать 4 цифры"),
-                Arguments.of(new Passport("1234", "12345"), false, "Нормер должен содержать 6 цифр"),
-                Arguments.of(new Passport("1234", "1234567"), false, "Нормер должен содержать 6 цифр"),
-                Arguments.of(new Passport("1234", "12345a"), false, "Нормер должен содержать 6 цифр")
+                Arguments.of(new Passport("1234", "12345"), false, "Номер должен содержать 6 цифр"),
+                Arguments.of(new Passport("1234", "1234567"), false, "Номер должен содержать 6 цифр"),
+                Arguments.of(new Passport("1234", "12345a"), false, "Номер должен содержать 6 цифр")
         );
     }
 

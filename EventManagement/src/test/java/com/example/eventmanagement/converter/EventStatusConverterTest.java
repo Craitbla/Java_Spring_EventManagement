@@ -61,7 +61,7 @@ class EventStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(invalidValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус мероприятия: " + invalidValue);
+                .hasMessageContaining("Неизвестный статус: " + invalidValue);
     }
 
     @Test
@@ -70,7 +70,7 @@ class EventStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(emptyValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус мероприятия: " + emptyValue);
+                .hasMessageContaining("Неизвестный статус: " + emptyValue);
     }
 
     @Test
@@ -79,7 +79,7 @@ class EventStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(upperCaseValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус мероприятия: " + upperCaseValue);
+                .hasMessageContaining("Неизвестный статус: " + upperCaseValue);
     }
 
     @Test
@@ -88,6 +88,6 @@ class EventStatusConverterTest {
 
         assertThatThrownBy(() -> converter.convertToEntityAttribute(whitespaceValue))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Неверный аргумент для конвертера строчки в статус мероприятия: " + whitespaceValue);
+                .hasMessageContaining("Неизвестный статус: " + whitespaceValue);
     }
 }
