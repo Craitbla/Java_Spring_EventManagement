@@ -1,4 +1,4 @@
-package com.example.eventmanagement.repository;
+package com.example.eventmanagement.integration;
 
 import com.example.eventmanagement.entity.Passport;
 import com.example.eventmanagement.repository.PassportRepository;
@@ -22,23 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("testcontainers")
-class PassportRepositoryTestContainersTest {
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test")
-            .withReuse(true);
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.jpa.properties.hibernate.dialect",
-                () -> "org.hibernate.dialect.PostgreSQLDialect");
-    }
+class PassportRepositoryTestContainersTest extends BaseTestcontainersTest{
 
     @Autowired
     private PassportRepository passportRepository;

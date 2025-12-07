@@ -50,6 +50,7 @@ document.getElementById('clientForm').addEventListener('submit', async (e) => {
         showMessage('Клиент успешно создан!');
         document.getElementById('clientForm').reset();
         loadClients();
+        loadClientsForReservation();
     } catch (error) {
         // Ошибка уже обработана в apiCall
     }
@@ -225,10 +226,23 @@ async function loadEventsForReservation() {
 document.getElementById('reservationForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const tickets = parseInt(document.getElementById('reservationTickets').value, 10);
+    const clientId = parseInt(document.getElementById('reservationClient').value, 10);
+    const eventId = parseInt(document.getElementById('reservationEvent').value, 10);
+
+    if (!clientId || !eventId) {
+        showMessage('Выберите клиента и мероприятие.');
+        return;
+    }
+    if (!Number.isInteger(tickets) || tickets < 1) {
+        showMessage('Введите корректное количество билетов (>=1).');
+        return;
+    }
+
     const reservationData = {
-        clientId: parseInt(document.getElementById('reservationClient').value),
-        eventId: parseInt(document.getElementById('reservationEvent').value),
-        numberOfTickets: parseInt(document.getElementById('reservationTickets').value)
+        clientId: clientId,
+        eventId: eventId,
+        numberOfTickets: tickets
     };
 
     try {
@@ -304,7 +318,7 @@ async function cancelReservation(id) {
 // Администрирование
 async function cleanupReservations() {
     try {
-        const result = await apiCall('/admin/cleanup/canceled-reservations', { method: 'POST' });
+        const result = await apiCall('/ticketReservations/cleanup/canceled-reservations', { method: 'POST' });
         document.getElementById('cleanupResult').innerHTML = `
             <div class="alert alert-info">
                 ${result.message}

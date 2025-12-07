@@ -1,4 +1,4 @@
-package com.example.eventmanagement.repository;
+package com.example.eventmanagement.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("testcontainers")
-class SimpleTestContainersTest {
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
-            .withDatabaseName("testdb")
-            .withUsername("test")
-            .withPassword("test")
-            .withReuse(true);
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
+class SimpleTestContainersTest extends BaseTestcontainersTest{
+//
+//    @Container
+//    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
+//            .withDatabaseName("testdb")
+//            .withUsername("test")
+//            .withPassword("test")
+//            .withReuse(true);
+//
+//    @DynamicPropertySource
+//    static void configureProperties(DynamicPropertyRegistry registry) {
+//        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+//        registry.add("spring.datasource.username", postgres::getUsername);
+//        registry.add("spring.datasource.password", postgres::getPassword);
+//    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

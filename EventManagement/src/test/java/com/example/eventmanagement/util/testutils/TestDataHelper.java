@@ -1,4 +1,4 @@
-package com.example.eventmanagement.testutils;
+package com.example.eventmanagement.util.testutils;
 
 import com.example.eventmanagement.entity.Client;
 import com.example.eventmanagement.entity.Event;

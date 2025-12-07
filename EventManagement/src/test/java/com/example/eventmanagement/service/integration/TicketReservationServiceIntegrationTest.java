@@ -10,7 +10,7 @@ import com.example.eventmanagement.repository.TicketReservationRepository;
 import com.example.eventmanagement.service.ClientService;
 import com.example.eventmanagement.service.EventService;
 import com.example.eventmanagement.service.TicketReservationService;
-import com.example.eventmanagement.testutils.TestDataHelper;
+import com.example.eventmanagement.util.testutils.TestDataHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
