@@ -1,6 +1,7 @@
 package com.example.eventmanagement.dto;
 
 import com.example.eventmanagement.enums.EventStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ public record EventCreateDto( //экперимент
         String name,
         @NotNull(message = "Дата обязательна для заполнения")
         @Future(message = "Дата должна быть будущей")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate date,
         @NotNull(message = "Количество мест обязательно для заполнения")
         @Min(value = 1, message = "Количество мест должно быть больше или равно 1")

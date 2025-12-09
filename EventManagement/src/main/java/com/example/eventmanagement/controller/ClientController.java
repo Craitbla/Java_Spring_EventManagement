@@ -20,14 +20,6 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ClientDto>> getAllClients() {
-        log.info("GET /api/clients - получение списка всех клиентов");
-        List<ClientDto> clients = clientService.getAll();
-        log.debug("Найдено клиентов: {}", clients.size());
-        return ResponseEntity.ok(clients);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ClientDoneDto> getClientById(@PathVariable Long id) {
         log.info("GET /api/clients/{} - получение клиента по ID", id);
@@ -37,10 +29,18 @@ public class ClientController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ClientDto>> searchClient(@RequestParam String searchTerm) {
+    public ResponseEntity<List<ClientDoneDto>> searchClient(@RequestParam String searchTerm) {
         log.info("GET /api/clients/search?searchTerm={} - поиск клиентов", searchTerm);
-        List<ClientDto> clients = clientService.searchClients(searchTerm);
+        List<ClientDoneDto> clients = clientService.searchClients(searchTerm);
         log.debug("По запросу '{}' найдено клиентов: {}", searchTerm, clients.size());
+        return ResponseEntity.ok(clients);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClientDoneDto>> getAllClients() {
+        log.info("GET /api/clients - получение списка всех клиентов");
+        List<ClientDoneDto> clients = clientService.getAll();
+        log.debug("Найдено клиентов: {}", clients.size());
         return ResponseEntity.ok(clients);
     }
 
@@ -52,19 +52,19 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
 
+    @PutMapping("/{id}/passport")
+    public ResponseEntity<ClientDoneDto> updatePassport(@PathVariable Long id, @Valid @RequestBody PassportCreateDto dto) {
+        log.info("PUT /api/clients/{}/passport - обновление паспорта", id);
+        ClientDoneDto updatedClient = clientService.replacePassport(id, dto);
+        log.info("Паспорт клиента с id {} обновлен", id);
+        return ResponseEntity.ok(updatedClient);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ClientDoneDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientCreateDto dto) {
         log.info("PUT /api/clients/{} - обновление клиента", id);
         ClientDoneDto updatedClient = clientService.updateClientBasicInfo(id, dto);
         log.info("Клиент с id {} обновлен: {} -> {}", id, updatedClient.fullName(), updatedClient.email());
-        return ResponseEntity.ok(updatedClient);
-    }
-
-    @PutMapping("/{id}/passport")
-    public ResponseEntity<ClientDoneDto> updatePassport(@PathVariable Long id, @Valid @RequestBody PassportCreateDto dto) {
-        log.info("PUT /api/clients/{}/passport - обновление паспорта", id);
-        ClientDoneDto updatedClient = clientService.replacePassport(id, dto);
-        log.info("Паспорт клиента с id {} обновлен: {} {}", id, dto.series(), dto.number());
         return ResponseEntity.ok(updatedClient);
     }
 

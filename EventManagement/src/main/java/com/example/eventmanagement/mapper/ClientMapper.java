@@ -17,10 +17,11 @@ import java.util.List;
 public interface ClientMapper {
 
     // ========== TO DTO ==========
-    ClientDto toClientDto(Client client);
-    List<ClientDto> toClientDtoList(List<Client> clients);
+//    ClientDto toClientDto(Client client);
+//    List<ClientDto> toClientDtoList(List<Client> clients);
 
     ClientDoneDto toClientDoneDto(Client client);
+    List<ClientDoneDto> toClientDoneDtoList(List<Client> clients);
 
     // ========== FROM DTO (CREATE) ==========
     @Mapping(target = "id", ignore = true)

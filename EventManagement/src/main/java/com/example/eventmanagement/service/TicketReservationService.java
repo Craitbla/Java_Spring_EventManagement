@@ -103,7 +103,7 @@ public class TicketReservationService {
         TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдена", reservationId))
         );
-        if (ticketReservation.getEvent().getDate().isAfter(LocalDate.now().plusDays(1))) {
+        if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now().plusDays(1))) {
             throw new BusinessValidationException(String.format("Отмена резервации по id %d невозможна позже чем за день до начала мероприятия", reservationId));
         }
         ticketReservation.setBookingStatus(BookingStatus.CANCELED);

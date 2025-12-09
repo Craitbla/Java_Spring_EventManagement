@@ -34,29 +34,41 @@ class ClientControllerTest {
     @MockitoBean
     private ClientService clientService;
 
-    private ClientDto clientDto1;
-    private ClientDto clientDto2;
+    private ClientDoneDto clientDto1;
+    private ClientDoneDto clientDto2;
     private ClientDoneDto clientDoneDto;
     private ClientCreateWithDependenciesDto clientCreateDto;
     private ClientCreateDto clientUpdateDto;
-    private PassportCreateDto passportDto;
+    private PassportCreateDto passportDto1;
+    private PassportCreateDto passportDto2;
+
+    private PassportCreateDto passportDto3;
+
 
     @BeforeEach
     void setUp() {
-        passportDto = new PassportCreateDto("1234", "567890");
+        passportDto1 = new PassportCreateDto("1234", "567890");
+        passportDto2 = new PassportCreateDto("1232", "567120");
+        passportDto3 = new PassportCreateDto("1233", "123123");
 
-        clientDto1 = new ClientDto(
+        clientDto1 = new ClientDoneDto(
                 1L,
                 "Иван Иванов",
                 "+79123456789",
-                "ivan@mail.ru"
+                "ivan@mail.ru",
+                passportDto1,
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now()
         );
 
-        clientDto2 = new ClientDto(
+        clientDto2 = new ClientDoneDto(
                 2L,
                 "Петр Петров",
                 "+79123456780",
-                "petr@mail.ru"
+                "petr@mail.ru",
+                passportDto2,
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now()
         );
 
         clientDoneDto = new ClientDoneDto(
@@ -64,7 +76,7 @@ class ClientControllerTest {
                 "Иван Иванов",
                 "+79123456789",
                 "ivan@mail.ru",
-                passportDto,
+                passportDto3,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now()
         );
@@ -73,7 +85,7 @@ class ClientControllerTest {
                 "Иван Иванов",
                 "+79123456789",
                 "ivan@mail.ru",
-                passportDto
+                passportDto1
         );
 
         clientUpdateDto = new ClientCreateDto(
@@ -85,7 +97,7 @@ class ClientControllerTest {
 
     @Test
     void getAllClients_ShouldReturnListOfClients() throws Exception {
-        List<ClientDto> clients = Arrays.asList(clientDto1, clientDto2);
+        List<ClientDoneDto> clients = Arrays.asList(clientDto1, clientDto2);
         when(clientService.getAll()).thenReturn(clients);
 
         mockMvc.perform(get("/api/clients")
@@ -112,8 +124,8 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.fullName", is("Иван Иванов")))
                 .andExpect(jsonPath("$.phoneNumber", is("+79123456789")))
                 .andExpect(jsonPath("$.email", is("ivan@mail.ru")))
-                .andExpect(jsonPath("$.passport.series", is("1234")))
-                .andExpect(jsonPath("$.passport.number", is("567890")))
+                .andExpect(jsonPath("$.passport.series", is("1233")))
+                .andExpect(jsonPath("$.passport.number", is("123123")))
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
 
@@ -136,7 +148,7 @@ class ClientControllerTest {
 
     @Test
     void searchClients_WithSearchTerm_ShouldReturnMatchingClients() throws Exception {
-        List<ClientDto> searchResults = Arrays.asList(clientDto1);
+        List<ClientDoneDto> searchResults = Arrays.asList(clientDto1);
         when(clientService.searchClients("Иван")).thenReturn(searchResults);
 
         mockMvc.perform(get("/api/clients/search")
@@ -151,7 +163,7 @@ class ClientControllerTest {
 
     @Test
     void searchClients_WithEmptySearchTerm_ShouldReturnAllClients() throws Exception {
-        List<ClientDto> allClients = Arrays.asList(clientDto1, clientDto2);
+        List<ClientDoneDto> allClients = Arrays.asList(clientDto1, clientDto2);
         when(clientService.searchClients("")).thenReturn(allClients);
 
         mockMvc.perform(get("/api/clients/search")
@@ -170,7 +182,7 @@ class ClientControllerTest {
                 "Иван Иванов",
                 "+79123456789",
                 "ivan@mail.ru",
-                passportDto,
+                passportDto1,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -235,7 +247,7 @@ class ClientControllerTest {
                 "Иван Иванов Обновленный",
                 "+79123456799",
                 "ivan.new@mail.ru",
-                passportDto,
+                passportDto1,
                 LocalDateTime.now().minusDays(1),
                 LocalDateTime.now()
         );
@@ -405,7 +417,7 @@ class ClientControllerTest {
                 "Иван Иванов",
                 "89123456789",
                 "ivan@mail.ru",
-                passportDto
+                passportDto1
         );
 
         mockMvc.perform(post("/api/clients")

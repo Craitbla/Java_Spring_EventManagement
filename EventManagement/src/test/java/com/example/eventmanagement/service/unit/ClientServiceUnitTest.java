@@ -219,12 +219,15 @@ class ClientServiceUnitTest {
     void searchClients_Success() {
         List<Client> clients = List.of(new Client("Иван Иванов", "+79123456789", "ivan@mail.ru",
                 new Passport("1234", "567890")));
-        List<ClientDto> expectedDtos = List.of(new ClientDto(1L, "Иван Иванов", "+79123456789", "ivan@mail.ru"));
+        PassportCreateDto passportDto1 = new PassportCreateDto("1234", "567890");
+        List<ClientDoneDto> expectedDtos = List.of(new ClientDoneDto(1L, "Иван Иванов", "+79123456789", "ivan@mail.ru", passportDto1,
+                LocalDateTime.now().minusDays(1),
+                LocalDateTime.now()));
 
         when(clientRepository.searchClients("Иван")).thenReturn(clients);
-        when(clientMapper.toClientDtoList(clients)).thenReturn(expectedDtos);
+        when(clientMapper.toClientDoneDtoList(clients)).thenReturn(expectedDtos);
 
-        List<ClientDto> result = clientService.searchClients("Иван");
+        List<ClientDoneDto> result = clientService.searchClients("Иван");
 
         assertNotNull(result);
         assertEquals(1, result.size());

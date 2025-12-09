@@ -34,9 +34,9 @@ public class ClientService {
         this.clientMapper = clientMapper;
     }
 
-    public List<ClientDto> getAll() {
+    public List<ClientDoneDto> getAll() {
         log.debug("Получение списка всех клиентов");
-        return clientMapper.toClientDtoList(clientRepository.findAll());
+        return clientMapper.toClientDoneDtoList(clientRepository.findAll());
     }
 
     public ClientDoneDto getById(Long id) {
@@ -86,10 +86,10 @@ public class ClientService {
         log.info("Клиент с ID {} удален", id);
     }
 
-    public List<ClientDto> searchClients(String searchTerm) {
+    public List<ClientDoneDto> searchClients(String searchTerm) {
         log.debug("Поиск клиентов по запросу: {}", searchTerm);
         List<Client> foundedClients = clientRepository.searchClients(searchTerm);
-        return clientMapper.toClientDtoList(foundedClients);
+        return clientMapper.toClientDoneDtoList(foundedClients);
     }
 
     public boolean canDeleteClient(Long clientId) {

@@ -1,6 +1,7 @@
 package com.example.eventmanagement.dto;
 
 import com.example.eventmanagement.enums.EventStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +15,9 @@ public record EventDoneDto(
         BigDecimal ticketPrice,
         EventStatus status,
         String description,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime createdAt,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime updatedAt
 
 ) {

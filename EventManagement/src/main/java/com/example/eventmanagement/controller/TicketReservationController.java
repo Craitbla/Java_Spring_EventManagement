@@ -21,14 +21,6 @@ public class TicketReservationController {
         this.ticketReservationService = ticketReservationService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<TicketReservationDto>> getAllTicketReservations() {
-        log.info("GET /api/ticketReservations - получение списка всех бронирований");
-        List<TicketReservationDto> ticketReservations = ticketReservationService.getAll();
-        log.debug("Найдено бронирований: {}", ticketReservations.size());
-        return ResponseEntity.ok(ticketReservations);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<TicketReservationDoneDto> getTicketReservationById(@PathVariable Long id) {
         log.info("GET /api/ticketReservations/{} - получение бронирования по ID", id);
@@ -38,6 +30,14 @@ public class TicketReservationController {
                 ticketReservation.client() != null ? ticketReservation.client().email() : "null",
                 ticketReservation.event() != null ? ticketReservation.event().name() : "null");
         return ResponseEntity.ok(ticketReservation);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TicketReservationDto>> getAllTicketReservations() {
+        log.info("GET /api/ticketReservations - получение списка всех бронирований");
+        List<TicketReservationDto> ticketReservations = ticketReservationService.getAll();
+        log.debug("Найдено бронирований: {}", ticketReservations.size());
+        return ResponseEntity.ok(ticketReservations);
     }
 
     @PostMapping

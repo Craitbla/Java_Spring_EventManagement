@@ -21,12 +21,12 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<EventDto>> getAllEvents() {
-        log.info("GET /api/events - получение списка всех мероприятий");
-        List<EventDto> events = eventService.getAll();
-        log.debug("Найдено мероприятий: {}", events.size());
-        return ResponseEntity.ok(events);
+    @GetMapping("/{id}/statistics")
+    public ResponseEntity<EventStatisticsDto> getEventStatisticsById(@PathVariable Long id) {
+        log.info("GET /api/events/{} - получение статистики мероприятия по ID", id);
+        EventStatisticsDto eventStatisticsDto = eventService.getEventStatistics(id);
+        log.info("Статистика мероприятия с id {} найдена: забронированные билеты - {}, выручка - {}", id, eventStatisticsDto.confirmedTickets().toString(), eventStatisticsDto.totalRevenue().toString());
+        return ResponseEntity.ok(eventStatisticsDto);
     }
 
     @GetMapping("/{id}")
@@ -37,12 +37,12 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping("/{id}/statistics")
-    public ResponseEntity<EventStatisticsDto> getEventStatisticsById(@PathVariable Long id) {
-        log.info("GET /api/events/{} - получение статистики мероприятия по ID", id);
-        EventStatisticsDto eventStatisticsDto = eventService.getEventStatistics(id);
-        log.info("Статистика мероприятия с id {} найдена: забронированные билеты - {}, выручка - {}", id, eventStatisticsDto.confirmedTickets().toString(), eventStatisticsDto.totalRevenue().toString());
-        return ResponseEntity.ok(eventStatisticsDto);
+    @GetMapping
+    public ResponseEntity<List<EventDto>> getAllEvents() {
+        log.info("GET /api/events - получение списка всех мероприятий");
+        List<EventDto> events = eventService.getAll();
+        log.debug("Найдено мероприятий: {}", events.size());
+        return ResponseEntity.ok(events);
     }
 
     @PostMapping
