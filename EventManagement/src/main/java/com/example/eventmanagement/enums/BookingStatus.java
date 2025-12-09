@@ -30,4 +30,5 @@ public enum BookingStatus {
 
         throw new IllegalArgumentException("Неизвестный статус: " + str);
     }
+
 }

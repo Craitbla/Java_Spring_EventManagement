@@ -36,4 +36,6 @@ public enum EventStatus {
         }
         throw new IllegalArgumentException("Неизвестный статус: " + str);
     }
+
+    public boolean isBookable() { return this == PLANNED; }
 }

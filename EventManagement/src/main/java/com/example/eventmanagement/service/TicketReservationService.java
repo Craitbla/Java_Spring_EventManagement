@@ -57,15 +57,13 @@ public class TicketReservationService {
 
         Client client = clientRepository.findById(dto.clientId())
                 .orElseThrow(() -> new EntityNotFoundException("Клиент c id" + dto.clientId() + " не найден"));
-        client.setId(1L);
         Event event = eventRepository.findById(dto.eventId())
                 .orElseThrow(() -> new EntityNotFoundException("Мероприятие c id" + dto.eventId() + " не найден"));
-        event.setId(1L);
-        Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedTicketsByEventId(event.getId());
+        Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedOrPendingTicketsByEventId(event.getId());
         if (availableSeats < dto.numberOfTickets()) {
             throw new BusinessValidationException(String.format("Билеты на мероприятие %s %s закончились", event.getName(), event.getDate().toString()));
         }
-        if (event.getStatus() == EventStatus.CANCELED || event.getStatus() == EventStatus.COMPLETED || event.getStatus() == EventStatus.ONGOING) {
+        if (!event.getStatus().isBookable()) {
             throw new BusinessValidationException(String.format("Бронирование билетов для мероприятия %s %s закрылось", event.getName(), event.getDate().toString()));
         }
         if (event.getDate().isBefore(LocalDate.now())) {
@@ -105,13 +103,13 @@ public class TicketReservationService {
         TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Резервация по id %d не найдена", reservationId))
         );
-        if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now().minusDays(1))) {
+        if (ticketReservation.getEvent().getDate().isAfter(LocalDate.now().plusDays(1))) {
             throw new BusinessValidationException(String.format("Отмена резервации по id %d невозможна позже чем за день до начала мероприятия", reservationId));
         }
         ticketReservation.setBookingStatus(BookingStatus.CANCELED);
-        TicketReservation canceledTicketReservation = ticketReservationRepository.save(ticketReservation);
+        TicketReservation reservation = ticketReservationRepository.save(ticketReservation);
         log.info("Бронирование с ID {} отменено", reservationId);
-        return ticketReservationMapper.toTicketReservationDoneDto(canceledTicketReservation);
+        return ticketReservationMapper.toTicketReservationDoneDto(reservation);
     }
     public void deleteCanceledReservation(Long reservationId) {
         TicketReservation reservation = ticketReservationRepository.findById(reservationId)

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="readme .">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/AdminControllerIntegrationTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/ClientControllerIntegrationTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/EventControllerIntegrationTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/TicketReservationControllerIntegrationTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/AdminControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/AdminControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/ClientControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/ClientControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/EventControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/EventControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/TicketReservationControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/TicketReservationControllerTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="34KRhW9yYemDKgelALV5cqtHv75" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/MyJava/for github/Java_Spring_EventManagement/EventManagement/pom.xml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\MyJava\for github\Java_Spring_EventManagement\EventManagement\src\test\java\com\example\eventmanagement\controller" />
+      <recent name="D:\MyJava\for github\Java_Spring_EventManagement" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="" />
+      <created>1760960397421</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760960397421</updated>
+      <workItem from="1760960398360" duration="495000" />
+      <workItem from="1761121589688" duration="2942000" />
+      <workItem from="1761393419446" duration="2803000" />
+      <workItem from="1764839902861" duration="646000" />
+      <workItem from="1764840568237" duration="1747000" />
+      <workItem from="1764842344475" duration="49000" />
+      <workItem from="1764842418277" duration="99000" />
+    </task>
+    <task id="LOCAL-00001" summary="readme">
+      <option name="closed" value="true" />
+      <created>1761123180667</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761123180667</updated>
+    </task>
+    <task id="LOCAL-00002" summary="readme .">
+      <option name="closed" value="true" />
+      <created>1761394086745</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1761394086745</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="readme" />
+    <MESSAGE value="readme ." />
+    <option name="LAST_COMMIT_MESSAGE" value="readme ." />
+  </component>
+</project>

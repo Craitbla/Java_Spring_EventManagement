@@ -46,6 +46,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
            "WHERE tr.event.id = :eventId AND tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.CONFIRMED")
     Integer countConfirmedTicketsByEventId(@Param("eventId") Long eventId);
 
+    @Query("SELECT COALESCE(SUM(tr.numberOfTickets), 0L) " +
+            "FROM TicketReservation tr " +
+            "WHERE tr.event.id = :eventId AND (tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.CONFIRMED OR tr.bookingStatus = com.example.eventmanagement.enums.BookingStatus.PENDING_CONFIRMATION)")
+    Integer countConfirmedOrPendingTicketsByEventId(@Param("eventId") Long eventId);
+
+
     @Query("SELECT e, COUNT(t) as reservationCount " +
            "FROM Event e LEFT JOIN e.ticketReservations t " +
            "WHERE e.id = :eventId " +
