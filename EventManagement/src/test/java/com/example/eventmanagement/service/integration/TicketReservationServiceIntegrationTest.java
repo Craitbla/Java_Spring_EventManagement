@@ -62,20 +62,16 @@ class TicketReservationServiceIntegrationTest {
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
-        // Получаем сущности из репозитория
         var client = clientRepository.findById(clientDone.id()).orElseThrow();
         var event = eventRepository.findById(eventDone.id()).orElseThrow();
 
-        // Создаем старое отмененное бронирование с помощью TestDataHelper
         LocalDateTime oldDateTime = LocalDateTime.now().minusMonths(2);
         TicketReservation oldReservation = TestDataHelper.createOldCanceledReservation(
                 client, event, oldDateTime
         );
 
-        // Сохраняем бронирование
         TicketReservation savedReservation = ticketReservationRepository.save(oldReservation);
 
-        // Проверяем, что дата действительно старая
         assertTrue(savedReservation.getUpdatedAt().isBefore(LocalDateTime.now().minusMonths(1)));
 
         int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
@@ -103,7 +99,6 @@ class TicketReservationServiceIntegrationTest {
         );
         TicketReservationDoneDto reservation = ticketReservationService.createReservation(reservationDto);
 
-        // Отменяем бронирование (оно будет иметь текущую дату обновления)
         ticketReservationService.cancelReservation(reservation.id());
 
         int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
@@ -126,25 +121,21 @@ class TicketReservationServiceIntegrationTest {
         );
         EventDoneDto eventDone = eventService.createEvent(eventDto);
 
-        // Получаем сущности
         var client = clientRepository.findById(clientDone.id()).orElseThrow();
         var event = eventRepository.findById(eventDone.id()).orElseThrow();
 
-        // 1. Старое отмененное бронирование (создаем через TestDataHelper)
         LocalDateTime oldDateTime = LocalDateTime.now().minusMonths(2);
         TicketReservation oldCanceled = TestDataHelper.createOldCanceledReservation(
                 client, event, oldDateTime
         );
         TicketReservation savedOldCanceled = ticketReservationRepository.save(oldCanceled);
 
-        // 2. Новое отмененное бронирование (через сервис)
         TicketReservationCreateDto reservation2Dto = new TicketReservationCreateDto(
                 clientDone.id(), eventDone.id(), 3, BookingStatus.PENDING_CONFIRMATION
         );
         TicketReservationDoneDto newCanceledReservation = ticketReservationService.createReservation(reservation2Dto);
         ticketReservationService.cancelReservation(newCanceledReservation.id());
 
-        // 3. Подтвержденное бронирование (через сервис)
         TicketReservationCreateDto reservation3Dto = new TicketReservationCreateDto(
                 clientDone.id(), eventDone.id(), 1, BookingStatus.PENDING_CONFIRMATION
         );
@@ -154,9 +145,9 @@ class TicketReservationServiceIntegrationTest {
         int deletedCount = ticketReservationService.cleanupOldCanceledReservations();
 
         assertEquals(1, deletedCount);
-        assertFalse(ticketReservationRepository.findById(savedOldCanceled.getId()).isPresent()); // Удалено
-        assertTrue(ticketReservationRepository.findById(newCanceledReservation.id()).isPresent());  // Не удалено
-        assertTrue(ticketReservationRepository.findById(confirmedReservation.id()).isPresent());  // Не удалено
+        assertFalse(ticketReservationRepository.findById(savedOldCanceled.getId()).isPresent());
+        assertTrue(ticketReservationRepository.findById(newCanceledReservation.id()).isPresent());  
+        assertTrue(ticketReservationRepository.findById(confirmedReservation.id()).isPresent());  
     }
 
     @Test
@@ -176,7 +167,6 @@ class TicketReservationServiceIntegrationTest {
         var client = clientRepository.findById(clientDone.id()).orElseThrow();
         var event = eventRepository.findById(eventDone.id()).orElseThrow();
 
-        // Создаем ожидающее бронирование со старыми датами
         LocalDateTime oldDateTime = LocalDateTime.now().minusMonths(2);
         TicketReservation pendingReservation = TestDataHelper.createReservationWithCustomDates(
                 client, event, 2, BookingStatus.PENDING_CONFIRMATION, oldDateTime, oldDateTime
@@ -235,7 +225,6 @@ class TicketReservationServiceIntegrationTest {
         var client = clientRepository.findById(clientDone.id()).orElseThrow();
         var event = eventRepository.findById(eventDone.id()).orElseThrow();
 
-        // Создаем отмененное бронирование, которому ровно 30 дней (не старее месяца)
         LocalDateTime notSoOldDate = LocalDateTime.now().minusDays(20);
         TicketReservation boundaryReservation = TestDataHelper.createOldCanceledReservation(
                 client, event, notSoOldDate
@@ -296,7 +285,6 @@ class TicketReservationServiceIntegrationTest {
         );
         TicketReservationDoneDto reservation = ticketReservationService.createReservation(reservationDto);
 
-        // Отменяем бронирование
         ticketReservationService.cancelReservation(reservation.id());
 
         ticketReservationService.deleteCanceledReservation(reservation.id());

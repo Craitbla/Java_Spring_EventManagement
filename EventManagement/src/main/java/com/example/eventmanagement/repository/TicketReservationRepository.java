@@ -23,7 +23,7 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     List<TicketReservation> findByBookingStatusIn(List<BookingStatus> bookingStatus);
     List<TicketReservation> findByBookingStatusAndUpdatedAtBefore(BookingStatus bookingStatus, LocalDateTime dateTime);
 
-    List<TicketReservation> findByCreatedAt(LocalDateTime createdAt); //
+    List<TicketReservation> findByCreatedAt(LocalDateTime createdAt);
     List<TicketReservation> findByCreatedAtBefore(LocalDateTime date);
     List<TicketReservation> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<TicketReservation> findByCreatedAtAfter(LocalDateTime date);
@@ -42,6 +42,6 @@ public interface TicketReservationRepository extends JpaRepository<TicketReserva
     Optional<TicketReservation> findByIdWithEvent(@Param("id") Long id);
 
     @Query("SELECT tr FROM TicketReservation tr JOIN FETCH tr.client JOIN FETCH tr.event WHERE tr.id = :id")
-    Optional<TicketReservation> findByIdWithClientAndEvent(@Param("id") Long id); //не проверено
+    Optional<TicketReservation> findByIdWithClientAndEvent(@Param("id") Long id);
 
 }

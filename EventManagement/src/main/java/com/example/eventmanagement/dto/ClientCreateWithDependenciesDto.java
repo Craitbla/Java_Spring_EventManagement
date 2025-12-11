@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//ограничение пасспорта через изпользование PassportWithoutDependencies
 public record ClientCreateWithDependenciesDto(
         @NotBlank(message = "ФИО не может быть пустым")
         @Size(min = 2, max = 100, message = "Имя должно иметь длину между 2 и 100 буквами")

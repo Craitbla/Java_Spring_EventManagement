@@ -43,7 +43,7 @@ public class Event {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"event", "client"}) //Поле event уже игнорируется в TicketReservation: ага, да нет уж
+    @JsonIgnoreProperties({"event", "client"})
     private List<TicketReservation> ticketReservations = new ArrayList<>();
 
     public Event() {

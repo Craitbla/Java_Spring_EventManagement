@@ -5,7 +5,6 @@ import com.example.eventmanagement.enums.EventStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-//где-то в репозитории вроде как
 public record EventStatisticsDto(
         Long id,
         String name,

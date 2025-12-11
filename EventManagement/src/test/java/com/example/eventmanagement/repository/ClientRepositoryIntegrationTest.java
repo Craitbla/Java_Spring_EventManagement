@@ -85,7 +85,7 @@ class ClientRepositoryIntegrationTest {
         }
 
         @Test
-        void shouldFindByPassport() { ///////////////////////////////
+        void shouldFindByPassport() {
             Optional<Client> foundClient = clientRepository.findByPassport(passport1);
             assertThat(foundClient.isPresent()).isTrue();
             assertThat(foundClient.get().getPassport()).isEqualTo(passport1);
@@ -137,7 +137,6 @@ class ClientRepositoryIntegrationTest {
             entityManager.persist(passport2);
             entityManager.persist(passport3);
 
-            // Используем фабричный метод для установки конкретных временных меток
             client1 = Client.createForTesting("Иванов Иван", "+79123456789", "ivanov@mail.com",
                     passport1, now.minusDays(2), now.minusDays(1));
             client2 = Client.createForTesting("Петров Петр", "+79223456789", "petrov@mail.com",
@@ -156,7 +155,7 @@ class ClientRepositoryIntegrationTest {
         void shouldFindByCreatedAtBefore() {
             LocalDateTime threshold = LocalDateTime.now().minusHours(12);
             List<Client> foundClients = clientRepository.findByCreatedAtBefore(threshold);
-            assertThat(foundClients).hasSize(2); // client1 и client2
+            assertThat(foundClients).hasSize(2);
         }
 
         @Test
@@ -164,14 +163,14 @@ class ClientRepositoryIntegrationTest {
             LocalDateTime start = LocalDateTime.now().minusDays(3);
             LocalDateTime end = LocalDateTime.now().minusDays(1).plusHours(1);
             List<Client> foundClients = clientRepository.findByCreatedAtBetween(start, end);
-            assertThat(foundClients).hasSize(2); // client1 и client2
+            assertThat(foundClients).hasSize(2);
         }
 
         @Test
         void shouldFindByUpdatedAtAfter() {
             LocalDateTime threshold = LocalDateTime.now().minusHours(12);
             List<Client> foundClients = clientRepository.findByUpdatedAtAfter(threshold);
-            assertThat(foundClients).hasSize(2); // client2 и client3
+            assertThat(foundClients).hasSize(2);
         }
 
         @Test
@@ -231,7 +230,6 @@ class ClientRepositoryIntegrationTest {
 
         @Test
         void shouldFindByIdWithTicketReservations() {
-            // Создаем резервацию для клиента
             TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
             client1.addTicketReservation(reservation);
 

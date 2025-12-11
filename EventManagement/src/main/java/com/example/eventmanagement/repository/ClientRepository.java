@@ -13,18 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
-//    Волшебство Spring Data JPA:
-//    вам не нужно писать реализацию этих методов!
-//    Spring сам сгенерирует SQL-запросы на основе названий методов.
-//     уже есть в JpaRepository такое дублирование удаляется Optional<Client> findById(Long id);
-//2 вар Optional
-//везде листа потому что все может быть не уникальным yesss
     List<Client> findByFullNameIgnoreCase(String fullName);
     List<Client> findByFullNameContainingIgnoreCase(String fullNamePart);
     Optional<Client> findByPhoneNumber(String phoneNumber);
     Optional<Client> findByEmail(String email);
     Optional<Client> findByPassport(Passport passport);
-    List<Client> findByCreatedAt(LocalDateTime createdAt); //
+    List<Client> findByCreatedAt(LocalDateTime createdAt);
     List<Client> findByCreatedAtBefore(LocalDateTime date);
     List<Client> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Client> findByCreatedAtAfter(LocalDateTime date);
@@ -32,8 +26,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByUpdatedAtBefore(LocalDateTime date);
     List<Client> findByUpdatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Client> findByUpdatedAtAfter(LocalDateTime date);
-
-    //Абстракция над SQL - оперирует сущностями и их полями, а не таблицами
     @Query("SELECT c FROM Client c JOIN FETCH c.passport WHERE c.id = :id")
     Optional<Client> findByIdWithPassport(@Param("id") Long id);
 

@@ -15,11 +15,8 @@ public abstract class BaseTestcontainersTest {
             .withDatabaseName("testdb")
             .withUsername("test")
             .withPassword("test")
-            .withReuse(true); //#быстрее но может CI/CD и возможно что-то еще
+            .withReuse(true);
 
-//    static {
-//        postgres.start();
-//    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -27,7 +24,6 @@ public abstract class BaseTestcontainersTest {
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
 
-        // Также можно переопределить другие свойства если нужно
         registry.add("spring.jpa.properties.hibernate.dialect",
                 () -> "org.hibernate.dialect.PostgreSQLDialect");
     }

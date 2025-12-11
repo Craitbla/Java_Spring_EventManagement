@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface PassportRepository extends JpaRepository<Passport, Long> {
     Optional<Passport> findBySeriesAndNumber(String series, String number);
-    List<Passport> findByCreatedAt(LocalDateTime createdAt); //
+    List<Passport> findByCreatedAt(LocalDateTime createdAt);
     List<Passport> findByCreatedAtBefore(LocalDateTime date);
     List<Passport> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
     List<Passport> findByCreatedAtAfter(LocalDateTime date);

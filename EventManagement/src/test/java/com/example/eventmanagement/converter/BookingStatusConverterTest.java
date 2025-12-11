@@ -77,6 +77,5 @@ class BookingStatusConverterTest {
         assertThatThrownBy(() -> converter.convertToEntityAttribute(upperCaseValue))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Неизвестный статус: " + upperCaseValue);
-//                .hasMessageContaining("Неизвестный статус: " + upperCaseValue);
     }
 }

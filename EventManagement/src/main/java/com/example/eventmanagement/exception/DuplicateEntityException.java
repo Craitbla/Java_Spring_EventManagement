@@ -1,6 +1,6 @@
 package com.example.eventmanagement.exception;
 
-public class DuplicateEntityException  extends RuntimeException { //непроверяемые
+public class DuplicateEntityException  extends RuntimeException {
 
     public DuplicateEntityException(String message) {
         super(message);

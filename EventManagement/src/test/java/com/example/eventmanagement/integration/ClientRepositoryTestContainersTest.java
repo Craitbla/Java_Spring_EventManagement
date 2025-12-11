@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-@ActiveProfiles("testcontainers") // Используем отдельный профиль
+@ActiveProfiles("testcontainers")
 class ClientRepositoryTestContainersTest extends BaseTestcontainersTest{
 
     @Autowired
@@ -31,7 +31,6 @@ class ClientRepositoryTestContainersTest extends BaseTestcontainersTest{
 
     @BeforeEach
     void setUp() {
-        // Очищаем базу перед каждым тестом
         if (clientRepository != null) {
             clientRepository.deleteAll();
         }
@@ -39,14 +38,11 @@ class ClientRepositoryTestContainersTest extends BaseTestcontainersTest{
 
     @Test
     void shouldSaveAndRetrieveClientWithRealPostgreSQL() {
-        // Arrange
         Passport passport = new Passport("1234", "567890");
         Client client = new Client("Test User", "+79123456789", "test@mail.com", passport);
 
-        // Act
         Client saved = clientRepository.save(client);
 
-        // Assert
         assertThat(saved.getId()).isNotNull();
 
         Optional<Client> found = clientRepository.findById(saved.getId());
@@ -57,18 +53,15 @@ class ClientRepositoryTestContainersTest extends BaseTestcontainersTest{
 
     @Test
     void shouldEnforceUniquePhoneNumberConstraint() {
-        // Arrange
         Passport passport1 = new Passport("1111", "222222");
         Passport passport2 = new Passport("3333", "444444");
 
         Client client1 = new Client("User One", "+79123456789", "user1@mail.com", passport1);
         Client client2 = new Client("User Two", "+79123456789", "user2@mail.com", passport2);
 
-        // Act & Assert
         Client savedClient1 = clientRepository.save(client1);
         assertThat(savedClient1.getId()).isNotNull();
 
-        // Вторая запись с тем же номером телефона должна вызвать исключение
         assertThat(org.junit.jupiter.api.Assertions.assertThrows(
                 Exception.class,
                 () -> {

@@ -23,7 +23,6 @@ class TicketReservationEntityIntegrationTest {
 
     @Test
     void shouldSaveTicketReservationWithClientAndEvent() {
-        // Сначала сохраняем паспорт, клиента и событие
         Passport passport = new Passport("1234", "567890");
         entityManager.persistAndFlush(passport);
 
@@ -34,10 +33,7 @@ class TicketReservationEntityIntegrationTest {
                 BigDecimal.valueOf(1000), EventStatus.PLANNED, "Описание");
         entityManager.persistAndFlush(event);
 
-        // Затем создаем и сохраняем резервацию
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -65,8 +61,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation();
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -92,8 +86,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -122,22 +114,17 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
-        // Сохраняем резервацию в БД
         entityManager.persistAndFlush(reservation);
 
         Long reservationId = reservation.getId();
         Long clientId = client.getId();
 
-        // Очищаем контекст и перезагружаем объекты
         entityManager.clear();
         Client clientToDelete = entityManager.find(Client.class, clientId);
 
-        // При удалении клиента резервация должна удалиться (каскад ALL от Client)
         entityManager.remove(clientToDelete);
         entityManager.flush();
 
@@ -157,8 +144,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -186,8 +171,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -216,8 +199,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -246,14 +227,10 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation1 = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation1.assignClient(client);
-//        reservation1.assignEvent(event);
         client.addTicketReservation(reservation1);
         event.addTicketReservation(reservation1);
 
         TicketReservation reservation2 = new TicketReservation(1, BookingStatus.PENDING_CONFIRMATION);
-//        reservation2.assignClient(client);
-//        reservation2.assignEvent(event);
         client.addTicketReservation(reservation2);
         event.addTicketReservation(reservation2);
 
@@ -283,8 +260,6 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation = new TicketReservation(2, BookingStatus.PENDING_CONFIRMATION);
-//        reservation.assignClient(client);
-//        reservation.assignEvent(event);
         client.addTicketReservation(reservation);
         event.addTicketReservation(reservation);
 
@@ -311,14 +286,10 @@ class TicketReservationEntityIntegrationTest {
         entityManager.persistAndFlush(event);
 
         TicketReservation reservation1 = new TicketReservation(2, BookingStatus.CONFIRMED);
-//        reservation1.assignClient(client);
-//        reservation1.assignEvent(event);
         client.addTicketReservation(reservation1);
         event.addTicketReservation(reservation1);
 
         TicketReservation reservation2 = new TicketReservation(3, BookingStatus.PENDING_CONFIRMATION);
-//        reservation2.assignClient(client);
-//        reservation2.assignEvent(event);
         client.addTicketReservation(reservation2);
         event.addTicketReservation(reservation2);
 

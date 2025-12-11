@@ -53,7 +53,7 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 
-    @PutMapping("/{id}/status") //по идее здесь тоже другое
+    @PutMapping("/{id}/status")
     public ResponseEntity<EventDoneDto> updateEventStatus(@PathVariable Long id, @RequestBody EventStatus status) {
         log.info("PUT /api/events/{}/status - обновление мероприятия на {}", id, status.getStr());
         EventDoneDto updatedEvent = eventService.updateEventStatus(id, status);

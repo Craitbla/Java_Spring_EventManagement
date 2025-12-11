@@ -55,7 +55,6 @@ class TicketReservationRepositoryTestContainersTest extends BaseTestcontainersTe
                 EventStatus.PLANNED,
                 "Test Description");
 
-        // Сохраняем через entityManager в тестовом методе
     }
 
     @Test

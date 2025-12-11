@@ -105,17 +105,14 @@ class PassportEntityIntegrationTest {
 
     @Test
     void shouldSavePassportWithClient() {
-        // Сначала сохраняем паспорт
         Passport passport = new Passport("1234", "567890");
         entityManager.persistAndFlush(passport);
 
-        // Затем создаем и сохраняем клиента с этим паспортом
         Client client = new Client("Иванов Иван", "+79123456789", "test@mail.com", passport);
         entityManager.persistAndFlush(client);
 
         entityManager.clear();
 
-        // Проверяем, что связь установлена корректно
         Passport foundPassport = entityManager.find(Passport.class, passport.getId());
         assertThat(foundPassport.getClient()).isNotNull();
         assertThat(foundPassport.getClient().getId()).isEqualTo(client.getId());
@@ -130,11 +127,9 @@ class PassportEntityIntegrationTest {
         Long clientId = client.getId();
         Long passportId = passport.getId();
 
-        // Удаляем клиента - паспорт должен удалиться каскадно
         entityManager.remove(client);
         entityManager.flush();
 
-        // Проверяем, что оба объекта удалены
         assertThat(entityManager.find(Client.class, clientId)).isNull();
         assertThat(entityManager.find(Passport.class, passportId)).isNull();
     }

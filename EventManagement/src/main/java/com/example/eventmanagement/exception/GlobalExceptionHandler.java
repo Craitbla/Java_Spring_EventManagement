@@ -35,7 +35,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex){
         String errorMessage;
         if (ex.getCause() != null && ex.getCause().getCause() != null) {
-            // Если есть вложенная причина (например, при парсинге enum)
             errorMessage = ex.getCause().getCause().getMessage();
         } else if (ex.getCause() != null) {
             errorMessage = ex.getCause().getMessage();
@@ -90,11 +89,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex){
+        log.error("Internal server error: type={}, message={}", ex.getClass().getName(), ex.getMessage(), ex);
         ErrorResponse errorResponse = new ErrorResponse(
                 "INTERNAL_ERROR",
                 "Internal server error"
         );
-        log.warn("Internal server error: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 

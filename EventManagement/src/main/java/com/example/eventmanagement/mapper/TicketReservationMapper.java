@@ -19,14 +19,13 @@ public interface TicketReservationMapper {
     // ========== FROM DTO (CREATE) ==========
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)  // Создаем отдельно
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "event", ignore = true)
     TicketReservation fromCreateWithoutDependenciesDto(TicketReservationCreateDto dto);
 
     // ========== UPDATE METHODS ==========
 
-    // Обновление только основных полей (имя, телефон, email)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

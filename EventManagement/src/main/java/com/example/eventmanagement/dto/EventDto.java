@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record EventDto( //другие Dto потом
+public record EventDto(
                         Long id,
                         @NotBlank(message = "Название не может быть пустым")
                         String name,

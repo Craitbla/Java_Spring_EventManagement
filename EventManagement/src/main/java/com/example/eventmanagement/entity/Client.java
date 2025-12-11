@@ -29,7 +29,7 @@ public class Client {
     @Pattern(regexp = "^\\+7\\d{10}$", message = "Телефон должен начинаться с +7 и иметь 11 цифр")
     private String phoneNumber;
     @Column
-    @Email(message = "Email должен быть валидным") //есть два варианта из разных библиотек
+    @Email(message = "Email должен быть валидным")
     private String email;
 
     @NotNull(message = "Паспорт обязателен")
@@ -119,7 +119,7 @@ public class Client {
         this.email = email;
     }
 
-    public Passport getPassport() {//////
+    public Passport getPassport() {
         return passport;
     }
 

@@ -28,7 +28,6 @@ class ClientEntityIntegrationTest {
 
     @Test
     void shouldSaveClientWithPassport() {
-        // Сначала сохраняем паспорт отдельно
         Passport passport = new Passport("1234", "567890");
         entityManager.persistAndFlush(passport);
 
@@ -104,7 +103,7 @@ Client findedClient =  entityManager.find(Client.class, client.getId());
     }
 
     @Test
-    void shouldSaveClientWithNullEmail() {/////////////////////////////////переделка
+    void shouldSaveClientWithNullEmail() {
         Passport passport = new Passport("1234", "567890");
         entityManager.persistAndFlush(passport);
 

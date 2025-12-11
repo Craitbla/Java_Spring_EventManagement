@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record EventCreateDto( //экперимент
+public record EventCreateDto(
         @NotNull(message = "Название обязательно для заполнения")
         @NotBlank(message = "Название не может быть пустым")
         String name,
@@ -21,7 +21,6 @@ public record EventCreateDto( //экперимент
         @NotNull(message = "Цена билета обязательна для заполнения")
         @DecimalMin(value = "0.0", inclusive = true, message = "Цена билета должна быть больше или равна 0")
         BigDecimal ticketPrice,
-//        EventStatus status, гений,ага
         String description
 ) {
 }

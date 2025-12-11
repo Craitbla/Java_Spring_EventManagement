@@ -26,14 +26,11 @@ public class Passport {
     @Column(nullable = false)
     private String number;
 
-//    Соглашения об именовании в разных средах:
-//    В Java принято camelCase (например, createdAt)
-//    В SQL базах данных часто используют snake_case (например, created_at)
     @Column(name ="created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @JsonIgnoreProperties("passport")
-    @OneToOne(mappedBy = "passport") //обратка на себя
+    @OneToOne(mappedBy = "passport")
     private Client client;
 
     public Passport() {

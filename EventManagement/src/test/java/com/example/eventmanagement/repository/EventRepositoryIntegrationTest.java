@@ -267,8 +267,6 @@ class EventRepositoryIntegrationTest {
             entityManager.persist(reservation1);
             entityManager.persist(reservation2);
             entityManager.persist(reservation3);
-//            entityManager.persist(client1); //
-//            entityManager.persist(event1);
 
             entityManager.flush();
             entityManager.clear();
@@ -289,9 +287,8 @@ class EventRepositoryIntegrationTest {
             Optional<Event> foundEvent = eventRepository.findByIdWithTicketReservations(999L);
             assertThat(foundEvent).isEmpty();
         }
-        @Test //////////////переделка
+        @Test
         void demonstrateJoinVsLeftJoinDifference() {
-            // Создаем событие БЕЗ броней
             Event eventWithoutReservations = new Event("Концерт без броней",
                     LocalDate.now().plusDays(5),
                     100,
@@ -302,9 +299,6 @@ class EventRepositoryIntegrationTest {
             entityManager.persist(eventWithoutReservations);
             entityManager.flush();
             entityManager.clear();
-
-            // С INNER JOIN этот запрос вернет Optional.empty()
-            // С LEFT JOIN этот запрос вернет событие с пустым списком броней
 
             Optional<Event> foundEvent = eventRepository.findByIdWithTicketReservations(eventWithoutReservations.getId());
 

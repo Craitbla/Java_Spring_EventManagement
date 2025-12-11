@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-//без id и временных меток, чтобы создавать
-//create
 public record ClientCreateDto(
         @NotBlank(message = "ФИО не может быть пустым")
         @Size(min = 2, max = 100, message = "Имя должно иметь длину между 2 и 100 буквами")

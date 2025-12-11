@@ -321,7 +321,7 @@ class EventManagementE2ETest {
         assertThat(getByIdResp.getBody()).isNotNull();
         assertThat(getByIdResp.getBody().status()).isEqualTo(EventStatus.PLANNED);
 
-        // ❌ Невалидный переход: PLANNED -> COMPLETED
+        //  Невалидный переход: PLANNED -> COMPLETED
         // Отправляем enum COMPLETED, Jackson сам сделает "завершено"
         HttpEntity<EventStatus> invalidBody = new HttpEntity<>(EventStatus.COMPLETED);
         ResponseEntity<GlobalError> invalidStatusResp = restTemplate.exchange(
@@ -336,7 +336,7 @@ class EventManagementE2ETest {
         assertThat(invalidStatusResp.getBody()).isNotNull();
         assertThat(invalidStatusResp.getBody().error()).isEqualTo("BUSINESS_RULE_ERROR");
 
-        // ✅ Валидный переход: PLANNED -> ONGOING
+        //  Валидный переход: PLANNED -> ONGOING
         HttpEntity<EventStatus> ongoingBody = new HttpEntity<>(EventStatus.ONGOING);
         ResponseEntity<EventDoneDto> ongoingResp = restTemplate.exchange(
                 "/api/events/{id}/status",
@@ -350,7 +350,7 @@ class EventManagementE2ETest {
         assertThat(ongoingResp.getBody()).isNotNull();
         assertThat(ongoingResp.getBody().status()).isEqualTo(EventStatus.ONGOING);
 
-        // ✅ Валидный переход: ONGOING -> COMPLETED
+        //  Валидный переход: ONGOING -> COMPLETED
         HttpEntity<EventStatus> completedBody = new HttpEntity<>(EventStatus.COMPLETED);
         ResponseEntity<EventDoneDto> completedResp = restTemplate.exchange(
                 "/api/events/{id}/status",
