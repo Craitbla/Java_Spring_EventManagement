@@ -24,6 +24,67 @@ class EventManagementE2ETest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Test
+    @DisplayName("INVALID_REQUEST: битый JSON при создании мероприятия")
+    void invalidJsonOnCreateEvent_shouldReturnInvalidRequest() {
+        // Нам нужно отправить явно плохой JSON
+        String badJson = "{ \"name\": \"Кривое событие\" "; // нет закрывающей скобки
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(badJson, headers);
+
+        ResponseEntity<GlobalError> resp = restTemplate.postForEntity(
+                "/api/events",
+                entity,
+                GlobalError.class
+        );
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().error()).isEqualTo("INVALID_REQUEST");
+        // Точный текст зависит от Jackson, поэтому проверяем только, что сообщение не пустое
+        assertThat(resp.getBody().message()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("INVALID_REQUEST: несуществующий статус мероприятия (ошибка парсинга enum)")
+    void invalidEventStatusString_shouldReturnInvalidRequest() {
+        // 1. Создаём нормальное событие
+        EventDoneDto event = createEvent(
+                "E2E Невалидный статус",
+                LocalDate.now().plusDays(15),
+                10,
+                new BigDecimal("500.00"),
+                "Событие для проверки неверного статуса"
+        );
+        Long eventId = event.id();
+
+        // 2. Шлём тело, которое Jackson попытается распарсить в EventStatus,
+        // но наш @JsonCreator бросит IllegalArgumentException("Неизвестный статус: идет")
+        String body = "\"идет\""; // вместо допустимого "проходит"/"запланировано"/...
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<GlobalError> resp = restTemplate.exchange(
+                "/api/events/{id}/status",
+                HttpMethod.PUT,
+                entity,
+                GlobalError.class,
+                eventId
+        );
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(resp.getBody()).isNotNull();
+        assertThat(resp.getBody().error()).isEqualTo("INVALID_REQUEST");
+        // Сообщение должно прийти из IllegalArgumentException в fromString(...)
+        assertThat(resp.getBody().message()).contains("Неизвестный статус");
+    }
+
+
     // ===========================
     // 1. Основной happy-path флоу
     // ===========================
