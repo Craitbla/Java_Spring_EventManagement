@@ -67,7 +67,7 @@ public class EventService {
         Event foundedEvent = eventRepository.findById(eventId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Мероприятие по id %d не найдено", eventId))
         );
-        Integer countedConfirmedTickets = eventRepository.countConfirmedTicketsByEventId(eventId);
+        Integer countedConfirmedTickets = eventRepository.countConfirmedTicketsByEventId(eventId).intValue();
         BigDecimal totalRevenue = foundedEvent.getTicketPrice().multiply(BigDecimal.valueOf(countedConfirmedTickets));
         return new EventStatisticsDto(foundedEvent.getId(),
                 foundedEvent.getName(), foundedEvent.getDate(), foundedEvent.getNumberOfSeats(), foundedEvent.getStatus(),

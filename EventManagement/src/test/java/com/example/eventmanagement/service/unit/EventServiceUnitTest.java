@@ -136,7 +136,7 @@ class EventServiceUnitTest {
         event.setId(1L);
 
         when(eventRepository.findById(1L)).thenReturn(Optional.of(event));
-        when(eventRepository.countConfirmedTicketsByEventId(1L)).thenReturn(50);
+        when(eventRepository.countConfirmedTicketsByEventId(1L)).thenReturn(50L);
 
         EventStatisticsDto result = eventService.getEventStatistics(1L);
 

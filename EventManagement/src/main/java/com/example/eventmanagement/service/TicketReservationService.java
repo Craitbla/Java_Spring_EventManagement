@@ -59,7 +59,7 @@ public class TicketReservationService {
                 .orElseThrow(() -> new EntityNotFoundException("Клиент c id" + dto.clientId() + " не найден"));
         Event event = eventRepository.findById(dto.eventId())
                 .orElseThrow(() -> new EntityNotFoundException("Мероприятие c id" + dto.eventId() + " не найден"));
-        Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedOrPendingTicketsByEventId(event.getId());
+        Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedOrPendingTicketsByEventId(event.getId()).intValue();
         if (availableSeats < dto.numberOfTickets()) {
             throw new BusinessValidationException(String.format("Билеты на мероприятие %s %s закончились", event.getName(), event.getDate().toString()));
         }
@@ -88,7 +88,7 @@ public class TicketReservationService {
         if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now())) {
             throw new BusinessValidationException(String.format("Подтверждение резервации по id %d невозможно после того как мероприятие уже прошло", reservationId));
         }
-        Integer confirmedTickets = eventRepository.countConfirmedTicketsByEventId(ticketReservation.getEvent().getId());
+        Integer confirmedTickets = eventRepository.countConfirmedTicketsByEventId(ticketReservation.getEvent().getId()).intValue();
         if (confirmedTickets + ticketReservation.getNumberOfTickets() > ticketReservation.getEvent().getNumberOfSeats()) {
             throw new BusinessValidationException(String.format("Недостаточно мест для подтверждения брони по id %d", reservationId));
         }

@@ -51,9 +51,6 @@ public class ClientService {
     public ClientDoneDto createClient(ClientCreateWithDependenciesDto dto) {
         log.info("Создание клиента: {}", dto.email());
 
-        if (clientRepository.existsByEmail(dto.email())) {
-            throw new DuplicateEntityException("Клиент c таким email " + dto.email() + " уже существует");
-        }
         if (clientRepository.existsByPhoneNumber(dto.phoneNumber())) {
             throw new DuplicateEntityException("Клиент c таким телефоном " + dto.phoneNumber() + " уже существует");
         }

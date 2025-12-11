@@ -17,11 +17,11 @@ public class TicketReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JsonIgnoreProperties({"ticketReservation", "passport"})
+    @JsonIgnoreProperties({"ticketReservations", "passport"})
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
     @ManyToOne
-    @JsonIgnoreProperties({"ticketReservation"})
+    @JsonIgnoreProperties({"ticketReservations"})
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
     @Column(name = "number_of_tickets", nullable = false)
