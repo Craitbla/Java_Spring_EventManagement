@@ -58,7 +58,6 @@ class ClientServiceUnitTest {
                 "ivan@mail.ru", new PassportCreateDto("1234", "567890"),
                 LocalDateTime.now(), LocalDateTime.now());
 
-        when(clientRepository.existsByEmail("ivan@mail.ru")).thenReturn(false);
         when(clientRepository.existsByPhoneNumber("+79123456789")).thenReturn(false);
         when(passportRepository.existsBySeriesAndNumber("1234", "567890")).thenReturn(false);
         when(clientRepository.save(any(Client.class))).thenReturn(client);
@@ -72,26 +71,12 @@ class ClientServiceUnitTest {
     }
 
     @Test
-    void createClient_DuplicateEmail_ThrowsException() {
-        ClientCreateWithDependenciesDto createDto = new ClientCreateWithDependenciesDto(
-                "Иван Иванов", "+79123456789", "ivan@mail.ru",
-                new PassportCreateDto("1234", "567890")
-        );
-
-        when(clientRepository.existsByEmail("ivan@mail.ru")).thenReturn(true);
-
-        assertThrows(DuplicateEntityException.class, () -> clientService.createClient(createDto));
-        verify(clientRepository, never()).save(any(Client.class));
-    }
-
-    @Test
     void createClient_DuplicatePhone_ThrowsException() {
         ClientCreateWithDependenciesDto createDto = new ClientCreateWithDependenciesDto(
                 "Иван Иванов", "+79123456789", "ivan@mail.ru",
                 new PassportCreateDto("1234", "567890")
         );
 
-        when(clientRepository.existsByEmail("ivan@mail.ru")).thenReturn(false);
         when(clientRepository.existsByPhoneNumber("+79123456789")).thenReturn(true);
 
         assertThrows(DuplicateEntityException.class, () -> clientService.createClient(createDto));
@@ -105,7 +90,6 @@ class ClientServiceUnitTest {
                 new PassportCreateDto("1234", "567890")
         );
 
-        when(clientRepository.existsByEmail("ivan@mail.ru")).thenReturn(false);
         when(clientRepository.existsByPhoneNumber("+79123456789")).thenReturn(false);
         when(passportRepository.existsBySeriesAndNumber("1234", "567890")).thenReturn(true);
 
