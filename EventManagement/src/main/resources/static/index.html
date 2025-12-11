@@ -1,780 +1,354 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Event Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <style>
-        .card { transition: transform 0.2s; margin-bottom: 15px; }
-        .card:hover { transform: translateY(-2px); }
-        .badge { font-size: 0.8em; }
-        .tab-content { padding: 20px; }
-        .action-buttons { margin-top: 10px; }
-        .error-message { color: #dc3545; font-size: 0.9em; margin-top: 5px; }
-        .form-section { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-    </style>
+    <title>Event Management — учебный фронт</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="bi bi-calendar-event me-2"></i>Event Management
-        </a>
-    </div>
-</nav>
+<header class="page-header">
+    <h1>Event Management — учебный фронтенд</h1>
+    <p class="subtitle">
+        Все контроллеры в одном месте: клиенты, мероприятия, бронирования, паспорта, статистика и очистка.
+    </p>
+</header>
 
-<div class="container">
-    <!-- Уведомления -->
-    <div id="alerts"></div>
+<main class="container">
 
-    <!-- Основные вкладки -->
-    <ul class="nav nav-tabs mb-3" id="mainTabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#eventsTab">
-                <i class="bi bi-calendar"></i> Мероприятия
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#personsTab">
-                <i class="bi bi-people"></i> Люди
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#reservationsTab">
-                <i class="bi bi-ticket"></i> Бронирования
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#createTab">
-                <i class="bi bi-plus-circle"></i> Создание
-            </a>
-        </li>
-    </ul>
+    <!-- КЛИЕНТЫ -->
+    <section id="clients-section" class="section">
+        <h2>Клиенты</h2>
+        <div class="forms-grid">
 
-    <div class="tab-content">
-        <!-- Мероприятия -->
-        <div class="tab-pane fade show active" id="eventsTab">
-            <h4>Мероприятия <span id="eventsCount" class="badge bg-secondary">0</span></h4>
-            <div class="row" id="eventsList"></div>
+            <!-- Создать клиента с паспортом -->
+            <form id="client-create-form" class="card">
+                <h3>Создать клиента</h3>
+                <label>
+                    ФИО
+                    <input id="client-create-fullName" type="text" required minlength="2" maxlength="100">
+                </label>
+                <label>
+                    Телефон (+7...)
+                    <input id="client-create-phone" type="tel" required pattern="^\+7\d{10}$" placeholder="+7XXXXXXXXXX">
+                </label>
+                <label>
+                    Email
+                    <input id="client-create-email" type="email" placeholder="user@example.com">
+                </label>
+
+                <fieldset class="fieldset">
+                    <legend>Паспорт</legend>
+                    <label>
+                        Серия (4 цифры)
+                        <input id="client-create-passport-series" type="text" required pattern="\d{4}" maxlength="4">
+                    </label>
+                    <label>
+                        Номер (6 цифр)
+                        <input id="client-create-passport-number" type="text" required pattern="\d{6}" maxlength="6">
+                    </label>
+                </fieldset>
+
+                <button type="submit">Создать клиента</button>
+            </form>
+
+            <!-- Получить клиента по ID -->
+            <form id="client-get-form" class="card">
+                <h3>Найти клиента по ID</h3>
+                <label>
+                    ID клиента
+                    <input id="client-get-id" type="number" min="1" required>
+                </label>
+                <button type="submit">Получить</button>
+            </form>
+
+            <!-- Поиск клиентов -->
+            <form id="client-search-form" class="card">
+                <h3>Поиск клиентов</h3>
+                <label>
+                    Строка поиска
+                    <input id="client-search-term" type="text" required>
+                </label>
+                <p class="hint">
+                    Ищет по ФИО, телефону или email (поиск по подстроке).
+                </p>
+                <button type="submit">Искать</button>
+            </form>
+
+            <!-- Все клиенты -->
+            <form id="client-all-form" class="card">
+                <h3>Все клиенты</h3>
+                <p class="hint">GET /api/clients</p>
+                <button type="submit">Загрузить список</button>
+            </form>
+
+            <!-- Обновить основные данные клиента -->
+            <form id="client-update-form" class="card">
+                <h3>Обновить данные клиента</h3>
+                <label>
+                    ID клиента
+                    <input id="client-update-id" type="number" min="1" required>
+                </label>
+                <label>
+                    Новое ФИО
+                    <input id="client-update-fullName" type="text" required minlength="2" maxlength="100">
+                </label>
+                <label>
+                    Новый телефон
+                    <input id="client-update-phone" type="tel" required pattern="^\+7\d{10}$" placeholder="+7XXXXXXXXXX">
+                </label>
+                <label>
+                    Новый Email
+                    <input id="client-update-email" type="email">
+                </label>
+                <button type="submit">Обновить</button>
+            </form>
+
+            <!-- Заменить паспорт клиента -->
+            <form id="client-passport-form" class="card">
+                <h3>Заменить паспорт клиента</h3>
+                <label>
+                    ID клиента
+                    <input id="client-passport-id" type="number" min="1" required>
+                </label>
+                <label>
+                    Новая серия (4 цифры)
+                    <input id="client-passport-series" type="text" required pattern="\d{4}" maxlength="4">
+                </label>
+                <label>
+                    Новый номер (6 цифр)
+                    <input id="client-passport-number" type="text" required pattern="\d{6}" maxlength="6">
+                </label>
+                <button type="submit">Заменить паспорт</button>
+            </form>
+
+            <!-- Удалить клиента -->
+            <form id="client-delete-form" class="card">
+                <h3>Удалить клиента</h3>
+                <label>
+                    ID клиента
+                    <input id="client-delete-id" type="number" min="1" required>
+                </label>
+                <p class="hint">
+                    Удалить можно только клиента без активных бронирований.
+                </p>
+                <button type="submit" class="danger">Удалить</button>
+            </form>
         </div>
 
-        <!-- Люди -->
-        <div class="tab-pane fade" id="personsTab">
-            <h4>Люди <span id="personsCount" class="badge bg-secondary">0</span></h4>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Имя</th>
-                        <th>Email</th>
-                        <th>Дата рождения</th>
-                        <th>Паспорт</th>
-                        <th>Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody id="personsTable"></tbody>
-                </table>
-            </div>
+        <div class="output-container">
+            <h3>Ответ сервера (клиенты)</h3>
+            <pre id="clients-output" class="output" aria-live="polite"></pre>
+        </div>
+    </section>
+
+    <!-- СОБЫТИЯ -->
+    <section id="events-section" class="section">
+        <h2>Мероприятия</h2>
+        <div class="forms-grid">
+
+            <!-- Создать мероприятие -->
+            <form id="event-create-form" class="card">
+                <h3>Создать мероприятие</h3>
+                <label>
+                    Название
+                    <input id="event-create-name" type="text" required>
+                </label>
+                <label>
+                    Дата
+                    <input id="event-create-date" type="date" required>
+                </label>
+                <label>
+                    Количество мест
+                    <input id="event-create-seats" type="number" min="1" required>
+                </label>
+                <label>
+                    Цена билета
+                    <input id="event-create-price" type="number" min="0" step="0.01" required>
+                </label>
+                <label>
+                    Описание
+                    <textarea id="event-create-description" rows="3" placeholder="Необязательно"></textarea>
+                </label>
+                <p class="hint">
+                    Статус и другие поля по умолчанию выставляет бэк.
+                </p>
+                <button type="submit">Создать мероприятие</button>
+            </form>
+
+            <!-- Получить мероприятие по ID -->
+            <form id="event-get-form" class="card">
+                <h3>Найти мероприятие по ID</h3>
+                <label>
+                    ID мероприятия
+                    <input id="event-get-id" type="number" min="1" required>
+                </label>
+                <button type="submit">Получить</button>
+            </form>
+
+            <!-- Все мероприятия -->
+            <form id="event-all-form" class="card">
+                <h3>Все мероприятия</h3>
+                <p class="hint">GET /api/events</p>
+                <button type="submit">Загрузить список</button>
+            </form>
+
+            <!-- Обновить статус мероприятия -->
+            <form id="event-status-form" class="card">
+                <h3>Обновить статус мероприятия</h3>
+                <label>
+                    ID мероприятия
+                    <input id="event-status-id" type="number" min="1" required>
+                </label>
+                <label>
+                    Новый статус
+                    <select id="event-status-select" required>
+                        <option value="">— выберите статус —</option>
+                        <option value="запланировано">запланировано (PLANNED)</option>
+                        <option value="проходит">проходит (ONGOING)</option>
+                        <option value="отменено">отменено (CANCELED)</option>
+                        <option value="завершено">завершено (COMPLETED)</option>
+                    </select>
+                </label>
+                <p class="hint">
+                    Бизнес-правила переходов статусов проверяет бэк (BusinessValidationException).
+                </p>
+                <button type="submit">Обновить статус</button>
+            </form>
+
+            <!-- Статистика по мероприятию -->
+            <form id="event-stat-form" class="card">
+                <h3>Статистика мероприятия</h3>
+                <label>
+                    ID мероприятия
+                    <input id="event-stat-id" type="number" min="1" required>
+                </label>
+                <p class="hint">
+                    GET /api/events/{id}/statistics — подтвержденные билеты и выручка.
+                </p>
+                <button type="submit">Получить статистику</button>
+            </form>
+
+            <!-- Удалить мероприятие -->
+            <form id="event-delete-form" class="card">
+                <h3>Удалить мероприятие</h3>
+                <label>
+                    ID мероприятия
+                    <input id="event-delete-id" type="number" min="1" required>
+                </label>
+                <p class="hint">
+                    Нельзя удалить мероприятия со статусом PLANNED или ONGOING — бэк вернет BUSINESS_RULE_ERROR.
+                </p>
+                <button type="submit" class="danger">Удалить</button>
+            </form>
         </div>
 
-        <!-- Бронирования -->
-        <div class="tab-pane fade" id="reservationsTab">
-            <h4>Бронирования <span id="reservationsCount" class="badge bg-secondary">0</span></h4>
-            <div class="row" id="reservationsList"></div>
+        <div class="output-container">
+            <h3>Ответ сервера (мероприятия)</h3>
+            <pre id="events-output" class="output" aria-live="polite"></pre>
+        </div>
+    </section>
+
+    <!-- БРОНИРОВАНИЯ -->
+    <section id="reservations-section" class="section">
+        <h2>Бронирования билетов</h2>
+        <div class="forms-grid">
+
+            <!-- Создать бронирование -->
+            <form id="reservation-create-form" class="card">
+                <h3>Создать бронирование</h3>
+                <label>
+                    ID клиента
+                    <input id="reservation-create-clientId" type="number" min="1" required>
+                </label>
+                <label>
+                    ID мероприятия
+                    <input id="reservation-create-eventId" type="number" min="1" required>
+                </label>
+                <label>
+                    Количество билетов
+                    <input id="reservation-create-num" type="number" min="1" required>
+                </label>
+                <label>
+                    Статус при создании (опционально)
+                    <select id="reservation-create-status">
+                        <option value="">— использовать значение по умолчанию —</option>
+                        <option value="подтверждено">подтверждено (CONFIRMED)</option>
+                        <option value="отменено">отменено (CANCELED)</option>
+                        <option value="ожидает подтверждения">ожидает подтверждения (PENDING_CONFIRMATION)</option>
+                    </select>
+                </label>
+                <p class="hint">
+                    Если статус не выбран, бэк поставит PENDING_CONFIRMATION.
+                </p>
+                <button type="submit">Создать бронирование</button>
+            </form>
+
+            <!-- Получить бронирование по ID -->
+            <form id="reservation-get-form" class="card">
+                <h3>Найти бронирование по ID</h3>
+                <label>
+                    ID бронирования
+                    <input id="reservation-get-id" type="number" min="1" required>
+                </label>
+                <button type="submit">Получить</button>
+            </form>
+
+            <!-- Все бронирования -->
+            <form id="reservation-all-form" class="card">
+                <h3>Все бронирования</h3>
+                <p class="hint">GET /api/ticketReservations</p>
+                <button type="submit">Загрузить список</button>
+            </form>
+
+            <!-- Подтвердить бронирование -->
+            <form id="reservation-confirm-form" class="card">
+                <h3>Подтвердить бронирование</h3>
+                <label>
+                    ID бронирования
+                    <input id="reservation-confirm-id" type="number" min="1" required>
+                </label>
+                <p class="hint">
+                    PUT /api/ticketReservations/{id}/confirm
+                </p>
+                <button type="submit">Подтвердить</button>
+            </form>
+
+            <!-- Отменить бронирование -->
+            <form id="reservation-cancel-form" class="card">
+                <h3>Отменить бронирование</h3>
+                <label>
+                    ID бронирования
+                    <input id="reservation-cancel-id" type="number" min="1" required>
+                </label>
+                <p class="hint">
+                    PUT /api/ticketReservations/{id}/cancel<br>
+                    Нельзя отменять позже, чем за день до мероприятия (правило на бэке).
+                </p>
+                <button type="submit" class="danger">Отменить</button>
+            </form>
+
+            <!-- Очистка старых отмененных -->
+            <form id="reservation-cleanup-form" class="card">
+                <h3>Очистить старые отмененные брони</h3>
+                <p class="hint">
+                    POST /api/ticketReservations/cleanup/canceled-reservations<br>
+                    Удаляет отмененные бронирования старше месяца.
+                </p>
+                <button type="submit">Очистить</button>
+            </form>
         </div>
 
-        <!-- Создание -->
-        <div class="tab-pane fade" id="createTab">
-            <div class="row">
-                <!-- Создать мероприятие -->
-                <div class="col-md-6">
-                    <div class="form-section">
-                        <h5><i class="bi bi-calendar-plus"></i> Новое мероприятие</h5>
-                        <form id="eventForm">
-                            <div class="mb-3">
-                                <label class="form-label">Название *</label>
-                                <input type="text" class="form-control" name="eventName" required>
-                                <div class="error-message" id="eventNameError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Дата и время *</label>
-                                <input type="datetime-local" class="form-control" name="eventDate" required>
-                                <div class="error-message" id="eventDateError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Место проведения *</label>
-                                <input type="text" class="form-control" name="location" required>
-                                <div class="error-message" id="locationError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Максимальное количество мест</label>
-                                <input type="number" class="form-control" name="maxAttendees" min="1" value="50">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Описание</label>
-                                <textarea class="form-control" name="description" rows="2"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-check-lg"></i> Создать
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Добавить человека -->
-                <div class="col-md-6">
-                    <div class="form-section">
-                        <h5><i class="bi bi-person-plus"></i> Новый человек</h5>
-                        <form id="personForm">
-                            <div class="mb-3">
-                                <label class="form-label">Имя *</label>
-                                <input type="text" class="form-control" name="name" required>
-                                <div class="error-message" id="nameError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" name="email" required>
-                                <div class="error-message" id="emailError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Дата рождения *</label>
-                                <input type="date" class="form-control" name="birthDate" required>
-                                <div class="error-message" id="birthDateError"></div>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100">
-                                <i class="bi bi-check-lg"></i> Добавить
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Создать бронирование -->
-                <div class="col-md-6">
-                    <div class="form-section">
-                        <h5><i class="bi bi-ticket-perforated"></i> Новое бронирование</h5>
-                        <form id="reservationForm">
-                            <div class="mb-3">
-                                <label class="form-label">Мероприятие *</label>
-                                <select class="form-control" name="eventId" id="eventSelect" required>
-                                    <option value="">Выберите мероприятие...</option>
-                                </select>
-                                <div class="error-message" id="eventIdError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Человек *</label>
-                                <select class="form-control" name="personId" id="personSelect" required>
-                                    <option value="">Выберите человека...</option>
-                                </select>
-                                <div class="error-message" id="personIdError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Количество мест *</label>
-                                <input type="number" class="form-control" name="numberOfSeats"
-                                       min="1" max="10" value="1" required>
-                                <div class="error-message" id="seatsError"></div>
-                            </div>
-                            <button type="submit" class="btn btn-warning w-100">
-                                <i class="bi bi-check-lg"></i> Забронировать
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Добавить паспорт -->
-                <div class="col-md-6">
-                    <div class="form-section">
-                        <h5><i class="bi bi-passport"></i> Новый паспорт</h5>
-                        <form id="passportForm">
-                            <div class="mb-3">
-                                <label class="form-label">Владелец *</label>
-                                <select class="form-control" name="personId" id="passportPersonSelect" required>
-                                    <option value="">Выберите владельца...</option>
-                                </select>
-                                <div class="error-message" id="passportPersonError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Серия *</label>
-                                <input type="text" class="form-control" name="series"
-                                       pattern="[0-9]{4}" maxlength="4" required>
-                                <div class="error-message" id="seriesError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Номер *</label>
-                                <input type="text" class="form-control" name="number"
-                                       pattern="[0-9]{6}" maxlength="6" required>
-                                <div class="error-message" id="numberError"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Дата выдачи *</label>
-                                <input type="date" class="form-control" name="issueDate" required>
-                                <div class="error-message" id="issueDateError"></div>
-                            </div>
-                            <button type="submit" class="btn btn-info w-100">
-                                <i class="bi bi-check-lg"></i> Добавить паспорт
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="output-container">
+            <h3>Ответ сервера (бронирования)</h3>
+            <pre id="reservations-output" class="output" aria-live="polite"></pre>
         </div>
-    </div>
-</div>
+    </section>
 
-<!-- Модальное окно редактирования -->
-<div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Редактирование</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="editModalBody"></div>
-        </div>
-    </div>
-</div>
+</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const API_BASE = '';
-
-    // Утилиты
-    function showAlert(message, type = 'info') {
-        const alerts = document.getElementById('alerts');
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show`;
-        alert.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-        alerts.appendChild(alert);
-        setTimeout(() => alert.remove(), 5000);
-    }
-
-    function clearErrors(formId) {
-        document.querySelectorAll(`#${formId} .error-message`).forEach(el => el.textContent = '');
-    }
-
-    function formatDate(dateString) {
-        return new Date(dateString).toLocaleString('ru-RU');
-    }
-
-    // Загрузка данных
-    async function loadEvents() {
-        try {
-            const response = await fetch(`${API_BASE}/events`);
-            if (!response.ok) throw new Error('Ошибка загрузки мероприятий');
-            const events = await response.json();
-
-            document.getElementById('eventsCount').textContent = events.length;
-            const container = document.getElementById('eventsList');
-            container.innerHTML = '';
-
-            events.forEach(event => {
-                const card = document.createElement('div');
-                card.className = 'col-md-6 col-lg-4';
-                card.innerHTML = `
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">${event.eventName || 'Без названия'}</h5>
-                                <p class="card-text">
-                                    <small class="text-muted">${formatDate(event.eventDate)}</small><br>
-                                    <strong>Место:</strong> ${event.location || 'Не указано'}<br>
-                                    <strong>Статус:</strong>
-                                    <span class="badge ${event.status === 'CANCELLED' ? 'bg-danger' : 'bg-success'}">
-                                        ${event.status === 'CANCELLED' ? 'Отменено' : 'Активно'}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <div class="d-flex flex-wrap gap-2 action-buttons">
-                                    <button class="btn btn-sm btn-primary" onclick="editEvent(${event.id})">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteEvent(${event.id})">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                    ${event.status === 'ACTIVE' ?
-                    `<button class="btn btn-sm btn-warning" onclick="cancelEvent(${event.id})">
-                                            <i class="bi bi-x-circle"></i> Отменить
-                                        </button>` :
-                    `<button class="btn btn-sm btn-success" onclick="activateEvent(${event.id})">
-                                            <i class="bi bi-check-circle"></i> Активировать
-                                        </button>`
-                }
-                                    <button class="btn btn-sm btn-info" onclick="viewEventReservations(${event.id})">
-                                        <i class="bi bi-ticket"></i> Брони
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                container.appendChild(card);
-            });
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function loadPersons() {
-        try {
-            const response = await fetch(`${API_BASE}/persons`);
-            if (!response.ok) throw new Error('Ошибка загрузки людей');
-            const persons = await response.json();
-
-            document.getElementById('personsCount').textContent = persons.length;
-            const tbody = document.getElementById('personsTable');
-            tbody.innerHTML = '';
-
-            persons.forEach(person => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                        <td>${person.id}</td>
-                        <td>${person.name}</td>
-                        <td>${person.email}</td>
-                        <td>${new Date(person.birthDate).toLocaleDateString('ru-RU')}</td>
-                        <td>
-                            ${person.passport ?
-                    `<span class="badge bg-success">${person.passport.series} ${person.passport.number}</span>` :
-                    '<span class="badge bg-secondary">Нет</span>'
-                }
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" onclick="editPerson(${person.id})">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-outline-danger" onclick="deletePerson(${person.id})">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    `;
-                tbody.appendChild(row);
-            });
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function loadReservations() {
-        try {
-            const response = await fetch(`${API_BASE}/reservations`);
-            if (!response.ok) throw new Error('Ошибка загрузки бронирований');
-            const reservations = await response.json();
-
-            document.getElementById('reservationsCount').textContent = reservations.length;
-            const container = document.getElementById('reservationsList');
-            container.innerHTML = '';
-
-            reservations.forEach(res => {
-                const col = document.createElement('div');
-                col.className = 'col-md-6 col-lg-4';
-                col.innerHTML = `
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">Бронь #${res.id}</h6>
-                                <p class="card-text">
-                                    <strong>Событие:</strong> ${res.event?.eventName || 'Неизвестно'}<br>
-                                    <strong>Клиент:</strong> ${res.person?.name || 'Неизвестно'}<br>
-                                    <strong>Мест:</strong> ${res.numberOfSeats}<br>
-                                    <strong>Статус:</strong>
-                                    <span class="badge ${getStatusBadge(res.status)}">
-                                        ${getStatusText(res.status)}
-                                    </span>
-                                </p>
-                                <div class="btn-group w-100">
-                                    ${res.status === 'PENDING' ?
-                    `<button class="btn btn-sm btn-success" onclick="confirmReservation(${res.id})">
-                                            <i class="bi bi-check"></i> Подтвердить
-                                        </button>` : ''
-                }
-                                    ${res.status !== 'CANCELLED' ?
-                    `<button class="btn btn-sm btn-warning" onclick="cancelReservation(${res.id})">
-                                            <i class="bi bi-x"></i> Отменить
-                                        </button>` : ''
-                }
-                                    <button class="btn btn-sm btn-danger" onclick="deleteReservation(${res.id})">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                container.appendChild(col);
-            });
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    function getStatusBadge(status) {
-        switch(status) {
-            case 'CONFIRMED': return 'bg-success';
-            case 'CANCELLED': return 'bg-danger';
-            case 'PENDING': return 'bg-warning';
-            default: return 'bg-secondary';
-        }
-    }
-
-    function getStatusText(status) {
-        switch(status) {
-            case 'CONFIRMED': return 'Подтверждено';
-            case 'CANCELLED': return 'Отменено';
-            case 'PENDING': return 'Ожидание';
-            default: return status;
-        }
-    }
-
-    // Загрузка выпадающих списков
-    async function loadDropdowns() {
-        try {
-            const [eventsRes, personsRes] = await Promise.all([
-                fetch(`${API_BASE}/events`),
-                fetch(`${API_BASE}/persons`)
-            ]);
-
-            const events = await eventsRes.json();
-            const persons = await personsRes.json();
-
-            // События для бронирований
-            const eventSelect = document.getElementById('eventSelect');
-            eventSelect.innerHTML = '<option value="">Выберите мероприятие...</option>';
-            events.filter(e => e.status === 'ACTIVE').forEach(event => {
-                const option = document.createElement('option');
-                option.value = event.id;
-                option.textContent = `${event.eventName} (${new Date(event.eventDate).toLocaleDateString()})`;
-                eventSelect.appendChild(option);
-            });
-
-            // Люди для бронирований
-            const personSelect = document.getElementById('personSelect');
-            const passportSelect = document.getElementById('passportPersonSelect');
-            [personSelect, passportSelect].forEach(select => {
-                select.innerHTML = '<option value="">Выберите человека...</option>';
-                persons.forEach(person => {
-                    const option = document.createElement('option');
-                    option.value = person.id;
-                    option.textContent = `${person.name} (${person.email})`;
-                    select.appendChild(option);
-                });
-            });
-        } catch (error) {
-            console.error('Ошибка загрузки списков:', error);
-        }
-    }
-
-    // Обработка форм
-    document.getElementById('eventForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearErrors('eventForm');
-
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch(`${API_BASE}/events`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                if (result.errors) {
-                    Object.keys(result.errors).forEach(field => {
-                        const errorEl = document.getElementById(`${field}Error`);
-                        if (errorEl) errorEl.textContent = result.errors[field];
-                    });
-                }
-                throw new Error(result.message || 'Ошибка создания мероприятия');
-            }
-
-            showAlert('Мероприятие создано успешно!', 'success');
-            e.target.reset();
-            loadEvents();
-            loadDropdowns();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    });
-
-    document.getElementById('personForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearErrors('personForm');
-
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch(`${API_BASE}/persons`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error || 'Ошибка создания человека');
-            }
-
-            showAlert('Человек добавлен успешно!', 'success');
-            e.target.reset();
-            loadPersons();
-            loadDropdowns();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    });
-
-    document.getElementById('reservationForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearErrors('reservationForm');
-
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch(`${API_BASE}/reservations`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error || 'Ошибка создания бронирования');
-            }
-
-            showAlert('Бронирование создано успешно!', 'success');
-            e.target.reset();
-            loadReservations();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    });
-
-    document.getElementById('passportForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearErrors('passportForm');
-
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch(`${API_BASE}/passports`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error || 'Ошибка создания паспорта');
-            }
-
-            showAlert('Паспорт добавлен успешно!', 'success');
-            e.target.reset();
-            loadPersons();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    });
-
-    // Действия с событиями
-    async function editEvent(id) {
-        try {
-            const response = await fetch(`${API_BASE}/events/${id}`);
-            const event = await response.json();
-
-            const modalBody = document.getElementById('editModalBody');
-            modalBody.innerHTML = `
-                    <form onsubmit="updateEvent(event, ${id})">
-                        <div class="mb-3">
-                            <label class="form-label">Название</label>
-                            <input type="text" class="form-control" name="eventName"
-                                   value="${event.eventName || ''}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Дата и время</label>
-                            <input type="datetime-local" class="form-control" name="eventDate"
-                                   value="${event.eventDate.substring(0, 16)}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Место проведения</label>
-                            <input type="text" class="form-control" name="location"
-                                   value="${event.location || ''}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Описание</label>
-                            <textarea class="form-control" name="description">${event.description || ''}</textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Сохранить</button>
-                    </form>
-                `;
-
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        } catch (error) {
-            showAlert('Ошибка загрузки события', 'danger');
-        }
-    }
-
-    async function updateEvent(e, id) {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch(`${API_BASE}/events/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) throw new Error('Ошибка обновления');
-
-            showAlert('Мероприятие обновлено!', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-            loadEvents();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function deleteEvent(id) {
-        if (!confirm('Удалить мероприятие?')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/events/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) throw new Error('Ошибка удаления');
-
-            showAlert('Мероприятие удалено!', 'success');
-            loadEvents();
-            loadDropdowns();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function cancelEvent(id) {
-        try {
-            const response = await fetch(`${API_BASE}/events/${id}/cancel`, {
-                method: 'PUT'
-            });
-
-            if (!response.ok) throw new Error('Ошибка отмены');
-
-            showAlert('Мероприятие отменено!', 'success');
-            loadEvents();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function activateEvent(id) {
-        try {
-            const response = await fetch(`${API_BASE}/events/${id}/activate`, {
-                method: 'PUT'
-            });
-
-            if (!response.ok) throw new Error('Ошибка активации');
-
-            showAlert('Мероприятие активировано!', 'success');
-            loadEvents();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    // Действия с людьми
-    async function deletePerson(id) {
-        if (!confirm('Удалить человека?')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/persons/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) throw new Error('Ошибка удаления');
-
-            showAlert('Человек удален!', 'success');
-            loadPersons();
-            loadDropdowns();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    // Действия с бронированиями
-    async function confirmReservation(id) {
-        try {
-            const response = await fetch(`${API_BASE}/reservations/${id}/confirm`, {
-                method: 'PUT'
-            });
-
-            if (!response.ok) throw new Error('Ошибка подтверждения');
-
-            showAlert('Бронирование подтверждено!', 'success');
-            loadReservations();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function cancelReservation(id) {
-        try {
-            const response = await fetch(`${API_BASE}/reservations/${id}/cancel`, {
-                method: 'PUT'
-            });
-
-            if (!response.ok) throw new Error('Ошибка отмены');
-
-            showAlert('Бронирование отменено!', 'warning');
-            loadReservations();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    async function deleteReservation(id) {
-        if (!confirm('Удалить бронирование?')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/reservations/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) throw new Error('Ошибка удаления');
-
-            showAlert('Бронирование удалено!', 'success');
-            loadReservations();
-        } catch (error) {
-            showAlert(error.message, 'danger');
-        }
-    }
-
-    // Загрузка всех данных при загрузке страницы
-    document.addEventListener('DOMContentLoaded', () => {
-        loadEvents();
-        loadPersons();
-        loadReservations();
-        loadDropdowns();
-
-        // Обновление данных при переключении вкладок
-        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
-            tab.addEventListener('shown.bs.tab', (e) => {
-                if (e.target.hash === '#eventsTab') loadEvents();
-                else if (e.target.hash === '#personsTab') loadPersons();
-                else if (e.target.hash === '#reservationsTab') loadReservations();
-                else if (e.target.hash === '#createTab') loadDropdowns();
-            });
-        });
-    });
-</script>
+<footer class="page-footer">
+    <p>Учебный фронт. Все запросы уходят на REST-контроллеры без ролей и авторизации.</p>
+</footer>
 </body>
 </html>

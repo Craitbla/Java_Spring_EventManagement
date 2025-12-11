@@ -102,9 +102,6 @@ public class ClientService {
         Client client = clientRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Клиент с id %d не найден", id))
         );
-        if (clientRepository.existsByEmailAndIdNot(dto.email(), id)) {
-            throw new DuplicateEntityException("Клиент c таким email " + dto.email() + " уже существует");
-        }
         if (clientRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), id)) {
             throw new DuplicateEntityException("Клиент c таким телефоном " + dto.phoneNumber() + " уже существует");
         }

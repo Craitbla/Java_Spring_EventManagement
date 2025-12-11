@@ -145,7 +145,6 @@ class ClientServiceUnitTest {
                 LocalDateTime.now(), LocalDateTime.now());
 
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        when(clientRepository.existsByEmailAndIdNot("petr@mail.ru", 1L)).thenReturn(false);
         when(clientRepository.existsByPhoneNumberAndIdNot("+79123456780", 1L)).thenReturn(false);
         when(clientRepository.save(client)).thenReturn(client);
         when(clientMapper.toClientDoneDto(client)).thenReturn(expectedDto);
