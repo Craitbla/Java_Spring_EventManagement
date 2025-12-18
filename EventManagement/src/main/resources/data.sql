@@ -1,16 +1,3 @@
--- Удаляем все данные перед вставкой новых
-DELETE FROM ticket_reservations;
-DELETE FROM clients;
-DELETE FROM events;
-DELETE FROM passports;
-
-ALTER SEQUENCE passports_id_seq RESTART WITH 1;
-ALTER SEQUENCE clients_id_seq RESTART WITH 1;
-ALTER SEQUENCE events_id_seq RESTART WITH 1;
-ALTER SEQUENCE ticket_reservations_id_seq RESTART WITH 1;
-
-
--- Вставляем данные для примера
 
 -- 1. Паспорта (7 записей)
 INSERT INTO passports (series, number, created_at)
