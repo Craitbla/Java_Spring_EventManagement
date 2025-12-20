@@ -29,13 +29,4 @@ public interface ClientMapper {
     @Mapping(target = "ticketReservations", ignore = true)
     Client fromCreateWithoutDependenciesDto(ClientCreateWithDependenciesDto dto);
 
-    // ========== UPDATE METHODS ==========
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "passport", ignore = true)
-    @Mapping(target = "ticketReservations", ignore = true)
-    void updateBasicInfo(ClientCreateDto dto, @MappingTarget Client client);
-
 }

@@ -24,10 +24,4 @@ public interface TicketReservationMapper {
     @Mapping(target = "event", ignore = true)
     TicketReservation fromCreateWithoutDependenciesDto(TicketReservationCreateDto dto);
 
-    // ========== UPDATE METHODS ==========
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    void updateBasicInfo(TicketReservationCreateDto dto, @MappingTarget TicketReservation ticketReservation);
 }

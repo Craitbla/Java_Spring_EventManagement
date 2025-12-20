@@ -5,18 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="readme .">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/AdminControllerIntegrationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/ClientControllerIntegrationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/EventControllerIntegrationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/integration/TicketReservationControllerIntegrationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/AdminControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/AdminControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/ClientControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/ClientControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/EventControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/EventControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/unit/TicketReservationControllerUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/test/java/com/example/eventmanagement/controller/TicketReservationControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EventManagement/dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EventManagement/init-db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/ClientMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/ClientMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/PassportMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/TicketReservationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/TicketReservationMapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +33,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/MyJava/for github/Java_Spring_EventManagement/EventManagement/pom.xml",
+    "last_opened_file_path": "D:/MyJava/for github/Java_Spring_EventManagement",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -69,6 +64,7 @@
       <workItem from="1764840568237" duration="1747000" />
       <workItem from="1764842344475" duration="49000" />
       <workItem from="1764842418277" duration="99000" />
+      <workItem from="1766234002536" duration="133000" />
     </task>
     <task id="LOCAL-00001" summary="readme">
       <option name="closed" value="true" />
