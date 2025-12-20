@@ -194,7 +194,7 @@
                     </argLine>
                 </configuration>
             </plugin>
-<!--            мое-->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
@@ -207,6 +207,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.5.7</version>
+                <configuration>
+                    <mainClass>com.example.eventmanagement.EventManagementApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
