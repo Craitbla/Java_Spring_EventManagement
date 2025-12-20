@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="readme .">
-      <change afterPath="$PROJECT_DIR$/EventManagement/dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EventManagement/init-db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/ClientMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/ClientMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/PassportMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/TicketReservationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/java/com/example/eventmanagement/mapper/TicketReservationMapper.java" afterDir="false" />
-    </list>
+    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="files add" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,7 +56,7 @@
       <workItem from="1764840568237" duration="1747000" />
       <workItem from="1764842344475" duration="49000" />
       <workItem from="1764842418277" duration="99000" />
-      <workItem from="1766234002536" duration="133000" />
+      <workItem from="1766234002536" duration="553000" />
     </task>
     <task id="LOCAL-00001" summary="readme">
       <option name="closed" value="true" />
@@ -82,7 +74,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761394086745</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="docker">
+      <option name="closed" value="true" />
+      <created>1766234152081</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1766234152081</updated>
+    </task>
+    <task id="LOCAL-00004" summary="files add">
+      <option name="closed" value="true" />
+      <created>1766234496862</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1766234496862</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -91,6 +99,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="readme" />
     <MESSAGE value="readme ." />
-    <option name="LAST_COMMIT_MESSAGE" value="readme ." />
+    <MESSAGE value="docker" />
+    <MESSAGE value="files add" />
+    <option name="LAST_COMMIT_MESSAGE" value="files add" />
   </component>
 </project>
