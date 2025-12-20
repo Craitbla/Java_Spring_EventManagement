@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="files add" />
+    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="files add">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,7 +27,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/MyJava/Java_Spring_EventManagement/EventManagement",
+    "last_opened_file_path": "D:/Java_Spring_EventManagement/EventManagement",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -58,6 +60,7 @@
       <workItem from="1764842418277" duration="99000" />
       <workItem from="1766234002536" duration="553000" />
       <workItem from="1766234736856" duration="113000" />
+      <workItem from="1766265547578" duration="885000" />
     </task>
     <task id="LOCAL-00001" summary="readme">
       <option name="closed" value="true" />
