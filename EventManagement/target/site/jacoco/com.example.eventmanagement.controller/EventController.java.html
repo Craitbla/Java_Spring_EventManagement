@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EventManagement</a> &gt; <a href="index.source.html" class="el_package">com.example.eventmanagement.controller</a> &gt; <span class="el_source">EventController.java</span></div><h1>EventController.java</h1><pre class="source lang-java linenums">package com.example.eventmanagement.controller;
+
+import com.example.eventmanagement.dto.*;
+import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.service.EventService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+<span class="fc" id="L15">@Slf4j</span>
+@RequestMapping(&quot;/api/events&quot;)
+public class EventController {
+    private final EventService eventService;
+
+<span class="fc" id="L20">    public EventController(EventService eventService) {</span>
+<span class="fc" id="L21">        this.eventService = eventService;</span>
+<span class="fc" id="L22">    }</span>
+
+    @GetMapping(&quot;/{id}/statistics&quot;)
+    public ResponseEntity&lt;EventStatisticsDto&gt; getEventStatisticsById(@PathVariable Long id) {
+<span class="fc" id="L26">        log.info(&quot;GET /api/events/{} - получение статистики мероприятия по ID&quot;, id);</span>
+<span class="fc" id="L27">        EventStatisticsDto eventStatisticsDto = eventService.getEventStatistics(id);</span>
+<span class="fc" id="L28">        log.info(&quot;Статистика мероприятия с id {} найдена: забронированные билеты - {}, выручка - {}&quot;, id, eventStatisticsDto.confirmedTickets().toString(), eventStatisticsDto.totalRevenue().toString());</span>
+<span class="fc" id="L29">        return ResponseEntity.ok(eventStatisticsDto);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;EventDoneDto&gt; getEventById(@PathVariable Long id) {
+<span class="fc" id="L34">        log.info(&quot;GET /api/events/{} - получение мероприятия по ID&quot;, id);</span>
+<span class="fc" id="L35">        EventDoneDto event = eventService.getById(id);</span>
+<span class="fc" id="L36">        log.info(&quot;Мероприятие с id {} найдено: {}&quot;, id, event.name());</span>
+<span class="fc" id="L37">        return ResponseEntity.ok(event);</span>
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;EventDto&gt;&gt; getAllEvents() {
+<span class="fc" id="L42">        log.info(&quot;GET /api/events - получение списка всех мероприятий&quot;);</span>
+<span class="fc" id="L43">        List&lt;EventDto&gt; events = eventService.getAll();</span>
+<span class="fc" id="L44">        log.debug(&quot;Найдено мероприятий: {}&quot;, events.size());</span>
+<span class="fc" id="L45">        return ResponseEntity.ok(events);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;EventDoneDto&gt; createEvent(@Valid @RequestBody EventCreateDto dto) {
+<span class="fc" id="L50">        log.info(&quot;POST /api/events - создание мероприятия: {} ({})&quot;, dto.name(), dto.date());</span>
+<span class="fc" id="L51">        EventDoneDto createdEvent = eventService.createEvent(dto);</span>
+<span class="fc" id="L52">        log.info(&quot;Мероприятие создано с id {}: {}&quot;, createdEvent.id(), createdEvent.name());</span>
+<span class="fc" id="L53">        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);</span>
+    }
+
+    @PutMapping(&quot;/{id}/status&quot;)
+    public ResponseEntity&lt;EventDoneDto&gt; updateEventStatus(@PathVariable Long id, @RequestBody EventStatus status) {
+<span class="fc" id="L58">        log.info(&quot;PUT /api/events/{}/status - обновление мероприятия на {}&quot;, id, status.getStr());</span>
+<span class="fc" id="L59">        EventDoneDto updatedEvent = eventService.updateEventStatus(id, status);</span>
+<span class="fc" id="L60">        log.info(&quot;У мероприятия с id {} обновлен статус на: {}&quot;, id, status.getStr());</span>
+<span class="fc" id="L61">        return ResponseEntity.ok(updatedEvent);</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteEvent(@PathVariable Long id) {
+<span class="fc" id="L66">        log.info(&quot;DELETE /api/events/{} - удаление мероприятия&quot;, id);</span>
+<span class="fc" id="L67">        eventService.deleteEvent(id);</span>
+<span class="fc" id="L68">        log.info(&quot;Мероприятие с id {} удалено&quot;, id);</span>
+<span class="fc" id="L69">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

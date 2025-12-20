@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Event.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EventManagement</a> &gt; <a href="index.source.html" class="el_package">com.example.eventmanagement.entity</a> &gt; <span class="el_source">Event.java</span></div><h1>Event.java</h1><pre class="source lang-java linenums">package com.example.eventmanagement.entity;
+
+import com.example.eventmanagement.enums.EventStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@Table(name = &quot;events&quot;, uniqueConstraints = {@UniqueConstraint(columnNames = {&quot;name&quot;, &quot;date&quot;})})
+public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
+    @NotBlank(message = &quot;Название не может быть пустым&quot;)
+    private String name;
+    @Column(nullable = false)
+    @Future(message = &quot;Дата должна быть будущей&quot;)
+    private LocalDate date;
+    @Column(name = &quot;number_of_seats&quot;, nullable = false)
+    @Min(value = 1, message = &quot;Количество мест должно быть больше или равно 1&quot;)
+    private Integer numberOfSeats;
+
+    @Column(name = &quot;ticket_price&quot;, nullable = false)
+    @DecimalMin(value = &quot;0.0&quot;, inclusive = true, message = &quot;Цена билета должна быть больше или равна 0&quot;)
+    private BigDecimal ticketPrice;
+    @Column
+    private EventStatus status;
+    @Column
+    private String description;
+    @Column(name = &quot;created_at&quot;, nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @Column(name = &quot;updated_at&quot;, nullable = false)
+    private LocalDateTime updatedAt;
+<span class="fc" id="L45">    @OneToMany(mappedBy = &quot;event&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)</span>
+    @JsonIgnoreProperties({&quot;event&quot;, &quot;client&quot;})
+    private List&lt;TicketReservation&gt; ticketReservations = new ArrayList&lt;&gt;();
+
+<span class="fc" id="L49">    public Event() {</span>
+
+<span class="fc" id="L51">    }</span>
+
+    @PrePersist
+    protected void onCreate() {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (date == null) {</span>
+<span class="fc" id="L56">            date = LocalDate.now();</span>
+        }
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (ticketPrice == null) {</span>
+<span class="fc" id="L59">            ticketPrice = BigDecimal.ZERO;</span>
+        }
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (status == null) {</span>
+<span class="fc" id="L62">            status = EventStatus.PLANNED;</span>
+        }
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (numberOfSeats == null) {</span>
+<span class="fc" id="L65">            numberOfSeats = 1;</span>
+        }
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (createdAt == null) {</span>
+<span class="fc" id="L68">            createdAt = LocalDateTime.now();</span>
+        }
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (updatedAt == null) {</span>
+<span class="fc" id="L71">            updatedAt = LocalDateTime.now();</span>
+        }
+
+
+<span class="fc" id="L75">    }</span>
+
+    @PreUpdate
+    protected void onUpdate() {
+<span class="fc" id="L79">        updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L80">    }</span>
+
+<span class="fc" id="L82">    public Event(String name, LocalDate date, Integer numberOfSeats, BigDecimal ticketPrice, EventStatus status, String description) {</span>
+<span class="fc" id="L83">        this.name = name;</span>
+<span class="fc" id="L84">        this.date = date;</span>
+<span class="fc" id="L85">        this.numberOfSeats =numberOfSeats;</span>
+<span class="fc" id="L86">        this.ticketPrice = ticketPrice;</span>
+<span class="fc" id="L87">        this.status = status;</span>
+<span class="fc" id="L88">        this.description = description;</span>
+<span class="fc" id="L89">    }</span>
+
+    public static Event createForTesting(String name, LocalDate date, Integer numberOfSeats, BigDecimal ticketPrice, EventStatus status, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+<span class="fc" id="L92">        Event event = new Event(name, date, numberOfSeats, ticketPrice, status, description);</span>
+<span class="fc" id="L93">        event.setCreatedAt(createdAt);</span>
+<span class="fc" id="L94">        event.setUpdatedAt(updatedAt);</span>
+<span class="fc" id="L95">        return event;</span>
+    }
+
+    public Long getId() {
+<span class="fc" id="L99">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L103">        this.id = id;</span>
+<span class="fc" id="L104">    }</span>
+
+    public String getName() {
+<span class="fc" id="L107">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="fc" id="L111">        this.name = name;</span>
+<span class="fc" id="L112">    }</span>
+
+    public LocalDate getDate() {
+<span class="fc" id="L115">        return date;</span>
+    }
+
+    public void setDate(LocalDate date) {
+<span class="fc" id="L119">        this.date = date;</span>
+<span class="fc" id="L120">    }</span>
+
+    public Integer getNumberOfSeats() {
+<span class="fc" id="L123">        return numberOfSeats;</span>
+    }
+
+    public void setNumberOfSeats(Integer numberOfSeats) {
+<span class="fc" id="L127">        this.numberOfSeats = numberOfSeats;</span>
+<span class="fc" id="L128">    }</span>
+
+    public BigDecimal getTicketPrice() {
+<span class="fc" id="L131">        return ticketPrice;</span>
+    }
+
+    public void setTicketPrice(BigDecimal ticketPrice) {
+<span class="fc" id="L135">        this.ticketPrice = ticketPrice;</span>
+<span class="fc" id="L136">    }</span>
+
+    public EventStatus getStatus() {
+<span class="fc" id="L139">        return status;</span>
+    }
+
+    public void setStatus(EventStatus status) {
+<span class="fc" id="L143">        this.status = status;</span>
+<span class="fc" id="L144">    }</span>
+
+    public String getDescription() {
+<span class="fc" id="L147">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="fc" id="L151">        this.description = description;</span>
+<span class="fc" id="L152">    }</span>
+
+    public LocalDateTime getCreatedAt() {
+<span class="fc" id="L155">        return createdAt;</span>
+    }
+    private void setCreatedAt(LocalDateTime time) {
+<span class="fc" id="L158">        createdAt = time;</span>
+<span class="fc" id="L159">    }</span>
+
+
+    public LocalDateTime getUpdatedAt() {
+<span class="fc" id="L163">        return updatedAt;</span>
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+<span class="fc" id="L167">        this.updatedAt = updatedAt;</span>
+<span class="fc" id="L168">    }</span>
+
+    public List&lt;TicketReservation&gt; getTicketReservations() {
+<span class="fc" id="L171">        return ticketReservations;</span>
+    }
+
+    public void setTicketReservations(List&lt;TicketReservation&gt; newReservations) {
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        if (this.ticketReservations != null) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            for (TicketReservation oldReservation : this.ticketReservations) {</span>
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">                if (oldReservation != null &amp;&amp; this.equals(oldReservation.getEvent())) {</span>
+<span class="fc" id="L178">                    oldReservation.assignEvent(null);</span>
+                }
+<span class="fc" id="L180">            }</span>
+        }
+
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        this.ticketReservations = newReservations != null ?</span>
+<span class="fc" id="L184">                new ArrayList&lt;&gt;(newReservations) : new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for (TicketReservation newReservation : this.ticketReservations) {</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">            if (newReservation != null) {</span>
+<span class="fc" id="L188">                newReservation.assignEvent(this);</span>
+            }
+<span class="fc" id="L190">        }</span>
+
+<span class="fc" id="L192">    }</span>
+
+    public void addTicketReservation(TicketReservation ticketReservation) {
+<span class="fc" id="L195">        ticketReservation.assignEvent(this);</span>
+<span class="fc" id="L196">        this.ticketReservations.add(ticketReservation);</span>
+<span class="fc" id="L197">    }</span>
+
+    public boolean removeTicketReservation(TicketReservation reservation) {
+<span class="fc" id="L200">        boolean removed = this.ticketReservations.remove(reservation);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (removed) {</span>
+<span class="fc" id="L202">            reservation.assignEvent(null);</span>
+        }
+<span class="fc" id="L204">        return removed;</span>
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="fc bfc" id="L211" title="All 4 branches covered.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L212">        Event event = (Event) o;</span>
+<span class="fc" id="L213">        return Objects.equals(id, event.id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L218">        return Objects.hash(id);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L223">        return &quot;Event{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, name='&quot; + name + '\'' +
+                &quot;, date=&quot; + date +
+                &quot;, ticketPrice=&quot; + ticketPrice +
+                &quot;, status='&quot; + status + '\'' +
+                &quot;, description='&quot; + description + '\'' +
+                &quot;, createdAt=&quot; + createdAt +
+                &quot;, updatedAt=&quot; + updatedAt +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

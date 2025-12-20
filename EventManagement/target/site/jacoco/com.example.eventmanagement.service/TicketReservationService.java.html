@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketReservationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EventManagement</a> &gt; <a href="index.source.html" class="el_package">com.example.eventmanagement.service</a> &gt; <span class="el_source">TicketReservationService.java</span></div><h1>TicketReservationService.java</h1><pre class="source lang-java linenums">package com.example.eventmanagement.service;
+
+import com.example.eventmanagement.dto.*;
+import com.example.eventmanagement.entity.Client;
+import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.entity.TicketReservation;
+import com.example.eventmanagement.enums.BookingStatus;
+import com.example.eventmanagement.enums.EventStatus;
+import com.example.eventmanagement.exception.BusinessValidationException;
+import com.example.eventmanagement.exception.EntityNotFoundException;
+import com.example.eventmanagement.mapper.TicketReservationMapper;
+import com.example.eventmanagement.repository.ClientRepository;
+import com.example.eventmanagement.repository.EventRepository;
+import com.example.eventmanagement.repository.TicketReservationRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@Transactional
+<span class="fc" id="L26">@Slf4j</span>
+public class TicketReservationService {
+    private final TicketReservationRepository ticketReservationRepository;
+    private final ClientRepository clientRepository;
+    private final EventRepository eventRepository;
+    private final TicketReservationMapper ticketReservationMapper;
+
+<span class="fc" id="L33">    public TicketReservationService(TicketReservationRepository ticketReservationRepository, ClientRepository clientRepository, EventRepository eventRepository, TicketReservationMapper ticketReservationMapper) {</span>
+<span class="fc" id="L34">        this.ticketReservationRepository = ticketReservationRepository;</span>
+<span class="fc" id="L35">        this.clientRepository = clientRepository;</span>
+<span class="fc" id="L36">        this.eventRepository = eventRepository;</span>
+<span class="fc" id="L37">        this.ticketReservationMapper = ticketReservationMapper;</span>
+<span class="fc" id="L38">    }</span>
+
+    public List&lt;TicketReservationDto&gt; getAll() {
+<span class="fc" id="L41">        log.debug(&quot;Получение списка всех бронирований&quot;);</span>
+<span class="fc" id="L42">        return ticketReservationMapper.toTicketReservationDtoList(ticketReservationRepository.findAll());</span>
+    }
+
+    public TicketReservationDoneDto getById(Long id) {
+<span class="fc" id="L46">        log.debug(&quot;Получение бронирования по ID: {}&quot;, id);</span>
+<span class="fc" id="L47">        TicketReservation ticketReservation = ticketReservationRepository.findById(id)</span>
+<span class="pc" id="L48">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
+<span class="nc" id="L49">                        String.format(&quot;Бронь с id %d не найдена&quot;, id)</span>
+                ));
+<span class="fc" id="L51">        return ticketReservationMapper.toTicketReservationDoneDto(ticketReservation);</span>
+    }
+
+    public TicketReservationDoneDto createReservation(TicketReservationCreateDto dto) {
+<span class="fc" id="L55">        log.info(&quot;Создание бронирования для клиента {} на мероприятие {}&quot;, dto.clientId(), dto.eventId());</span>
+<span class="fc" id="L56">        TicketReservation reservation = ticketReservationMapper.fromCreateWithoutDependenciesDto(dto);</span>
+
+<span class="fc" id="L58">        Client client = clientRepository.findById(dto.clientId())</span>
+<span class="pc" id="L59">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Клиент c id&quot; + dto.clientId() + &quot; не найден&quot;));</span>
+<span class="fc" id="L60">        Event event = eventRepository.findById(dto.eventId())</span>
+<span class="pc" id="L61">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Мероприятие c id&quot; + dto.eventId() + &quot; не найден&quot;));</span>
+<span class="fc" id="L62">        Integer availableSeats = event.getNumberOfSeats() - eventRepository.countConfirmedOrPendingTicketsByEventId(event.getId()).intValue();</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">        if (availableSeats &lt; dto.numberOfTickets()) {</span>
+<span class="nc" id="L64">            throw new BusinessValidationException(String.format(&quot;Билеты на мероприятие %s %s закончились&quot;, event.getName(), event.getDate().toString()));</span>
+        }
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (!event.getStatus().isBookable()) {</span>
+<span class="nc" id="L67">            throw new BusinessValidationException(String.format(&quot;Бронирование билетов для мероприятия %s %s закрылось&quot;, event.getName(), event.getDate().toString()));</span>
+        }
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (event.getDate().isBefore(LocalDate.now())) {</span>
+<span class="nc" id="L70">            throw new BusinessValidationException(String.format(&quot;Мероприятие %s %s уже прошло&quot;, event.getName(), event.getDate().toString()));</span>
+        }
+<span class="fc" id="L72">        client.addTicketReservation(reservation);</span>
+<span class="fc" id="L73">        event.addTicketReservation(reservation);</span>
+
+<span class="fc" id="L75">        TicketReservation savedTicketReservation = ticketReservationRepository.save(reservation);</span>
+<span class="fc" id="L76">        log.info(&quot;Бронирование создано с ID: {}&quot;, savedTicketReservation.getId());</span>
+<span class="fc" id="L77">        return ticketReservationMapper.toTicketReservationDoneDto(savedTicketReservation);</span>
+    }
+
+    public TicketReservationDoneDto confirmReservation(Long reservationId) {
+<span class="fc" id="L81">        log.info(&quot;Подтверждение бронирования с ID: {}&quot;, reservationId);</span>
+<span class="fc" id="L82">        TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(</span>
+<span class="nc" id="L83">                () -&gt; new EntityNotFoundException(String.format(&quot;Резервация по id %d не найдено&quot;, reservationId))</span>
+        );
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (ticketReservation.getBookingStatus() == BookingStatus.CANCELED) {</span>
+<span class="nc" id="L86">            throw new BusinessValidationException(String.format(&quot;Подтверждение резервации по id %d невозможно после отмены бронирования&quot;, reservationId));</span>
+        }
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now())) {</span>
+<span class="nc" id="L89">            throw new BusinessValidationException(String.format(&quot;Подтверждение резервации по id %d невозможно после того как мероприятие уже прошло&quot;, reservationId));</span>
+        }
+<span class="fc" id="L91">        Integer confirmedTickets = eventRepository.countConfirmedTicketsByEventId(ticketReservation.getEvent().getId()).intValue();</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (confirmedTickets + ticketReservation.getNumberOfTickets() &gt; ticketReservation.getEvent().getNumberOfSeats()) {</span>
+<span class="nc" id="L93">            throw new BusinessValidationException(String.format(&quot;Недостаточно мест для подтверждения брони по id %d&quot;, reservationId));</span>
+        }
+<span class="fc" id="L95">        ticketReservation.setBookingStatus(BookingStatus.CONFIRMED);</span>
+<span class="fc" id="L96">        TicketReservation canceledTicketReservation = ticketReservationRepository.save(ticketReservation);</span>
+<span class="fc" id="L97">        log.info(&quot;Бронирование с ID {} подтверждено&quot;, reservationId);</span>
+<span class="fc" id="L98">        return ticketReservationMapper.toTicketReservationDoneDto(canceledTicketReservation);</span>
+    }
+
+    public TicketReservationDoneDto cancelReservation(Long reservationId) {
+<span class="fc" id="L102">        log.info(&quot;Отмена бронирования с ID: {}&quot;, reservationId);</span>
+<span class="fc" id="L103">        TicketReservation ticketReservation = ticketReservationRepository.findById(reservationId).orElseThrow(</span>
+<span class="nc" id="L104">                () -&gt; new EntityNotFoundException(String.format(&quot;Резервация по id %d не найдена&quot;, reservationId))</span>
+        );
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (ticketReservation.getEvent().getDate().isBefore(LocalDate.now().plusDays(1))) {</span>
+<span class="nc" id="L107">            throw new BusinessValidationException(String.format(&quot;Отмена резервации по id %d невозможна позже чем за день до начала мероприятия&quot;, reservationId));</span>
+        }
+<span class="fc" id="L109">        ticketReservation.setBookingStatus(BookingStatus.CANCELED);</span>
+<span class="fc" id="L110">        TicketReservation reservation = ticketReservationRepository.save(ticketReservation);</span>
+<span class="fc" id="L111">        log.info(&quot;Бронирование с ID {} отменено&quot;, reservationId);</span>
+<span class="fc" id="L112">        return ticketReservationMapper.toTicketReservationDoneDto(reservation);</span>
+    }
+    public void deleteCanceledReservation(Long reservationId) {
+<span class="fc" id="L115">        TicketReservation reservation = ticketReservationRepository.findById(reservationId)</span>
+<span class="fc" id="L116">                .orElseThrow(() -&gt; new EntityNotFoundException(String.format(&quot;Резервация по id %d не найдена&quot;, reservationId)));</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (reservation.getBookingStatus() != BookingStatus.CANCELED) {</span>
+<span class="fc" id="L119">            throw new BusinessValidationException(</span>
+<span class="fc" id="L120">                    &quot;Можно удалять только отмененные бронирования. Текущий статус: &quot; + reservation.getBookingStatus()</span>
+            );
+        }
+
+<span class="fc" id="L124">        ticketReservationRepository.delete(reservation);</span>
+<span class="fc" id="L125">        log.info(&quot;Отмененное бронирование {} удалено&quot;, reservationId);</span>
+<span class="fc" id="L126">    }</span>
+
+    public int cleanupOldCanceledReservations() {
+<span class="fc" id="L129">        LocalDateTime monthAgo = LocalDateTime.now().minusMonths(1);</span>
+<span class="fc" id="L130">        List&lt;TicketReservation&gt; oldCanceled = ticketReservationRepository</span>
+<span class="fc" id="L131">                .findByBookingStatusAndUpdatedAtBefore(BookingStatus.CANCELED, monthAgo);</span>
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (!oldCanceled.isEmpty()) {</span>
+<span class="fc" id="L134">            log.info(&quot;Очистка {} старых отмененных бронирований&quot;, oldCanceled.size());</span>
+<span class="fc" id="L135">            ticketReservationRepository.deleteAll(oldCanceled);</span>
+        }
+<span class="fc" id="L137">        return oldCanceled.size();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

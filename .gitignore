@@ -52,7 +52,7 @@ out/
 build/
 
 # Build output
-target/
+#target/
 build/
 !build.gradle
 !gradle/wrapper/gradle-wrapper.jar
@@ -62,7 +62,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Maven
-target/
+#target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

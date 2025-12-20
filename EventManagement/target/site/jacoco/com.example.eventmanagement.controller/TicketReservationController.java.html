@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EventManagement</a> &gt; <a href="index.source.html" class="el_package">com.example.eventmanagement.controller</a> &gt; <span class="el_source">TicketReservationController.java</span></div><h1>TicketReservationController.java</h1><pre class="source lang-java linenums">package com.example.eventmanagement.controller;
+
+import com.example.eventmanagement.dto.*;
+import com.example.eventmanagement.enums.BookingStatus;
+import com.example.eventmanagement.service.TicketReservationService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+<span class="fc" id="L15">@Slf4j</span>
+@RequestMapping(&quot;/api/ticketReservations&quot;)
+public class TicketReservationController {
+    private final TicketReservationService ticketReservationService;
+
+<span class="fc" id="L20">    public TicketReservationController(TicketReservationService ticketReservationService) {</span>
+<span class="fc" id="L21">        this.ticketReservationService = ticketReservationService;</span>
+<span class="fc" id="L22">    }</span>
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;TicketReservationDoneDto&gt; getTicketReservationById(@PathVariable Long id) {
+<span class="fc" id="L26">        log.info(&quot;GET /api/ticketReservations/{} - получение бронирования по ID&quot;, id);</span>
+<span class="fc" id="L27">        TicketReservationDoneDto ticketReservation = ticketReservationService.getById(id);</span>
+<span class="fc" id="L28">        log.info(&quot;Бронирование с id {} найдено. Клиент: {}, Мероприятие: {}&quot;,</span>
+                id,
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">                ticketReservation.client() != null ? ticketReservation.client().email() : &quot;null&quot;,</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">                ticketReservation.event() != null ? ticketReservation.event().name() : &quot;null&quot;);</span>
+<span class="fc" id="L32">        return ResponseEntity.ok(ticketReservation);</span>
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;TicketReservationDto&gt;&gt; getAllTicketReservations() {
+<span class="fc" id="L37">        log.info(&quot;GET /api/ticketReservations - получение списка всех бронирований&quot;);</span>
+<span class="fc" id="L38">        List&lt;TicketReservationDto&gt; ticketReservations = ticketReservationService.getAll();</span>
+<span class="fc" id="L39">        log.debug(&quot;Найдено бронирований: {}&quot;, ticketReservations.size());</span>
+<span class="fc" id="L40">        return ResponseEntity.ok(ticketReservations);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;TicketReservationDoneDto&gt; createTicketReservation(@Valid @RequestBody TicketReservationCreateDto dto) {
+<span class="fc" id="L45">        log.info(&quot;POST /api/ticketReservations - создание бронирования id клиента {} и id мероприятия {}&quot;, dto.clientId(), dto.eventId());</span>
+<span class="fc" id="L46">        TicketReservationDoneDto createdTicketReservation = ticketReservationService.createReservation(dto);</span>
+<span class="fc" id="L47">        log.info(&quot;Бронирование создано с id {}: id клиента {} и id мероприятия {}&quot;, createdTicketReservation.id(), dto.clientId(), dto.eventId());</span>
+<span class="fc" id="L48">        return ResponseEntity.status(HttpStatus.CREATED).body(createdTicketReservation);</span>
+    }
+
+    @PutMapping(&quot;/{id}/cancel&quot;)
+    public ResponseEntity&lt;TicketReservationDoneDto&gt; cancelTicketReservation(@PathVariable Long id) {
+<span class="fc" id="L53">        log.info(&quot;PUT /api/ticketReservations/{}/cancel - отмена бронирования&quot;, id);</span>
+<span class="fc" id="L54">        TicketReservationDoneDto canceledTicketReservation = ticketReservationService.cancelReservation(id);</span>
+<span class="fc" id="L55">        log.info(&quot;Бронирование с id {} было отменено&quot;, id);</span>
+<span class="fc" id="L56">        return ResponseEntity.ok(canceledTicketReservation);</span>
+    }
+
+    @PutMapping(&quot;/{id}/confirm&quot;)
+    public ResponseEntity&lt;TicketReservationDoneDto&gt; confirmTicketReservation(@PathVariable Long id) {
+<span class="fc" id="L61">        log.info(&quot;PUT /api/ticketReservations/{}/confirm - подтверждение бронирования&quot;, id);</span>
+<span class="fc" id="L62">        TicketReservationDoneDto confirmedTicketReservation = ticketReservationService.confirmReservation(id);</span>
+<span class="fc" id="L63">        log.info(&quot;Бронирование с id {} было подтверждено&quot;, id);</span>
+<span class="fc" id="L64">        return ResponseEntity.ok(confirmedTicketReservation);</span>
+    }
+
+    @PostMapping(&quot;/cleanup/canceled-reservations&quot;)
+    public ResponseEntity&lt;CleanupResponse&gt; cleanupOldCanceledReservations() {
+<span class="fc" id="L69">        int deletedCount = ticketReservationService.cleanupOldCanceledReservations();</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (deletedCount &gt; 0) {</span>
+<span class="fc" id="L72">            return ResponseEntity.ok(new CleanupResponse(deletedCount, &quot;Удалено &quot; + deletedCount + &quot; бронирований&quot;));</span>
+        } else {
+<span class="fc" id="L74">            return ResponseEntity.ok(new CleanupResponse(deletedCount,&quot;Нет старых отмененных бронирований для очистки&quot;));</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

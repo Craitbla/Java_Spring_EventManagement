@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.example.eventmanagement.entity.ClientValidationTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.929 s -- in com.example.eventmanagement.entity.ClientValidationTest

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketReservationMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">EventManagement</a> &gt; <a href="index.source.html" class="el_package">com.example.eventmanagement.mapper</a> &gt; <span class="el_source">TicketReservationMapperImpl.java</span></div><h1>TicketReservationMapperImpl.java</h1><pre class="source lang-java linenums">package com.example.eventmanagement.mapper;
+
+import com.example.eventmanagement.dto.ClientCreateDto;
+import com.example.eventmanagement.dto.EventCreateDto;
+import com.example.eventmanagement.dto.TicketReservationCreateDto;
+import com.example.eventmanagement.dto.TicketReservationDoneDto;
+import com.example.eventmanagement.dto.TicketReservationDto;
+import com.example.eventmanagement.entity.Client;
+import com.example.eventmanagement.entity.Event;
+import com.example.eventmanagement.entity.TicketReservation;
+import com.example.eventmanagement.enums.BookingStatus;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-12-20T14:48:08+0300&quot;,
+    comments = &quot;version: 1.6.3, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)&quot;
+)
+@Component
+<span class="fc" id="L26">public class TicketReservationMapperImpl implements TicketReservationMapper {</span>
+
+    @Override
+    public TicketReservationDto toTicketReservationDto(TicketReservation ticketReservation) {
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if ( ticketReservation == null ) {</span>
+<span class="nc" id="L31">            return null;</span>
+        }
+
+<span class="fc" id="L34">        Long id = null;</span>
+<span class="fc" id="L35">        ClientCreateDto client = null;</span>
+<span class="fc" id="L36">        EventCreateDto event = null;</span>
+<span class="fc" id="L37">        Integer numberOfTickets = null;</span>
+<span class="fc" id="L38">        BookingStatus bookingStatus = null;</span>
+
+<span class="fc" id="L40">        id = ticketReservation.getId();</span>
+<span class="fc" id="L41">        client = clientToClientCreateDto( ticketReservation.getClient() );</span>
+<span class="fc" id="L42">        event = eventToEventCreateDto( ticketReservation.getEvent() );</span>
+<span class="fc" id="L43">        numberOfTickets = ticketReservation.getNumberOfTickets();</span>
+<span class="fc" id="L44">        bookingStatus = ticketReservation.getBookingStatus();</span>
+
+<span class="fc" id="L46">        TicketReservationDto ticketReservationDto = new TicketReservationDto( id, client, event, numberOfTickets, bookingStatus );</span>
+
+<span class="fc" id="L48">        return ticketReservationDto;</span>
+    }
+
+    @Override
+    public List&lt;TicketReservationDto&gt; toTicketReservationDtoList(List&lt;TicketReservation&gt; ticketReservations) {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if ( ticketReservations == null ) {</span>
+<span class="nc" id="L54">            return null;</span>
+        }
+
+<span class="fc" id="L57">        List&lt;TicketReservationDto&gt; list = new ArrayList&lt;TicketReservationDto&gt;( ticketReservations.size() );</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for ( TicketReservation ticketReservation : ticketReservations ) {</span>
+<span class="fc" id="L59">            list.add( toTicketReservationDto( ticketReservation ) );</span>
+<span class="fc" id="L60">        }</span>
+
+<span class="fc" id="L62">        return list;</span>
+    }
+
+    @Override
+    public TicketReservationDoneDto toTicketReservationDoneDto(TicketReservation ticketReservation) {
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if ( ticketReservation == null ) {</span>
+<span class="nc" id="L68">            return null;</span>
+        }
+
+<span class="fc" id="L71">        Long id = null;</span>
+<span class="fc" id="L72">        ClientCreateDto client = null;</span>
+<span class="fc" id="L73">        EventCreateDto event = null;</span>
+<span class="fc" id="L74">        Integer numberOfTickets = null;</span>
+<span class="fc" id="L75">        BookingStatus bookingStatus = null;</span>
+<span class="fc" id="L76">        LocalDateTime createdAt = null;</span>
+<span class="fc" id="L77">        LocalDateTime updatedAt = null;</span>
+
+<span class="fc" id="L79">        id = ticketReservation.getId();</span>
+<span class="fc" id="L80">        client = clientToClientCreateDto( ticketReservation.getClient() );</span>
+<span class="fc" id="L81">        event = eventToEventCreateDto( ticketReservation.getEvent() );</span>
+<span class="fc" id="L82">        numberOfTickets = ticketReservation.getNumberOfTickets();</span>
+<span class="fc" id="L83">        bookingStatus = ticketReservation.getBookingStatus();</span>
+<span class="fc" id="L84">        createdAt = ticketReservation.getCreatedAt();</span>
+<span class="fc" id="L85">        updatedAt = ticketReservation.getUpdatedAt();</span>
+
+<span class="fc" id="L87">        TicketReservationDoneDto ticketReservationDoneDto = new TicketReservationDoneDto( id, client, event, numberOfTickets, bookingStatus, createdAt, updatedAt );</span>
+
+<span class="fc" id="L89">        return ticketReservationDoneDto;</span>
+    }
+
+    @Override
+    public TicketReservation fromCreateWithoutDependenciesDto(TicketReservationCreateDto dto) {
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L95">            return null;</span>
+        }
+
+<span class="fc" id="L98">        TicketReservation ticketReservation = new TicketReservation();</span>
+
+<span class="fc" id="L100">        ticketReservation.setNumberOfTickets( dto.numberOfTickets() );</span>
+<span class="fc" id="L101">        ticketReservation.setBookingStatus( dto.bookingStatus() );</span>
+
+<span class="fc" id="L103">        return ticketReservation;</span>
+    }
+
+    protected ClientCreateDto clientToClientCreateDto(Client client) {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if ( client == null ) {</span>
+<span class="nc" id="L108">            return null;</span>
+        }
+
+<span class="fc" id="L111">        String fullName = null;</span>
+<span class="fc" id="L112">        String phoneNumber = null;</span>
+<span class="fc" id="L113">        String email = null;</span>
+
+<span class="fc" id="L115">        fullName = client.getFullName();</span>
+<span class="fc" id="L116">        phoneNumber = client.getPhoneNumber();</span>
+<span class="fc" id="L117">        email = client.getEmail();</span>
+
+<span class="fc" id="L119">        ClientCreateDto clientCreateDto = new ClientCreateDto( fullName, phoneNumber, email );</span>
+
+<span class="fc" id="L121">        return clientCreateDto;</span>
+    }
+
+    protected EventCreateDto eventToEventCreateDto(Event event) {
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if ( event == null ) {</span>
+<span class="nc" id="L126">            return null;</span>
+        }
+
+<span class="fc" id="L129">        String name = null;</span>
+<span class="fc" id="L130">        LocalDate date = null;</span>
+<span class="fc" id="L131">        Integer numberOfSeats = null;</span>
+<span class="fc" id="L132">        BigDecimal ticketPrice = null;</span>
+<span class="fc" id="L133">        String description = null;</span>
+
+<span class="fc" id="L135">        name = event.getName();</span>
+<span class="fc" id="L136">        date = event.getDate();</span>
+<span class="fc" id="L137">        numberOfSeats = event.getNumberOfSeats();</span>
+<span class="fc" id="L138">        ticketPrice = event.getTicketPrice();</span>
+<span class="fc" id="L139">        description = event.getDescription();</span>
+
+<span class="fc" id="L141">        EventCreateDto eventCreateDto = new EventCreateDto( name, date, numberOfSeats, ticketPrice, description );</span>
+
+<span class="fc" id="L143">        return eventCreateDto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
