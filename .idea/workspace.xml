@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="files add">
+    <list default="true" id="ae2e6a43-3c18-4d8f-8533-c9c6c71c95f9" name="Changes" comment="files add with gif">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EventManagement/src/main/resources/data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/EventManagement/src/main/resources/data.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,7 +65,7 @@
       <workItem from="1766267401697" duration="568000" />
       <workItem from="1766401312258" duration="3744000" />
       <workItem from="1766407040832" duration="1692000" />
-      <workItem from="1766425612323" duration="81000" />
+      <workItem from="1766425612323" duration="617000" />
     </task>
     <task id="LOCAL-00001" summary="readme">
       <option name="closed" value="true" />
@@ -100,7 +99,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766234496862</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="files add with gif">
+      <option name="closed" value="true" />
+      <created>1766425738163</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1766425738163</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +118,7 @@
     <MESSAGE value="readme ." />
     <MESSAGE value="docker" />
     <MESSAGE value="files add" />
-    <option name="LAST_COMMIT_MESSAGE" value="files add" />
+    <MESSAGE value="files add with gif" />
+    <option name="LAST_COMMIT_MESSAGE" value="files add with gif" />
   </component>
 </project>
