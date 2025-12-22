@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.example.eventmanagement.service.integration.ClientServiceIntegrationTest
--------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.73 s -- in com.example.eventmanagement.service.integration.ClientServiceIntegrationTest

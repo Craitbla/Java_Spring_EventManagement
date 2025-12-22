@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.example.eventmanagement.repository.SimpleRepositoryTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.21 s -- in com.example.eventmanagement.repository.SimpleRepositoryTest
